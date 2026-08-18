@@ -1,0 +1,110 @@
+{
+  "schemaVersion": "1.0",
+  "framework": {
+    "id": "observable-behaviors-field-guide",
+    "name": "Observable Behaviors of Entrepreneurial Mindset",
+    "publisher": "Engineering Unleashed / ASEE NEMO research lineage",
+    "version": "field-guide-extract",
+    "sourceUrl": "https://engineeringunleashed.com/card/4721",
+    "licenseNotes": "Canonical names and definitions should be confirmed against A Field Guide for EM Behaviors before public distribution. This prototype seeds the eight behaviors from a Field Guide extract used for faculty UX testing; it is not a substitute for the published source.",
+    "provenance": "Seeded from the Field Guide extract in a related EM Behaviors project (field-guide.js). Replace or confirm against the official Field Guide PDF when it is added to this repository. Habit–behavior relationships are not encoded; faculty select independently."
+  },
+  "items": [
+    {
+      "id": "B-ATC",
+      "externalId": "B-ATC",
+      "type": "observable_behavior",
+      "name": "Adapts to Change",
+      "definition": "Adjusts plans and designs when constraints, regulations, or stakeholder priorities shift.",
+      "group": "Observable Behaviors",
+      "examples": [
+        "Redesigns a polymer when regulations change rather than abandoning the project or fighting the rule."
+      ],
+      "canonical": true
+    },
+    {
+      "id": "B-ADQ",
+      "externalId": "B-ADQ",
+      "type": "observable_behavior",
+      "name": "Asks Discerning Questions",
+      "definition": "Asks discerning, open-ended questions before offering solutions—especially when a quick fix or familiar approach is already on the table.",
+      "group": "Observable Behaviors",
+      "examples": [
+        "When a team jumps to gamification for an app engagement problem, an EM-minded engineer first asks what users experience today and what blocks deeper engagement."
+      ],
+      "canonical": true
+    },
+    {
+      "id": "B-CVP",
+      "externalId": "B-CVP",
+      "type": "observable_behavior",
+      "name": "Communicates Value Propositions",
+      "definition": "Tailors how value is communicated to what each audience cares about most.",
+      "group": "Observable Behaviors",
+      "examples": [
+        "Presents the same prosthetic innovation differently to patients, insurers, and clinicians."
+      ],
+      "canonical": true
+    },
+    {
+      "id": "B-LFF",
+      "externalId": "B-LFF",
+      "type": "observable_behavior",
+      "name": "Learns from Failure",
+      "definition": "Treats failure as a source of learning data rather than as evidence of personal inadequacy or reason to abandon a worthy goal.",
+      "group": "Observable Behaviors",
+      "examples": [
+        "After repeated prototype safety failures, reframes each outcome as information about requirements rather than as a verdict on ability."
+      ],
+      "canonical": true
+    },
+    {
+      "id": "B-IVO",
+      "externalId": "B-IVO",
+      "type": "observable_behavior",
+      "name": "Identifies Value Opportunities",
+      "definition": "Notices problems and friction points that may signal broader opportunities to create value.",
+      "group": "Observable Behaviors",
+      "examples": [
+        "When software crashes under certain loads, investigates whether others share the problem—a possible product gap."
+      ],
+      "canonical": true
+    },
+    {
+      "id": "B-GSD",
+      "externalId": "B-GSD",
+      "type": "observable_behavior",
+      "name": "Gathers Supporting/Refuting Data",
+      "definition": "Seeks evidence that both supports and challenges an idea before committing to a course of action.",
+      "group": "Observable Behaviors",
+      "examples": [
+        "Before recommending green roofs for heat-island mitigation, gathers studies showing benefits and limitations."
+      ],
+      "canonical": true
+    },
+    {
+      "id": "B-ISI",
+      "externalId": "B-ISI",
+      "type": "observable_behavior",
+      "name": "Identifies Stakeholder Impact",
+      "definition": "Considers how a solution affects multiple stakeholder groups, including indirect and potentially negative impacts.",
+      "group": "Observable Behaviors",
+      "examples": [
+        "Evaluates an automated parking system for drivers, planners, businesses, and enforcement—not only end users."
+      ],
+      "canonical": true
+    },
+    {
+      "id": "B-INT",
+      "externalId": "B-INT",
+      "type": "observable_behavior",
+      "name": "Integrates Information",
+      "definition": "Synthesizes technical, human, regulatory, and economic inputs into coherent decisions.",
+      "group": "Observable Behaviors",
+      "examples": [
+        "Designs healthcare app architecture that simultaneously addresses HIPAA, UX, clinical workflow, and security."
+      ],
+      "canonical": true
+    }
+  ]
+}

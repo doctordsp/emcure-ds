@@ -1,0 +1,194 @@
+{
+  "schemaVersion": "1.0",
+  "framework": {
+    "id": "habits-em",
+    "name": "Habits of Entrepreneurial Mindset",
+    "publisher": "KEEN / Engineering Unleashed",
+    "version": "source-document",
+    "sourceUrl": "https://engineeringunleashed.com",
+    "licenseNotes": "Canonical names and definitions are taken from the Habits of Entrepreneurial Mindset document. Confirm usage, attribution, and license before public or branded distribution.",
+    "provenance": "Ingested from Habits of Entrepreneurial Mindset-2.pdf in the EMCURE prototype repository. The 3Cs (Curiosity, Connections, Creating Value) are grouping labels; the 18 habits are the selectable items."
+  },
+  "items": [
+    {
+      "id": "H-CUR-INQ",
+      "externalId": "H-CUR-INQ",
+      "type": "habit",
+      "name": "Inquisitiveness",
+      "definition": "Applies curiosity about our continuously changing world.",
+      "group": "Curiosity",
+      "examples": [],
+      "canonical": true
+    },
+    {
+      "id": "H-CUR-CON",
+      "externalId": "H-CUR-CON",
+      "type": "habit",
+      "name": "Contrarian Thinking",
+      "definition": "Explores alternative or disruptive views of current or accepted solutions.",
+      "group": "Curiosity",
+      "examples": [],
+      "canonical": true
+    },
+    {
+      "id": "H-CUR-OPP",
+      "externalId": "H-CUR-OPP",
+      "type": "habit",
+      "name": "Opportunity Seeking",
+      "definition": "Identifies trends and unmet needs to uncover new opportunities.",
+      "group": "Curiosity",
+      "examples": [],
+      "canonical": true
+    },
+    {
+      "id": "H-CUR-EXP",
+      "externalId": "H-CUR-EXP",
+      "type": "habit",
+      "name": "Experimentation",
+      "definition": "Constantly experiments and iterates to test new ideas and explore what-ifs.",
+      "group": "Curiosity",
+      "examples": [],
+      "canonical": true
+    },
+    {
+      "id": "H-CUR-AMB",
+      "externalId": "H-CUR-AMB",
+      "type": "habit",
+      "name": "Confronting Ambiguity",
+      "definition": "Fearlessly operates with care in complex and uncertain environments.",
+      "group": "Curiosity",
+      "examples": [],
+      "canonical": true
+    },
+    {
+      "id": "H-CUR-FUT",
+      "externalId": "H-CUR-FUT",
+      "type": "habit",
+      "name": "Future-Minded",
+      "definition": "Considers emerging trends in people, systems, and environments.",
+      "group": "Curiosity",
+      "examples": [],
+      "canonical": true
+    },
+    {
+      "id": "H-CON-CRE",
+      "externalId": "H-CON-CRE",
+      "type": "habit",
+      "name": "Creativity",
+      "definition": "Integrates information from disparate sources to spark new ideas.",
+      "group": "Connections",
+      "examples": [],
+      "canonical": true
+    },
+    {
+      "id": "H-CON-SYS",
+      "externalId": "H-CON-SYS",
+      "type": "habit",
+      "name": "Systems Thinking",
+      "definition": "Recognizes interdependencies in systems and identifies leverage points.",
+      "group": "Connections",
+      "examples": [],
+      "canonical": true
+    },
+    {
+      "id": "H-CON-KNO",
+      "externalId": "H-CON-KNO",
+      "type": "habit",
+      "name": "Knowledge Synthesis",
+      "definition": "Combines ideas, information, and experiences to form new understanding.",
+      "group": "Connections",
+      "examples": [],
+      "canonical": true
+    },
+    {
+      "id": "H-CON-IMP",
+      "externalId": "H-CON-IMP",
+      "type": "habit",
+      "name": "Implications Thinking",
+      "definition": "Anticipates the long-term impacts and consequences of actions.",
+      "group": "Connections",
+      "examples": [],
+      "canonical": true
+    },
+    {
+      "id": "H-CON-STR",
+      "externalId": "H-CON-STR",
+      "type": "habit",
+      "name": "Strategic Thinking",
+      "definition": "Develops long-term strategies with clear milestones.",
+      "group": "Connections",
+      "examples": [],
+      "canonical": true
+    },
+    {
+      "id": "H-CON-RSK",
+      "externalId": "H-CON-RSK",
+      "type": "habit",
+      "name": "Risk Awareness",
+      "definition": "Proactively incorporates risk management into decision-making.",
+      "group": "Connections",
+      "examples": [],
+      "canonical": true
+    },
+    {
+      "id": "H-VAL-AWA",
+      "externalId": "H-VAL-AWA",
+      "type": "habit",
+      "name": "Value Awareness",
+      "definition": "Focuses on solutions where extraordinary value can be created.",
+      "group": "Creating Value",
+      "examples": [],
+      "canonical": true
+    },
+    {
+      "id": "H-VAL-CUS",
+      "externalId": "H-VAL-CUS",
+      "type": "habit",
+      "name": "Customer-Centric Thinking",
+      "definition": "Frames efforts in terms of stakeholder's actual needs.",
+      "group": "Creating Value",
+      "examples": [],
+      "canonical": true
+    },
+    {
+      "id": "H-VAL-IMP",
+      "externalId": "H-VAL-IMP",
+      "type": "habit",
+      "name": "Impact Thinking",
+      "definition": "Seeks outcomes that produce meaningful and scalable benefits for others.",
+      "group": "Creating Value",
+      "examples": [],
+      "canonical": true
+    },
+    {
+      "id": "H-VAL-SOC",
+      "externalId": "H-VAL-SOC",
+      "type": "habit",
+      "name": "Socially Minded",
+      "definition": "Prioritizes creating meaningful and positive societal impacts.",
+      "group": "Creating Value",
+      "examples": [],
+      "canonical": true
+    },
+    {
+      "id": "H-VAL-PER",
+      "externalId": "H-VAL-PER",
+      "type": "habit",
+      "name": "Persistence",
+      "definition": "Maintains a sense of agency and resilience to achieve goals in the face of obstacles and failures.",
+      "group": "Creating Value",
+      "examples": [],
+      "canonical": true
+    },
+    {
+      "id": "H-VAL-RES",
+      "externalId": "H-VAL-RES",
+      "type": "habit",
+      "name": "Resourcefulness",
+      "definition": "Solves problems creatively with available resources.",
+      "group": "Creating Value",
+      "examples": [],
+      "canonical": true
+    }
+  ]
+}
