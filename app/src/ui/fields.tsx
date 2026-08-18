@@ -6,12 +6,16 @@ interface FieldProps {
   hint?: string;
   children: ReactNode;
   wide?: boolean;
+  action?: ReactNode;
 }
 
-export function Field({ id, label, hint, children, wide }: FieldProps) {
+export function Field({ id, label, hint, children, wide, action }: FieldProps) {
   return (
     <div className={wide ? "field field-wide" : "field"}>
-      <label htmlFor={id}>{label}</label>
+      <div className="field-label-row">
+        <label htmlFor={id}>{label}</label>
+        {action}
+      </div>
       {hint ? (
         <p id={`${id}-hint`} className="field-hint">
           {hint}
@@ -30,6 +34,7 @@ interface TextInputProps {
   onChange: (value: string) => void;
   type?: string;
   wide?: boolean;
+  action?: ReactNode;
 }
 
 export function TextInput({
@@ -40,9 +45,10 @@ export function TextInput({
   onChange,
   type = "text",
   wide,
+  action,
 }: TextInputProps) {
   return (
-    <Field id={id} label={label} hint={hint} wide={wide}>
+    <Field id={id} label={label} hint={hint} wide={wide} action={action}>
       <input
         id={id}
         type={type}
@@ -88,6 +94,7 @@ interface TextAreaProps {
   onChange: (value: string) => void;
   rows?: number;
   wide?: boolean;
+  action?: ReactNode;
 }
 
 export function TextArea({
@@ -98,9 +105,10 @@ export function TextArea({
   onChange,
   rows = 4,
   wide,
+  action,
 }: TextAreaProps) {
   return (
-    <Field id={id} label={label} hint={hint} wide={wide}>
+    <Field id={id} label={label} hint={hint} wide={wide} action={action}>
       <textarea
         id={id}
         rows={rows}
@@ -119,11 +127,12 @@ interface SelectProps {
   value: string;
   onChange: (value: string) => void;
   options: { value: string; label: string }[];
+  action?: ReactNode;
 }
 
-export function SelectField({ id, label, hint, value, onChange, options }: SelectProps) {
+export function SelectField({ id, label, hint, value, onChange, options, action }: SelectProps) {
   return (
-    <Field id={id} label={label} hint={hint}>
+    <Field id={id} label={label} hint={hint} action={action}>
       <select
         id={id}
         value={value}
@@ -146,15 +155,19 @@ interface ChecklistProps {
   items: { id: string; label: string }[];
   selected: string[];
   onChange: (ids: string[]) => void;
+  action?: ReactNode;
 }
 
-export function Checklist({ legend, hint, items, selected, onChange }: ChecklistProps) {
+export function Checklist({ legend, hint, items, selected, onChange, action }: ChecklistProps) {
   if (items.length === 0) {
     return <p className="muted">{legend}: none available yet.</p>;
   }
   return (
     <fieldset className="field field-wide">
-      <legend className="legend">{legend}</legend>
+      <legend className="legend">
+        <span>{legend}</span>
+        {action}
+      </legend>
       {hint ? <p className="field-hint">{hint}</p> : null}
       <div className="checkbox-grid">
         {items.map((item) => {
@@ -174,6 +187,45 @@ export function Checklist({ legend, hint, items, selected, onChange }: Checklist
               />
               <span>{item.label}</span>
             </label>
+          );
+        })}
+      </div>
+    </fieldset>
+  );
+}
+
+interface TagPillsProps {
+  legend: string;
+  hint?: string;
+  options: { id: string; label: string }[];
+  selected: string[];
+  onChange: (ids: string[]) => void;
+  action?: ReactNode;
+}
+
+export function TagPills({ legend, hint, options, selected, onChange, action }: TagPillsProps) {
+  return (
+    <fieldset className="field field-wide">
+      <legend className="legend">
+        <span>{legend}</span>
+        {action}
+      </legend>
+      {hint ? <p className="field-hint">{hint}</p> : null}
+      <div className="tag-cloud">
+        {options.map((option) => {
+          const on = selected.includes(option.id);
+          return (
+            <button
+              key={option.id}
+              type="button"
+              className={on ? "tag-btn is-on" : "tag-btn"}
+              aria-pressed={on}
+              onClick={() =>
+                onChange(on ? selected.filter((id) => id !== option.id) : [...selected, option.id])
+              }
+            >
+              {option.label}
+            </button>
           );
         })}
       </div>

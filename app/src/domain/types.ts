@@ -195,6 +195,58 @@ export interface AlignmentFinding {
   route: WorkspaceRoute;
 }
 
+export type DocumentAudience = "students" | "faculty" | "both";
+export type DistributionDocumentKind =
+  | "handout"
+  | "template"
+  | "uploaded"
+  | "generated_brief"
+  | "generated_activities";
+
+/** KEEN-style public card fields. Prefill from the design; faculty may edit for export. */
+export interface EmcureCard {
+  title: string;
+  author: string;
+  yearLevel: string;
+  course: string;
+  materials: string;
+  problemNeed: string;
+  description: string;
+  emOutcomeIds: string[];
+  emComments: string;
+  learningObjectives: string;
+  stages: string[];
+  components: string[];
+  formats: string[];
+  assessment: string;
+  acknowledgments: string;
+  category: string;
+  subCategory: string;
+  references: string;
+  license: string;
+  summary: string;
+  featuredImageName?: string;
+  featuredImageDataUrl?: string;
+}
+
+export interface DistributionDocument {
+  id: string;
+  title: string;
+  audience: DocumentAudience;
+  kind: DistributionDocumentKind;
+  body: string;
+  filename: string;
+  mimeType: string;
+  dataUrl?: string;
+  notes?: string;
+}
+
+export interface StudentPackageOptions {
+  includeBrief: boolean;
+  includeActivities: boolean;
+  includeSuccessCriteria: boolean;
+}
+
 /** One design = one Firestore-shaped document (`designs/{id}`). */
 export interface EmcureDesign {
   schemaVersion: typeof SCHEMA_VERSION;
@@ -215,6 +267,9 @@ export interface EmcureDesign {
   uncertainties: Uncertainty[];
   phases: Phase[];
   findings: AlignmentFinding[];
+  card?: EmcureCard;
+  distributionDocuments?: DistributionDocument[];
+  studentPackageOptions?: StudentPackageOptions;
   createdAt: string;
   updatedAt: string;
   archivedAt?: string;

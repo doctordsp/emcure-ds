@@ -1,6 +1,7 @@
+import { openFindings } from "./alignment";
 import { allActivities, displayTitle, primaryBigRedX } from "./createDesign";
 import { ALL_FRAMEWORKS, getFrameworkItem } from "./frameworks";
-import { openFindings } from "./alignment";
+import { escapeHtml } from "./html";
 import type { EmcureDesign } from "./types";
 
 function join(lines: string[]): string {
@@ -212,12 +213,4 @@ export function designToHtml(design: EmcureDesign): string {
 ${body}
 </body>
 </html>`;
-}
-
-function escapeHtml(value: string): string {
-  return value
-    .replace(/&/g, "&amp;")
-    .replace(/</g, "&lt;")
-    .replace(/>/g, "&gt;")
-    .replace(/"/g, "&quot;");
 }
