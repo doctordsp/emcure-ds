@@ -350,53 +350,55 @@ export function RoadmapMap({
 
   return (
     <div className="roadmap-frame">
-      <img
-        src={roadmap}
-        alt="EM-CURE Project Roadmap: five stages from course details to assessment."
-        width={960}
-        height={540}
-      />
-      {ROADMAP_HOTSPOTS.map((hotspot) => {
-        const href = hrefFor(hotspot.route);
-        const caption = hotspotCaption(hotspot);
-        const style = {
-          left: `${hotspot.x}%`,
-          top: `${hotspot.y}%`,
-          width: `${hotspot.w}%`,
-          height: `${hotspot.h}%`,
-        };
-        const pointer = {
-          onMouseEnter: () => setFocused(hotspot),
-          onMouseLeave: () => setFocused(null),
-          onFocus: () => setFocused(hotspot),
-          onBlur: () => setFocused(null),
-        };
-        if (href) {
+      <div className="roadmap-plot">
+        <img
+          src={roadmap}
+          alt="EM-CURE Project Roadmap: five stages from course details to assessment."
+          width={960}
+          height={540}
+        />
+        {ROADMAP_HOTSPOTS.map((hotspot) => {
+          const href = hrefFor(hotspot.route);
+          const caption = hotspotCaption(hotspot);
+          const style = {
+            left: `${hotspot.x}%`,
+            top: `${hotspot.y}%`,
+            width: `${hotspot.w}%`,
+            height: `${hotspot.h}%`,
+          };
+          const pointer = {
+            onMouseEnter: () => setFocused(hotspot),
+            onMouseLeave: () => setFocused(null),
+            onFocus: () => setFocused(hotspot),
+            onBlur: () => setFocused(null),
+          };
+          if (href) {
+            return (
+              <Link
+                key={hotspot.id}
+                className="hotspot"
+                to={href}
+                style={style}
+                {...pointer}
+              >
+                <span className="sr-only">{caption}</span>
+              </Link>
+            );
+          }
           return (
-            <Link
+            <button
               key={hotspot.id}
+              type="button"
               className="hotspot"
-              to={href}
               style={style}
+              onClick={onUnavailable}
               {...pointer}
             >
               <span className="sr-only">{caption}</span>
-            </Link>
+            </button>
           );
-        }
-        return (
-          <button
-            key={hotspot.id}
-            type="button"
-            className="hotspot"
-            style={style}
-            onClick={onUnavailable}
-            {...pointer}
-          >
-            <span className="sr-only">{caption}</span>
-          </button>
-        );
-      })}
+        })}
+      </div>
       <p
         className={`roadmap-caption${focused ? ` stage-${focused.stage}` : ""}`}
         role="status"

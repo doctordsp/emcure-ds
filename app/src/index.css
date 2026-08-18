@@ -157,7 +157,6 @@ img {
 }
 
 .roadmap-frame {
-  position: relative;
   max-width: 76rem;
   margin: 0 0 16px;
   background: var(--emcure-surface);
@@ -166,7 +165,12 @@ img {
   overflow: hidden;
 }
 
-.roadmap-frame img {
+.roadmap-plot {
+  position: relative;
+  line-height: 0;
+}
+
+.roadmap-plot img {
   display: block;
   width: 100%;
   height: auto;
