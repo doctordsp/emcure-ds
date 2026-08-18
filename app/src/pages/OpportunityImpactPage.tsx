@@ -7,10 +7,10 @@ import { ThreadView } from "../ui/ThreadView";
 import { useDesign } from "../ui/DesignContext";
 
 const EVIDENCE: { value: EvidenceStatus; label: string }[] = [
-  { value: "assumption", label: "Assumption" },
-  { value: "anecdotal", label: "Anecdotal" },
-  { value: "supported", label: "Supported" },
-  { value: "validated", label: "Validated" },
+  { value: "assumption", label: "Assumption — not yet checked" },
+  { value: "anecdotal", label: "Anecdotal — informal or secondhand" },
+  { value: "supported", label: "Supported — documented" },
+  { value: "validated", label: "Validated — confirmed" },
 ];
 
 function emptyOpportunity(): Opportunity {
@@ -130,7 +130,8 @@ export function OpportunityImpactPage() {
             />
             <SelectField
               id={`opp-ev-${opp.id}`}
-              label="Evidence status"
+              label="How well we know this opportunity"
+              hint="Support for this statement — not student discovery of it."
               value={opp.evidenceStatus}
               onChange={(evidenceStatus) =>
                 update((current) => ({

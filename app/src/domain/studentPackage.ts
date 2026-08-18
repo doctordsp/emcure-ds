@@ -1,6 +1,7 @@
 import { displayTitle, primaryBigRedX } from "./createDesign";
 import { getFrameworkItem } from "./frameworks";
 import { escapeHtml } from "./html";
+import { stakeholderTypeLabel } from "./stakeholders";
 import type {
   DistributionDocument,
   EmcureDesign,
@@ -138,8 +139,11 @@ export function studentPackageMarkdown(design: EmcureDesign): string {
         "### People involved",
         "",
         ...design.stakeholders.map((stk) => {
+          const involvement = stk.researchInvolvement ? ` ${stk.researchInvolvement}` : "";
           const benefit = stk.potentialBenefit ? ` ${stk.potentialBenefit}` : "";
-          return `- **${stk.name}** (${stk.roles.join(", ") || "role TBD"}).${benefit}`;
+          const type = stakeholderTypeLabel(stk);
+          const typeBit = type ? ` ${type}.` : "";
+          return `- **${stk.name}** (${stk.roles.join(", ") || "role TBD"}).${typeBit}${involvement}${benefit}`;
         }),
         design.stakeholders.length === 0 ? "- To be introduced in class." : "",
         "",

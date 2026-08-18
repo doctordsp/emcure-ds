@@ -233,3 +233,37 @@ export function TagPills({ legend, hint, options, selected, onChange, action }: 
   );
 }
 
+interface ChoicePillsProps {
+  legend: string;
+  hint?: string;
+  options: { id: string; label: string }[];
+  value: string;
+  onChange: (id: string) => void;
+}
+
+export function ChoicePills({ legend, hint, options, value, onChange }: ChoicePillsProps) {
+  return (
+    <fieldset className="field">
+      <legend className="legend">{legend}</legend>
+      {hint ? <p className="field-hint">{hint}</p> : null}
+      <div className="tag-cloud" role="radiogroup" aria-label={legend}>
+        {options.map((option) => {
+          const on = value === option.id;
+          return (
+            <button
+              key={option.id}
+              type="button"
+              role="radio"
+              aria-checked={on}
+              className={on ? "tag-btn is-on" : "tag-btn"}
+              onClick={() => onChange(on ? "" : option.id)}
+            >
+              {option.label}
+            </button>
+          );
+        })}
+      </div>
+    </fieldset>
+  );
+}
+

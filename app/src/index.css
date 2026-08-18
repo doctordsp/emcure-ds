@@ -696,15 +696,31 @@ textarea {
 }
 
 .item-card {
+  display: grid;
+  gap: 1.25rem;
   background: #fff;
   border: 1px solid var(--emcure-border);
   border-radius: var(--radius-card);
-  padding: 16px;
+  padding: 20px;
 }
 
 .item-card.selected {
   border-color: var(--emcure-teal-700);
   box-shadow: var(--shadow);
+}
+
+.card-section-label {
+  margin: 0.25rem 0 0;
+  font-size: 0.95rem;
+  color: var(--emcure-teal-900);
+}
+
+.item-card-footer {
+  display: grid;
+  gap: 1rem;
+  padding-top: 1.25rem;
+  margin-top: 0.25rem;
+  border-top: 1px solid var(--emcure-border);
 }
 
 .framework-grid {
@@ -866,7 +882,8 @@ td {
 }
 
 .tag-btn.is-on,
-.tag-btn[aria-pressed="true"] {
+.tag-btn[aria-pressed="true"],
+.tag-btn[aria-checked="true"] {
   background: var(--emcure-teal-100);
   border-color: var(--emcure-teal-700);
 }
@@ -875,6 +892,40 @@ td {
   margin: 0;
   color: var(--emcure-danger);
   font-size: 0.875rem;
+}
+
+.classification-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+  max-width: 46rem;
+}
+
+.lens-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 16px;
+}
+
+.lens-col {
+  display: grid;
+  gap: 10px;
+  align-content: start;
+}
+
+.lens-col h3 {
+  margin: 0;
+  font-size: 0.95rem;
+}
+
+.item-card .eu-section {
+  padding-top: 12px;
+  margin-top: 4px;
+}
+
+.item-card .eu-section h3 {
+  display: inline;
+  font-size: 1rem;
 }
 
 .inventory-list {
@@ -918,6 +969,11 @@ td {
 
   .thread {
     position: static;
+  }
+
+  .classification-row,
+  .lens-grid {
+    grid-template-columns: 1fr;
   }
 }
 

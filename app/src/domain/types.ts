@@ -97,14 +97,34 @@ export interface FrameworkSelection {
   localInterpretation?: string;
 }
 
+export type StakeholderPriority = "primary" | "secondary";
+export type StakeholderArena = "internal" | "external";
+
+/** Dual-layer Interest / Influence / Impact from stakeholder brainstorming. */
+export interface StakeholderLens {
+  statedInterests?: string;
+  underlyingValues?: string;
+  powerOver?: string;
+  powerWith?: string;
+  immediateImpact?: string;
+  longerTermImpact?: string;
+}
+
 export interface Stakeholder {
   id: string;
   name: string;
   group?: string;
   roles: string[];
+  /** Who this EMCURE is for vs who must still be accounted for. */
+  priority?: StakeholderPriority;
+  /** Inside the course/institution vs community, partners, agencies. */
+  arena?: StakeholderArena;
+  lens?: StakeholderLens;
   influence?: number;
   interest?: number;
   accessStatus?: string;
+  /** How this person or group takes part in the student investigation. */
+  researchInvolvement?: string;
   potentialBenefit?: string;
   potentialBurden?: string;
   evidenceStatus: EvidenceStatus;

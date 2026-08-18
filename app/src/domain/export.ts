@@ -1,7 +1,8 @@
-import { openFindings } from "./alignment";
 import { allActivities, displayTitle, primaryBigRedX } from "./createDesign";
 import { ALL_FRAMEWORKS, getFrameworkItem } from "./frameworks";
+import { openFindings } from "./alignment";
 import { escapeHtml } from "./html";
+import { LENS_FIELDS, stakeholderTypeLabel } from "./stakeholders";
 import type { EmcureDesign } from "./types";
 
 function join(lines: string[]): string {
@@ -75,9 +76,16 @@ export function designToMarkdown(design: EmcureDesign): string {
     ...design.stakeholders.flatMap((stk) => [
       `### ${stk.name}`,
       "",
+      `- Type: ${stakeholderTypeLabel(stk) || "—"}`,
       `- Roles: ${stk.roles.join(", ") || "—"}`,
+      `- In the research: ${stk.researchInvolvement || "—"}`,
       `- Access: ${stk.accessStatus || "—"}`,
-      `- Evidence status: ${stk.evidenceStatus}`,
+      `- How well we know this: ${stk.evidenceStatus}`,
+      ...LENS_FIELDS.flatMap((field) =>
+        stk.lens?.[field.key]?.trim()
+          ? [`- ${field.column} / ${field.label}: ${stk.lens[field.key]}`]
+          : [],
+      ),
       `- Potential benefit: ${stk.potentialBenefit || "—"}`,
       `- Potential burden: ${stk.potentialBurden || "—"}`,
       "",
