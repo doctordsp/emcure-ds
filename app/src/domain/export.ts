@@ -2,6 +2,7 @@ import { allActivities, displayTitle, primaryBigRedX } from "./createDesign";
 import { ALL_FRAMEWORKS, getFrameworkItem } from "./frameworks";
 import { openFindings } from "./alignment";
 import { escapeHtml } from "./html";
+import { MVRC_LABEL } from "./mvrc";
 import { LENS_FIELDS, stakeholderTypeLabel } from "./stakeholders";
 import type { EmcureDesign } from "./types";
 
@@ -152,6 +153,23 @@ export function designToMarkdown(design: EmcureDesign): string {
     ...design.uncertainties
       .filter((item) => item.id !== brx?.id)
       .map((item) => `- (${item.designation}) ${item.statement}`),
+    "",
+    `## ${MVRC_LABEL}`,
+    "",
+    design.minimumViableResearchContribution?.statement?.trim() || "—",
+    "",
+    ...(design.minimumViableResearchContribution?.deliverables ?? [])
+      .map((item) => item.trim())
+      .filter(Boolean)
+      .map((item) => `- ${item}`),
+    design.minimumViableResearchContribution?.studentFacingStatement?.trim()
+      ? join([
+          "",
+          "### Student-facing wording",
+          "",
+          design.minimumViableResearchContribution.studentFacingStatement,
+        ])
+      : "",
     "",
     "## Student journey",
     "",

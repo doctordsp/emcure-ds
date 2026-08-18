@@ -265,6 +265,18 @@ export interface StudentPackageOptions {
   includeBrief: boolean;
   includeActivities: boolean;
   includeSuccessCriteria: boolean;
+  includeMvrc: boolean;
+}
+
+export const MVRC_OBJECT_ID = "emcure.mvrc";
+
+/** Floor of authentic research students must produce this term. */
+export interface MinimumViableResearchContribution {
+  statement: string;
+  /** One student research product per line in the editor. */
+  deliverables?: string[];
+  /** Optional student-facing wording; the companion falls back to `statement`. */
+  studentFacingStatement?: string;
 }
 
 /** One design = one Firestore-shaped document (`designs/{id}`). */
@@ -278,6 +290,7 @@ export interface EmcureDesign {
   courseProfile: CourseProfile;
   projectSituation: string;
   lineOfSightStatement?: string;
+  minimumViableResearchContribution?: MinimumViableResearchContribution;
   currentBigRedXId?: string;
   stakeholders: Stakeholder[];
   needs: Need[];

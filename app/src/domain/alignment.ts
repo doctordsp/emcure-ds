@@ -1,11 +1,13 @@
 import { allActivities, primaryBigRedX } from "./createDesign";
 import { getFrameworkItem } from "./frameworks";
 import { createId } from "./ids";
-import type {
-  AlignmentFinding,
-  EmcureDesign,
-  FindingSeverity,
-  WorkspaceRoute,
+import { mvrcClaimsDemonstratedImpact, mvrcStatement, MVRC_DEFINITION, MVRC_LABEL } from "./mvrc";
+import {
+  MVRC_OBJECT_ID,
+  type AlignmentFinding,
+  type EmcureDesign,
+  type FindingSeverity,
+  type WorkspaceRoute,
 } from "./types";
 
 export function findingKey(finding: Pick<AlignmentFinding, "ruleId" | "affectedObjectIds">): string {
@@ -152,6 +154,57 @@ export function evaluateDesign(design: EmcureDesign): AlignmentFinding[] {
         suggestedAction: "Specify a metric and a target or decision threshold.",
         affectedObjectIds: [criterion.id],
         route: "success",
+      }),
+    );
+  }
+
+  if (brx && !mvrcStatement(design)) {
+    findings.push(
+      makeFinding({
+        ruleId: "AL-019",
+        severity: "warning",
+        title: `Big Red X has no ${MVRC_LABEL}`,
+        explanation:
+          `Name ${MVRC_DEFINITION} so the investigation has a bounded contribution, not only a question.`,
+        suggestedAction: `Add a ${MVRC_LABEL} on the Big Red X page.`,
+        affectedObjectIds: [brx.id],
+        route: "big-red-x",
+      }),
+    );
+  }
+
+  if (mvrcStatement(design) && activities.length > 0) {
+    const linked = activities.filter((activity) =>
+      activity.linkedObjectIds.includes(MVRC_OBJECT_ID),
+    );
+    if (linked.length === 0) {
+      findings.push(
+        makeFinding({
+          ruleId: "AL-020",
+          severity: "warning",
+          title: `No activity is linked to the ${MVRC_LABEL}`,
+          explanation:
+            `The student journey does not identify which work produces the ${MVRC_LABEL}.`,
+          suggestedAction: `Link at least one investigation or communication activity to the ${MVRC_LABEL}.`,
+          affectedObjectIds: [MVRC_OBJECT_ID, ...activities.map((activity) => activity.id)],
+          route: "journey",
+        }),
+      );
+    }
+  }
+
+  if (mvrcClaimsDemonstratedImpact(design)) {
+    findings.push(
+      makeFinding({
+        ruleId: "AL-021",
+        severity: "warning",
+        title: `${MVRC_LABEL} claims demonstrated impact`,
+        explanation:
+          `The ${MVRC_LABEL} should be a student research product this term, not demonstrated neighborhood or partner impact.`,
+        suggestedAction:
+          `Rewrite the ${MVRC_LABEL} so it names evidence, a packet, or a bounded recommendation rather than demonstrated impact.`,
+        affectedObjectIds: [MVRC_OBJECT_ID],
+        route: "big-red-x",
       }),
     );
   }

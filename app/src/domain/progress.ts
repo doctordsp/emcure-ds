@@ -30,7 +30,11 @@ export function sectionStatuses(design: EmcureDesign): SectionStatus[] {
     design.intendedImpacts.some((item) => item.statement.trim());
   const hasSuccess = design.successCriteria.some((item) => item.statement.trim());
   const brx = primaryBigRedX(design);
-  const hasBrx = Boolean(brx?.statement.trim() && brx.decisionIfResolved?.trim());
+  const hasBrx = Boolean(
+    brx?.statement.trim() &&
+      brx.decisionIfResolved?.trim() &&
+      design.minimumViableResearchContribution?.statement.trim(),
+  );
   const hasJourney = allActivities(design).length > 0;
   const openErrors = design.findings.filter(
     (finding) => finding.status === "open" && finding.severity === "error",

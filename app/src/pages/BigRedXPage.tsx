@@ -1,5 +1,6 @@
 import { BRX_CRITERIA, type Uncertainty, type UncertaintyDesignation, type UncertaintyType } from "../domain/types";
 import { createId } from "../domain/ids";
+import { mvrcOf, patchMvrc, MVRC_DEFINITION, MVRC_LABEL } from "../domain/mvrc";
 import { replaceById } from "../domain/replaceById";
 import { Checklist, NumberInput, SelectField, TextArea } from "../ui/fields";
 import { useDesign } from "../ui/DesignContext";
@@ -270,6 +271,46 @@ export function BigRedXPage() {
           </div>
         </article>
       ))}
+
+      <article className="item-card">
+        <h2>{MVRC_LABEL}</h2>
+        <p className="muted">
+          This is {MVRC_DEFINITION}. After you choose the Big Red X, name that floor. This
+          is not stakeholder success and not the full intended impact — it is the
+          contribution that would inform the decision if the uncertainty is resolved.
+        </p>
+        <TextArea
+          id="mvrc-statement"
+          label="Minimum contribution"
+          hint="What students must produce, at minimum, to count as a research contribution this semester."
+          value={mvrcOf(design).statement}
+          onChange={(statement) => update((current) => patchMvrc(current, { statement }))}
+          rows={5}
+          wide
+        />
+        <TextArea
+          id="mvrc-deliverables"
+          label="Deliverables (optional)"
+          hint="One student research product per line."
+          value={(mvrcOf(design).deliverables ?? []).join("\n")}
+          onChange={(value) =>
+            update((current) => patchMvrc(current, { deliverables: value.split("\n") }))
+          }
+          rows={4}
+          wide
+        />
+        <TextArea
+          id="mvrc-student"
+          label="Student-facing wording (optional)"
+          hint="Used in the student companion. If blank, students see the minimum contribution statement."
+          value={mvrcOf(design).studentFacingStatement ?? ""}
+          onChange={(studentFacingStatement) =>
+            update((current) => patchMvrc(current, { studentFacingStatement }))
+          }
+          rows={5}
+          wide
+        />
+      </article>
     </div>
   );
 }

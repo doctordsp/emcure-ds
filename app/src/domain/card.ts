@@ -1,6 +1,7 @@
 import { allActivities, displayTitle, primaryBigRedX } from "./createDesign";
 import { getFrameworkItem } from "./frameworks";
 import { escapeHtml } from "./html";
+import { MVRC_LABEL } from "./mvrc";
 import type { EmcureCard, EmcureDesign } from "./types";
 
 export const YEAR_LEVELS = [
@@ -220,6 +221,9 @@ export function cardDescriptionFromDesign(design: EmcureDesign): string {
     opportunity?.valueCreated ? `Value created: ${opportunity.valueCreated}` : "",
     impact?.statement ? `Intended impact: ${impact.statement}` : "",
     design.lineOfSightStatement,
+    design.minimumViableResearchContribution?.statement
+      ? `${MVRC_LABEL}: ${design.minimumViableResearchContribution.statement}`
+      : "",
   ]
     .filter((part) => part?.trim())
     .join("\n\n");

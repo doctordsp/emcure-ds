@@ -1,6 +1,8 @@
+import { Link } from "react-router-dom";
 import { createActivity, primaryBigRedX } from "../domain/createDesign";
 import { getFrameworkItem } from "../domain/frameworks";
-import type { Activity, DiscoveryMode, Grouping } from "../domain/types";
+import { MVRC_OBJECT_ID, type Activity, type DiscoveryMode, type Grouping } from "../domain/types";
+import { MVRC_DEFINITION, MVRC_LABEL, mvrcStatement } from "../domain/mvrc";
 import { replaceById } from "../domain/replaceById";
 import { Checklist, NumberInput, SelectField, TextArea, TextInput } from "../ui/fields";
 import { useDesign } from "../ui/DesignContext";
@@ -17,6 +19,10 @@ export function JourneyPage() {
     ...(brx
       ? [{ id: brx.id, label: `Big Red X: ${brx.statement || "untitled"}` }]
       : []),
+    {
+      id: MVRC_OBJECT_ID,
+      label: `${MVRC_LABEL}: ${mvrcStatement(design) || "not yet defined"}`,
+    },
     ...design.opportunities.map((item) => ({
       id: item.id,
       label: `Opportunity: ${item.statement || "untitled"}`,
@@ -71,9 +77,21 @@ export function JourneyPage() {
       <h1>Student journey</h1>
       <p className="lede">
         Turn the reasoning model into a teachable sequence. Link at least one investigation
-        to the Big Red X. Use move up/down rather than drag-and-drop so the list stays
-        keyboard accessible.
+        to the Big Red X and to the {MVRC_LABEL}. Use move up/down rather than
+        drag-and-drop so the list stays keyboard accessible.
       </p>
+      {mvrcStatement(design) ? (
+        <p className="callout">
+          The {MVRC_LABEL} is {MVRC_DEFINITION}. Activities should produce at least this
+          contribution: {mvrcStatement(design)}
+        </p>
+      ) : (
+        <p className="callout callout-warn">
+          No {MVRC_LABEL} yet. It is {MVRC_DEFINITION}.{" "}
+          <Link to={`/designs/${design.id}/big-red-x`}>Define it on the Big Red X page</Link>,
+          then link an activity to it here.
+        </p>
+      )}
       {design.phases.map((phase) => (
         <section className="item-card" key={phase.id}>
           <h2>{phase.title}</h2>
@@ -153,7 +171,7 @@ export function JourneyPage() {
               />
               <Checklist
                 legend="Connections"
-                hint="Link EM items, the Big Red X, opportunity, impact, and evidence."
+                hint={`Link EM items, the Big Red X, the ${MVRC_LABEL}, opportunity, impact, and evidence.`}
                 items={linkItems}
                 selected={activity.linkedObjectIds}
                 onChange={(linkedObjectIds) =>

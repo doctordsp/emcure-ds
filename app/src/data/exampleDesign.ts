@@ -1,5 +1,5 @@
 import { applyAlignment } from "../domain/alignment";
-import { SCHEMA_VERSION, type EmcureDesign } from "../domain/types";
+import { MVRC_OBJECT_ID, SCHEMA_VERSION, type EmcureDesign } from "../domain/types";
 
 const createdAt = "2026-08-01T12:00:00.000Z";
 
@@ -66,6 +66,16 @@ export const EXAMPLE_DESIGN: EmcureDesign = applyAlignment({
   lineOfSightStatement:
     "We are investigating whether a proposed bioswale reduces peak runoff during typical storms to resolve uncertainty about on-site performance. This uncertainty affects the opportunity to site low-cost green infrastructure where it can reduce flooding, which could contribute to fewer inundated homes for neighborhood residents and the city. The evidence will inform whether the city advances, revises, or pauses the retrofit.",
   currentBigRedXId: "brx-runoff",
+  minimumViableResearchContribution: {
+    statement:
+      "Students produce a bounded evidence packet that measures whether the proposed bioswale reduces peak runoff under typical local storms, and a recommendation the city can use as one input to advance, revise, or pause.",
+    deliverables: [
+      "A measurement protocol and storm-event dataset compared to an untreated baseline",
+      "A written recommendation that separates student interpretation from the partner's decision",
+    ],
+    studentFacingStatement:
+      "Your team's minimum contribution is a usable evidence packet and a bounded recommendation: does this bioswale reduce peak runoff enough to inform the city's go/revise/pause decision? Neighborhood-scale flooding reduction is beyond this course.",
+  },
   stakeholders: [
     {
       id: "stk-residents",
@@ -322,7 +332,7 @@ export const EXAMPLE_DESIGN: EmcureDesign = applyAlignment({
           discoveryMode: "mixed",
           grouping: "team",
           estimatedMinutes: 240,
-          linkedObjectIds: ["brx-runoff", "B-GSD", "sc-runoff"],
+          linkedObjectIds: ["brx-runoff", "B-GSD", "sc-runoff", MVRC_OBJECT_ID],
         },
       ],
     },
@@ -339,7 +349,14 @@ export const EXAMPLE_DESIGN: EmcureDesign = applyAlignment({
           discoveryMode: "student_discovered",
           grouping: "team",
           estimatedMinutes: 180,
-          linkedObjectIds: ["brx-runoff", "opp-siting", "imp-flooding", "B-GSD", "H-CON-IMP"],
+          linkedObjectIds: [
+            "brx-runoff",
+            "opp-siting",
+            "imp-flooding",
+            "B-GSD",
+            "H-CON-IMP",
+            MVRC_OBJECT_ID,
+          ],
         },
       ],
     },
@@ -356,7 +373,7 @@ export const EXAMPLE_DESIGN: EmcureDesign = applyAlignment({
           discoveryMode: "instructor_provided",
           grouping: "whole_class",
           estimatedMinutes: 90,
-          linkedObjectIds: ["B-ISI", "stk-city", "sc-decision"],
+          linkedObjectIds: ["B-ISI", "stk-city", "sc-decision", MVRC_OBJECT_ID],
         },
       ],
     },

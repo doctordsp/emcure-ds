@@ -1,6 +1,7 @@
 import { displayTitle, primaryBigRedX } from "./createDesign";
 import { getFrameworkItem } from "./frameworks";
 import { escapeHtml } from "./html";
+import { MVRC_LABEL, mvrcDeliverables, studentFacingMvrc } from "./mvrc";
 import { stakeholderTypeLabel } from "./stakeholders";
 import type {
   DistributionDocument,
@@ -16,6 +17,7 @@ export function defaultStudentPackageOptions(): StudentPackageOptions {
     includeBrief: true,
     includeActivities: true,
     includeSuccessCriteria: true,
+    includeMvrc: true,
   };
 }
 
@@ -41,6 +43,14 @@ export function studentPackageInventory(design: EmcureDesign): PackageInventoryI
       included: options.includeBrief,
       reason: options.includeBrief
         ? "Included in the student companion."
+        : "Turned off for this package.",
+    },
+    {
+      id: "mvrc",
+      title: `What you will contribute (${MVRC_LABEL})`,
+      included: options.includeMvrc,
+      reason: options.includeMvrc
+        ? `${MVRC_LABEL} is visible to students.`
         : "Turned off for this package.",
     },
     {
@@ -150,6 +160,21 @@ export function studentPackageMarkdown(design: EmcureDesign): string {
       ]
     : [];
 
+  const mvrcText = studentFacingMvrc(design);
+  const deliverables = mvrcDeliverables(design);
+  const mvrc = options.includeMvrc
+    ? [
+        "## What you will contribute",
+        "",
+        `The ${MVRC_LABEL} is the floor of authentic research your team must produce this term.`,
+        "",
+        mvrcText || "Your minimum research contribution will be shared in class.",
+        "",
+        ...deliverables.map((item) => `- ${item}`),
+        "",
+      ]
+    : [];
+
   const success = options.includeSuccessCriteria
     ? [
         "## How we will know we succeeded",
@@ -214,6 +239,7 @@ export function studentPackageMarkdown(design: EmcureDesign): string {
       : "",
     "",
     ...brief,
+    ...mvrc,
     ...success,
     ...activities,
     ...extraSection,

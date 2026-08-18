@@ -1,8 +1,13 @@
 import { describe, expect, it } from "vitest";
+import { EXAMPLE_DESIGN } from "../data/exampleDesign";
 import { applyAlignment, evaluateDesign, findingKey, mergeFindings } from "./alignment";
 import { createEmptyDesign } from "./createDesign";
 import { createId } from "./ids";
-import type { AlignmentFinding, EmcureDesign } from "./types";
+import {
+  MVRC_OBJECT_ID,
+  type AlignmentFinding,
+  type EmcureDesign,
+} from "./types";
 
 function baseDesign(): EmcureDesign {
   return createEmptyDesign("Test course");
@@ -213,6 +218,99 @@ describe("evaluateDesign", () => {
       },
     ];
     expect(evaluateDesign(design).some((item) => item.ruleId === "AL-010")).toBe(false);
+  });
+
+  it("warns when a Big Red X exists without an MVRC (AL-019)", () => {
+    const design = baseDesign();
+    design.currentBigRedXId = "brx-1";
+    design.uncertainties = [
+      {
+        id: "brx-1",
+        type: "unknown",
+        statement: "Does the bioswale reduce peak runoff?",
+        scores: {},
+        linkedImpactIds: [],
+        linkedSuccessCriterionIds: [],
+        decisionIfResolved: "Whether to recommend the design to the city.",
+        designation: "primary_big_red_x",
+      },
+    ];
+    const al019 = evaluateDesign(design).find((item) => item.ruleId === "AL-019");
+    expect(al019?.severity).toBe("warning");
+    expect(al019?.route).toBe("big-red-x");
+  });
+
+  it("does not warn AL-019 when the MVRC statement is present", () => {
+    const design = baseDesign();
+    design.currentBigRedXId = "brx-1";
+    design.uncertainties = [
+      {
+        id: "brx-1",
+        type: "unknown",
+        statement: "Does the bioswale reduce peak runoff?",
+        scores: {},
+        linkedImpactIds: [],
+        linkedSuccessCriterionIds: [],
+        decisionIfResolved: "Whether to recommend the design to the city.",
+        designation: "primary_big_red_x",
+      },
+    ];
+    design.minimumViableResearchContribution = {
+      statement: "A bounded evidence packet the city can use as one input.",
+    };
+    expect(evaluateDesign(design).some((item) => item.ruleId === "AL-019")).toBe(false);
+  });
+
+  it("warns when activities exist but none link to the MVRC (AL-020)", () => {
+    const design = baseDesign();
+    design.minimumViableResearchContribution = {
+      statement: "A bounded evidence packet the city can use as one input.",
+    };
+    design.phases[0].activities.push({
+      id: "act-1",
+      title: "Lab test",
+      instructions: "Measure something.",
+      discoveryMode: "instructor_provided",
+      grouping: "team",
+      linkedObjectIds: [],
+    });
+    const al020 = evaluateDesign(design).find((item) => item.ruleId === "AL-020");
+    expect(al020?.severity).toBe("warning");
+    expect(al020?.route).toBe("journey");
+    expect(al020?.affectedObjectIds).toContain("act-1");
+  });
+
+  it("does not fire AL-020 when an activity is linked to the MVRC", () => {
+    const design = baseDesign();
+    design.minimumViableResearchContribution = {
+      statement: "A bounded evidence packet the city can use as one input.",
+    };
+    design.phases[0].activities.push({
+      id: "act-1",
+      title: "Write the packet",
+      instructions: "Assemble evidence and a bounded recommendation.",
+      discoveryMode: "mixed",
+      grouping: "team",
+      linkedObjectIds: [MVRC_OBJECT_ID],
+    });
+    expect(evaluateDesign(design).some((item) => item.ruleId === "AL-020")).toBe(false);
+  });
+
+  it("warns when the MVRC claims demonstrated impact (AL-021)", () => {
+    const design = baseDesign();
+    design.minimumViableResearchContribution = {
+      statement: "Students will produce demonstrated impact this semester.",
+    };
+    const al021 = evaluateDesign(design).find((item) => item.ruleId === "AL-021");
+    expect(al021?.severity).toBe("warning");
+    expect(al021?.route).toBe("big-red-x");
+  });
+
+  it("does not flag the stormwater example for MVRC gaps", () => {
+    const rules = evaluateDesign(EXAMPLE_DESIGN).map((item) => item.ruleId);
+    expect(rules).not.toContain("AL-019");
+    expect(rules).not.toContain("AL-020");
+    expect(rules).not.toContain("AL-021");
   });
 });
 

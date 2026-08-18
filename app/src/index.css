@@ -565,6 +565,10 @@ img {
   background: var(--emcure-danger);
 }
 
+.thread-node.mvrc .thread-marker {
+  background: var(--emcure-gold-500);
+}
+
 .thread-connector {
   width: 2px;
   height: 12px;

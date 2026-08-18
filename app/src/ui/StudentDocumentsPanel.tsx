@@ -9,6 +9,7 @@ import {
   studentPackageInventory,
   studentPackageMarkdown,
 } from "../domain/studentPackage";
+import { MVRC_LABEL } from "../domain/mvrc";
 import type { DistributionDocument, DocumentAudience } from "../domain/types";
 import { downloadTextFile } from "../persistence/storage";
 import { useDesign } from "./DesignContext";
@@ -132,6 +133,14 @@ export function StudentDocumentsPanel() {
             onChange={(event) => patchOptions({ includeBrief: event.target.checked })}
           />
           <span>Project brief (need, opportunity, impact, line of sight)</span>
+        </label>
+        <label className="inline-check">
+          <input
+            type="checkbox"
+            checked={options.includeMvrc}
+            onChange={(event) => patchOptions({ includeMvrc: event.target.checked })}
+          />
+          <span>{MVRC_LABEL}</span>
         </label>
         <label className="inline-check">
           <input

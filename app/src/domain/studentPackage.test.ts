@@ -29,6 +29,22 @@ describe("student package", () => {
     expect(markdown).toContain("reserved for student discovery");
     expect(markdown).not.toContain("Open alignment findings");
     expect(markdown).not.toContain("AL-009");
+    expect(markdown).toContain("What you will contribute");
+    expect(markdown).toContain("usable evidence packet");
+  });
+
+  it("omits the MVRC section when the package toggle is off", () => {
+    const markdown = studentPackageMarkdown({
+      ...EXAMPLE_DESIGN,
+      studentPackageOptions: {
+        includeBrief: true,
+        includeActivities: true,
+        includeSuccessCriteria: true,
+        includeMvrc: false,
+      },
+    });
+    expect(markdown).not.toContain("What you will contribute");
+    expect(markdown).not.toContain("usable evidence packet");
   });
 
   it("lists discovery activities as excluded in the inventory", () => {

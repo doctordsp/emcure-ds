@@ -1,4 +1,5 @@
 import { allActivities, primaryBigRedX } from "./createDesign";
+import { MVRC_LABEL, mvrcStatement } from "./mvrc";
 import type { EmcureDesign, WorkspaceRoute } from "./types";
 
 export interface ThreadNode {
@@ -16,6 +17,7 @@ export function threadNodes(design: EmcureDesign): ThreadNode[] {
   const impact = design.intendedImpacts.find((item) => item.statement.trim());
   const success = design.successCriteria.find((item) => item.statement.trim());
   const brx = primaryBigRedX(design);
+  const mvrc = mvrcStatement(design);
   const activities = allActivities(design);
   const investigation = brx
     ? activities.find((activity) => activity.linkedObjectIds.includes(brx.id))
@@ -65,6 +67,14 @@ export function threadNodes(design: EmcureDesign): ThreadNode[] {
       route: "big-red-x",
     },
     {
+      key: "mvrc",
+      label: MVRC_LABEL,
+      filled: Boolean(mvrc),
+      summary: mvrc,
+      gap: `No ${MVRC_LABEL} yet`,
+      route: "big-red-x",
+    },
+    {
       key: "investigation",
       label: "Investigation",
       filled: Boolean(investigation),
@@ -104,6 +114,7 @@ export function draftLineOfSight(design: EmcureDesign): string {
     (activity) => brx && activity.linkedObjectIds.includes(brx.id),
   );
   const work =
+    mvrcStatement(design) ||
     investigation?.title.trim() ||
     design.courseProfile.technicalObjectives.trim() ||
     "[research question or technical work]";
