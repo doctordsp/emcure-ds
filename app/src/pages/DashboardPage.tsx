@@ -316,18 +316,16 @@ export function DashboardPage() {
           </section>
         ) : (
           <>
-            <RoadmapMap hrefFor={hrefFor} onUnavailable={showLibrary} />
             <section className="thread-legend" aria-labelledby="legend-heading">
-              <h2 id="legend-heading">Also in the Design Studio</h2>
-              <p className="muted">
-                These Opportunity-to-Impact Thread sections are not drawn on the roadmap
-                image. They are part of this studio.
+              <h2 id="legend-heading">Opportunity-to-Impact Thread</h2>
+              <p>
+                These four items complete the Opportunity-to-Impact Thread. They are not
+                drawn on the graphic; use them with the same active EMCURE.
               </p>
               <div className="legend-actions">
                 {THREAD_LEGEND.map((item) => {
                   const href = hrefFor(item.route);
-                  const className =
-                    item.id === "big-red-x" ? "btn btn-gold" : "btn btn-secondary";
+                  const className = `btn btn-secondary btn-thread tone-${item.tone}`;
                   if (href) {
                     return (
                       <Link key={item.id} className={className} to={href}>
@@ -348,6 +346,7 @@ export function DashboardPage() {
                 })}
               </div>
             </section>
+            <RoadmapMap hrefFor={hrefFor} onUnavailable={showLibrary} />
           </>
         )}
       </main>

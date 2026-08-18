@@ -5,6 +5,16 @@ export interface SectionStatus {
   route: WorkspaceRoute;
   label: string;
   state: "not_started" | "in_progress" | "ready";
+  stage:
+    | "course"
+    | "framework"
+    | "project"
+    | "opportunity"
+    | "success"
+    | "brx"
+    | "journey"
+    | "assessment"
+    | "destination";
 }
 
 export function sectionStatuses(design: EmcureDesign): SectionStatus[] {
@@ -27,19 +37,20 @@ export function sectionStatuses(design: EmcureDesign): SectionStatus[] {
   ).length;
 
   return [
-    { route: "course", label: "1. Course profile", state: flag(hasProfile, design.courseProfile.title) },
-    { route: "framework", label: "2. EM framework", state: flag(hasFramework, design.frameworkMode) },
-    { route: "stakeholders", label: "3. Stakeholders and need", state: flag(hasNeed, design.projectSituation || design.stakeholders.length) },
-    { route: "opportunity-impact", label: "4. Opportunity and impact", state: flag(hasThread, design.opportunities.length || design.intendedImpacts.length) },
-    { route: "success", label: "5. Success criteria", state: flag(hasSuccess, design.successCriteria.length) },
-    { route: "big-red-x", label: "6. Big Red X", state: flag(hasBrx, design.uncertainties.length) },
-    { route: "journey", label: "7. Student journey", state: flag(hasJourney, hasJourney) },
+    { route: "course", label: "1. Course profile", state: flag(hasProfile, design.courseProfile.title), stage: "course" },
+    { route: "framework", label: "2. EM framework", state: flag(hasFramework, design.frameworkMode), stage: "framework" },
+    { route: "stakeholders", label: "3. Stakeholders and need", state: flag(hasNeed, design.projectSituation || design.stakeholders.length), stage: "project" },
+    { route: "opportunity-impact", label: "4. Opportunity and impact", state: flag(hasThread, design.opportunities.length || design.intendedImpacts.length), stage: "opportunity" },
+    { route: "success", label: "5. Success criteria", state: flag(hasSuccess, design.successCriteria.length), stage: "success" },
+    { route: "big-red-x", label: "6. Big Red X", state: flag(hasBrx, design.uncertainties.length), stage: "brx" },
+    { route: "journey", label: "7. Student journey", state: flag(hasJourney, hasJourney), stage: "journey" },
     {
       route: "review",
       label: "8. Alignment review",
       state: hasJourney && hasBrx ? (openErrors === 0 ? "ready" : "in_progress") : "not_started",
+      stage: "assessment",
     },
-    { route: "export", label: "9. Export", state: hasProfile ? "ready" : "not_started" },
+    { route: "export", label: "9. Export", state: hasProfile ? "ready" : "not_started", stage: "destination" },
   ];
 }
 

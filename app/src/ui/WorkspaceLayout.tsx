@@ -1,4 +1,4 @@
-import { NavLink, Outlet, useParams } from "react-router-dom";
+import { Link, NavLink, Outlet, useParams } from "react-router-dom";
 import { countBySeverity } from "../domain/alignment";
 import { displayTitle } from "../domain/createDesign";
 import { sectionStatuses } from "../domain/progress";
@@ -31,7 +31,12 @@ function WorkspaceShell() {
         <ul className="nav-list">
           {sections.map((section) => (
             <li key={section.route}>
-              <NavLink to={section.route}>
+              <NavLink
+                to={section.route}
+                className={({ isActive }) =>
+                  `stage-${section.stage}${isActive ? " active" : ""}`
+                }
+              >
                 <span>{section.label}</span>
                 <span className="nav-state">{STATE_LABEL[section.state]}</span>
               </NavLink>
@@ -58,6 +63,9 @@ function WorkspaceShell() {
               <span className="pill">{design.status}</span>
             </div>
           </div>
+          <Link className="btn btn-secondary" to="/">
+            Back to roadmap
+          </Link>
         </header>
         <main id="main">
           <Outlet />

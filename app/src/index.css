@@ -16,6 +16,12 @@
   --emcure-danger: #b42318;
   --emcure-info: #176b88;
   --emcure-focus: #7c3aed;
+  --roadmap-course: #c44b4b;
+  --roadmap-project: #e07a2f;
+  --roadmap-journey: #d99a00;
+  --roadmap-operations: #5a8f4d;
+  --roadmap-assessment: #4a7ab5;
+  --roadmap-destination: #6b4ea0;
   --radius-control: 8px;
   --radius-card: 12px;
   --shadow: 0 8px 24px rgb(11 61 76 / 8%);
@@ -188,8 +194,48 @@ img {
   background: rgb(124 58 237 / 14%);
 }
 
+.roadmap-caption {
+  margin: 0;
+  padding: 10px 14px;
+  font-weight: 700;
+  font-size: 0.95rem;
+  color: var(--emcure-ink);
+  background: var(--emcure-surface-alt);
+  border-top: 1px solid var(--emcure-border);
+}
+
+.roadmap-caption.stage-course {
+  background: var(--roadmap-course);
+  color: #fff;
+}
+
+.roadmap-caption.stage-project {
+  background: var(--roadmap-project);
+  color: #fff;
+}
+
+.roadmap-caption.stage-journey {
+  background: var(--roadmap-journey);
+  color: var(--emcure-ink);
+}
+
+.roadmap-caption.stage-operations {
+  background: var(--roadmap-operations);
+  color: #fff;
+}
+
+.roadmap-caption.stage-assessment {
+  background: var(--roadmap-assessment);
+  color: #fff;
+}
+
+.roadmap-caption.stage-destination {
+  background: var(--roadmap-destination);
+  color: #fff;
+}
+
 .thread-legend {
-  margin: 0 0 24px;
+  margin: 0 0 20px;
 }
 
 .thread-legend h2 {
@@ -200,6 +246,26 @@ img {
   display: flex;
   flex-wrap: wrap;
   gap: 8px;
+}
+
+.btn-thread {
+  border-left: 5px solid var(--emcure-teal-700);
+}
+
+.btn-thread.tone-project {
+  border-left-color: var(--roadmap-project);
+}
+
+.btn-thread.tone-opportunity {
+  border-left-color: var(--emcure-gold-500);
+}
+
+.btn-thread.tone-success {
+  border-left-color: var(--emcure-teal-700);
+}
+
+.btn-thread.tone-brx {
+  border-left-color: var(--emcure-danger);
 }
 
 .library-section {
@@ -346,8 +412,45 @@ img {
   gap: 8px;
   align-items: center;
   min-height: 44px;
-  padding: 8px 10px;
+  padding: 8px 10px 8px 12px;
   border-radius: var(--radius-control);
+  border-left: 4px solid transparent;
+}
+
+.nav-list a.stage-course {
+  border-left-color: var(--roadmap-course);
+}
+
+.nav-list a.stage-framework {
+  border-left-color: var(--roadmap-course);
+}
+
+.nav-list a.stage-project {
+  border-left-color: var(--roadmap-project);
+}
+
+.nav-list a.stage-opportunity {
+  border-left-color: var(--emcure-gold-500);
+}
+
+.nav-list a.stage-success {
+  border-left-color: var(--emcure-teal-100);
+}
+
+.nav-list a.stage-brx {
+  border-left-color: var(--emcure-danger);
+}
+
+.nav-list a.stage-journey {
+  border-left-color: var(--roadmap-journey);
+}
+
+.nav-list a.stage-assessment {
+  border-left-color: var(--roadmap-assessment);
+}
+
+.nav-list a.stage-destination {
+  border-left-color: var(--roadmap-destination);
 }
 
 .nav-list a.active {
