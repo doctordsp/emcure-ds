@@ -156,6 +156,33 @@ img {
   margin: 0 0 20px;
 }
 
+.draft-banner {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 16px;
+  flex-wrap: wrap;
+  border-left: 4px solid var(--emcure-gold-500);
+  background: var(--emcure-gold-100);
+  border-radius: 0 var(--radius-card) var(--radius-card) 0;
+  padding: 12px 16px;
+  margin: 0 0 20px;
+}
+
+.draft-banner p {
+  margin: 0;
+  max-width: 46rem;
+}
+
+.draft-banner-kicker {
+  margin: 0 0 4px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--emcure-teal-700);
+}
+
 .roadmap-frame {
   max-width: 76rem;
   margin: 0 0 16px;

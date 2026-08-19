@@ -17,6 +17,7 @@ import {
   type DesignSummary,
 } from "../persistence/storage";
 import { RoadmapMap, THREAD_LEGEND } from "../ui/RoadmapMap";
+import { DraftNoticeBanner } from "../ui/DraftNoticeBanner";
 
 export function DashboardPage() {
   const navigate = useNavigate();
@@ -86,6 +87,7 @@ export function DashboardPage() {
         )}
       </header>
       <main id="main">
+        <DraftNoticeBanner />
         <p className="lede">
           Help faculty design an undergraduate research experience in which students
           can see—and demonstrate—how technical work connects to opportunity and impact.
