@@ -29,8 +29,9 @@ export function DraftNoticeBanner() {
           Draft
         </h2>
         <p>
-          This EMCURE Design Studio is a draft. There is no AI API connected at this time.
-          There is no backend database for persistence; designs save in this browser only.
+          This EM-CURE Design Studio is a draft. There is no backend database for
+          persistence; designs save in this browser only. Optional AI is off until you
+          connect a model on Setup AI API.
         </p>
       </div>
       <button type="button" className="btn btn-secondary" onClick={dismiss}>

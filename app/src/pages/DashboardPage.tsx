@@ -74,17 +74,22 @@ export function DashboardPage() {
           <p className="muted" style={{ marginBottom: 4 }}>
             Faculty Design Studio · local prototype
           </p>
-          <h1>EMCURE Design Studio</h1>
+          <h1>EM-CURE Design Studio</h1>
         </div>
-        {libraryOpen ? (
-          <button type="button" className="btn btn-primary" onClick={showRoadmap}>
-            Back to roadmap
-          </button>
-        ) : (
-          <button type="button" className="btn btn-secondary" onClick={showLibrary}>
-            Library of EMCUREs
-          </button>
-        )}
+        <div className="header-actions">
+          <Link className="btn btn-secondary" to="/setup-ai">
+            Setup AI API
+          </Link>
+          {libraryOpen ? (
+            <button type="button" className="btn btn-primary" onClick={showRoadmap}>
+              Back to roadmap
+            </button>
+          ) : (
+            <button type="button" className="btn btn-secondary" onClick={showLibrary}>
+              Library of EM-CUREs
+            </button>
+          )}
+        </div>
       </header>
       <main id="main">
         <DraftNoticeBanner />
@@ -98,7 +103,7 @@ export function DashboardPage() {
             <>
               <div>
                 <p className="muted" style={{ marginBottom: 4 }}>
-                  Active EMCURE
+                  Active EM-CURE
                 </p>
                 <strong>{active.title}</strong>
               </div>
@@ -115,28 +120,28 @@ export function DashboardPage() {
             </>
           ) : (
             <p style={{ margin: 0 }}>
-              No active EMCURE — choose one from the library or start a new design.
+              No active EM-CURE — choose one from the library or start a new design.
             </p>
           )}
         </div>
 
         {libraryOpen ? (
           <section id="library" className="library-section" aria-labelledby="library-heading">
-            <h2 id="library-heading">Library of EMCUREs</h2>
+            <h2 id="library-heading">Library of EM-CUREs</h2>
             <p className="muted">
-              Select one active design. That EMCURE is what the roadmap and Continue
+              Select one active design. That EM-CURE is what the roadmap and Continue
               button use. Open a card when you are ready to edit it.
             </p>
             {needActive && !active ? (
               <p className="callout callout-warn" role="alert">
-                Choose or create an EMCURE here, then return to the roadmap.
+                Choose or create an EM-CURE here, then return to the roadmap.
               </p>
             ) : null}
             <div className="dashboard-actions">
               <button
                 type="button"
                 className="btn btn-primary"
-                onClick={() => open(createAndSaveDesign("Untitled EMCURE").id)}
+                onClick={() => open(createAndSaveDesign("Untitled EM-CURE").id)}
               >
                 Start from scratch
               </button>
@@ -191,7 +196,7 @@ export function DashboardPage() {
               <div className="card">
                 <h3>No designs yet</h3>
                 <p>
-                  Start from scratch to draft your own EMCURE, or start from the stormwater
+                  Start from scratch to draft your own EM-CURE, or start from the stormwater
                   example to see a complete Opportunity-to-Impact Thread and Big Red X.
                 </p>
               </div>
@@ -224,7 +229,7 @@ export function DashboardPage() {
                                 checked={isActive}
                                 onChange={() => selectActive(item.id)}
                               />
-                              {isActive ? "Active EMCURE" : "Make active"}
+                              {isActive ? "Active EM-CURE" : "Make active"}
                             </label>
                           ) : (
                             <p className="muted">Archived — restore to make active</p>
@@ -322,7 +327,7 @@ export function DashboardPage() {
               <h2 id="legend-heading">Opportunity-to-Impact Thread</h2>
               <p>
                 These four items complete the Opportunity-to-Impact Thread. They are not
-                drawn on the graphic; use them with the same active EMCURE.
+                drawn on the graphic; use them with the same active EM-CURE.
               </p>
               <div className="legend-actions">
                 {THREAD_LEGEND.map((item) => {

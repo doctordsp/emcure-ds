@@ -386,7 +386,7 @@ export function generateCardSummary(card: EmcureCard): string {
     ? `Learning objectives: ${card.learningObjectives.trim()}`
     : "";
   return [
-    `${card.title || "This EMCURE"} is a ${year} ${formatText}${card.course ? ` in ${card.course}` : ""}.`,
+    `${card.title || "This EM-CURE"} is a ${year} ${formatText}${card.course ? ` in ${card.course}` : ""}.`,
     `Students investigate ${need.replace(/\.$/, "")}.`,
     em,
     objectives,
@@ -508,7 +508,7 @@ export function cardToHtml(design: EmcureDesign): string {
 <html lang="en">
 <head>
   <meta charset="utf-8" />
-  <title>${escapeHtml(card.title || displayTitle(design))} — EMCURE Card</title>
+  <title>${escapeHtml(card.title || displayTitle(design))} — EM-CURE Card</title>
   <style>
     body { font-family: Mulish, Arial, Helvetica, sans-serif; color: #18323C; max-width: 46rem; margin: 2rem auto; line-height: 1.55; }
     h1, h2, h3 { color: #125670; }

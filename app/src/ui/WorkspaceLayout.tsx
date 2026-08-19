@@ -23,7 +23,7 @@ function WorkspaceShell() {
       </a>
       <nav className="workspace-nav" aria-label="Design sections">
         <NavLink className="brand" to="/">
-          EMCURE Design Studio
+          EM-CURE Design Studio
         </NavLink>
         <p className="muted" style={{ color: "#dcebf0" }}>
           {displayTitle(design)}

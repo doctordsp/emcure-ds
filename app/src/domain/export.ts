@@ -22,7 +22,7 @@ export function designToMarkdown(design: EmcureDesign): string {
   return join([
     `# ${displayTitle(design)}`,
     "",
-    "Faculty design specification — EMCURE Design Studio prototype",
+    "Faculty design specification — EM-CURE Design Studio prototype",
     "",
     `Schema version: ${design.schemaVersion}`,
     `Status: ${design.status}`,

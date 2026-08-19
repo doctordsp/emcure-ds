@@ -115,7 +115,7 @@ export interface Stakeholder {
   name: string;
   group?: string;
   roles: string[];
-  /** Who this EMCURE is for vs who must still be accounted for. */
+  /** Who this EM-CURE is for vs who must still be accounted for. */
   priority?: StakeholderPriority;
   /** Inside the course/institution vs community, partners, agencies. */
   arena?: StakeholderArena;

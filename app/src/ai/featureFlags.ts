@@ -1,10 +1,14 @@
+import { isAiConnected } from "./config";
+
 /**
- * Phase 2 (deferred): optional Claude rewrite of Description, Problem / Need,
- * and Summary after deterministic Fill from design.
+ * Optional rewrite of Description, Problem / Need, and Summary after
+ * deterministic Fill from design.
  *
- * Keep this false until an Anthropic adapter exists. When enabled, suggestions
- * must accept / edit / dismiss (never overwrite on arrival), rewrite supplied
- * text only, and omit faculty notes and discovery-reserved instructions.
- * A browser-pasted API key is not institutional-ready.
+ * Enabled only when Setup AI API has a verified model and passcode.
+ * Suggestions must accept / edit / dismiss (never overwrite on arrival),
+ * rewrite supplied text only, and omit faculty notes and discovery-reserved
+ * instructions.
  */
-export const CARD_AI_REWRITE_ENABLED = false;
+export function cardAiRewriteEnabled(): boolean {
+  return isAiConnected();
+}

@@ -120,6 +120,13 @@ img {
   flex-wrap: wrap;
 }
 
+.header-actions {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+  align-items: center;
+}
+
 .muted {
   color: var(--emcure-muted);
   font-size: 0.875rem;
@@ -679,6 +686,30 @@ img {
 .btn-fill:not(:disabled):focus-visible {
   border-color: var(--emcure-teal-700);
   background: var(--emcure-teal-100);
+}
+
+.field-actions {
+  display: inline-flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  align-items: center;
+}
+
+.rewrite-field {
+  display: contents;
+}
+
+.ai-suggestion {
+  margin: 0 0 1rem;
+  padding: 12px;
+  border: 1px solid var(--emcure-border);
+  border-radius: var(--radius-card);
+  background: var(--emcure-surface-alt);
+  max-width: 46rem;
+}
+
+.ai-suggestion p {
+  margin-bottom: 8px;
 }
 
 .field-hint {

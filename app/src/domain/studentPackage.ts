@@ -232,7 +232,7 @@ export function studentPackageMarkdown(design: EmcureDesign): string {
   return [
     `# ${displayTitle(design)}`,
     "",
-    "Student project companion — EMCURE Design Studio",
+    "Student project companion — EM-CURE Design Studio",
     "",
     design.courseProfile.code
       ? `${design.courseProfile.code}${design.courseProfile.level ? ` · ${design.courseProfile.level}` : ""}`

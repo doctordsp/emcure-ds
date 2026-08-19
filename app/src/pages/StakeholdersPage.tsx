@@ -67,7 +67,7 @@ export function StakeholdersPage() {
         assumption. You may use roles or pseudonyms instead of personal names.
       </p>
       <p className="muted">
-        Type is who they are to this EMCURE (primary vs secondary, internal vs external). Roles
+        Type is who they are to this EM-CURE (primary vs secondary, internal vs external). Roles
         are what they do in the work (beneficiary, decision-maker, and so on). Then consider both
         layers of interest, influence, and impact — stated and underlying, formal and relational,
         immediate and longer-term.
@@ -142,7 +142,7 @@ export function StakeholdersPage() {
           <div className="classification-row">
             <ChoicePills
               legend="Priority"
-              hint="Primary: this EMCURE is meant to serve them. Secondary: they still shape or constrain the work."
+              hint="Primary: this EM-CURE is meant to serve them. Secondary: they still shape or constrain the work."
               options={STAKEHOLDER_PRIORITIES}
               value={stk.priority ?? ""}
               onChange={(priority) =>

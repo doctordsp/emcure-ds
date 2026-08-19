@@ -52,7 +52,7 @@ export function createActivity(partial?: Partial<Activity>): Activity {
   };
 }
 
-export function createEmptyDesign(title = "Untitled EMCURE"): EmcureDesign {
+export function createEmptyDesign(title = "Untitled EM-CURE"): EmcureDesign {
   const timestamp = nowIso();
   const profile = emptyCourseProfile();
   profile.title = title;
@@ -103,5 +103,5 @@ export function primaryBigRedX(design: EmcureDesign) {
 }
 
 export function displayTitle(design: EmcureDesign): string {
-  return design.courseProfile.title.trim() || design.title.trim() || "Untitled EMCURE";
+  return design.courseProfile.title.trim() || design.title.trim() || "Untitled EM-CURE";
 }

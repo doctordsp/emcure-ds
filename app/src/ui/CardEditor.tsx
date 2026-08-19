@@ -1,5 +1,5 @@
 import { useRef, useState } from "react";
-import { CARD_AI_REWRITE_ENABLED } from "../ai/featureFlags";
+import { cardAiRewriteEnabled } from "../ai/featureFlags";
 import {
   CARD_COMPONENTS,
   CARD_EM_OUTCOMES,
@@ -24,6 +24,7 @@ import { createId } from "../domain/ids";
 import { studentFacingDocuments } from "../domain/studentPackage";
 import type { DistributionDocument, EmcureDesign } from "../domain/types";
 import { downloadTextFile } from "../persistence/storage";
+import { AiRewriteSuggestion } from "./AiRewriteSuggestion";
 import { useDesign } from "./DesignContext";
 import { Checklist, SelectField, TagPills, TextArea, TextInput } from "./fields";
 
@@ -110,11 +111,11 @@ export function CardEditor({ onOpenStudentDocuments }: { onOpenStudentDocuments:
   return (
     <div className="eu-card">
       <p className="muted">
-        Card {cardDisplayId(design.id)}. Prefills from this EMCURE. Use <strong>Fill from design</strong>{" "}
+        Card {cardDisplayId(design.id)}. Prefills from this EM-CURE. Use <strong>Fill from design</strong>{" "}
         on a field to refresh that field only. Edit anything that should appear on a public card; the
         studio design itself does not change.
-        {CARD_AI_REWRITE_ENABLED
-          ? " Claude rewrite is available for Description, Problem / Need, and Summary."
+        {cardAiRewriteEnabled()
+          ? " Suggest rewrite is on for Description, Problem / Need, and Summary — accept, edit, or dismiss; the field is never overwritten on arrival."
           : ""}
       </p>
       <div className="card-actions" style={{ marginTop: 0 }}>
@@ -246,21 +247,23 @@ export function CardEditor({ onOpenStudentDocuments }: { onOpenStudentDocuments:
         rows={3}
         wide
       />
-      <TextArea
+      <AiRewriteSuggestion
+        field="problemNeed"
         id="card-need"
         label="Problem / Need"
         value={card.problemNeed}
         onChange={(problemNeed) => patch({ problemNeed })}
-        action={fillAction("problemNeed")}
+        fillAction={fillAction("problemNeed")}
         rows={5}
         wide
       />
-      <TextArea
+      <AiRewriteSuggestion
+        field="description"
         id="card-description"
         label="Description"
         value={card.description}
         onChange={(description) => patch({ description })}
-        action={fillAction("description")}
+        fillAction={fillAction("description")}
         rows={6}
         wide
       />
@@ -430,13 +433,14 @@ export function CardEditor({ onOpenStudentDocuments }: { onOpenStudentDocuments:
 
       <div className="eu-section">
         <h2>Summary</h2>
-        <TextArea
+        <AiRewriteSuggestion
+          field="summary"
           id="card-summary"
           label="Summary"
           hint="Fill from design uses the studio. Generate summary uses the card fields as they stand now."
           value={card.summary}
           onChange={(summary) => patch({ summary })}
-          action={fillAction("summary")}
+          fillAction={fillAction("summary")}
           rows={5}
           wide
         />

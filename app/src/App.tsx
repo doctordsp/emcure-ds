@@ -9,12 +9,14 @@ import { OpportunityImpactPage } from "./pages/OpportunityImpactPage";
 import { ReviewPage } from "./pages/ReviewPage";
 import { StakeholdersPage } from "./pages/StakeholdersPage";
 import { SuccessPage } from "./pages/SuccessPage";
+import { AiSetupPage } from "./pages/AiSetupPage";
 import { WorkspaceLayout } from "./ui/WorkspaceLayout";
 
 export default function App() {
   return (
     <Routes>
       <Route path="/" element={<DashboardPage />} />
+      <Route path="/setup-ai" element={<AiSetupPage />} />
       <Route path="/designs/:designId" element={<WorkspaceLayout />}>
         <Route index element={<Navigate to="course" replace />} />
         <Route path="course" element={<CourseProfilePage />} />
