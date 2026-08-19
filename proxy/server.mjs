@@ -2,7 +2,7 @@ import http from "node:http";
 import { validateAccessPassword } from "./passcode.mjs";
 
 const PORT = Number(process.env.PORT || 8080);
-const MAX_TOKENS = 4096;
+const MAX_TOKENS = 8192;
 const MAX_MESSAGES = 20;
 const MAX_CONTENT_CHARS = 20_000;
 const RATE_LIMIT = 30;
@@ -120,25 +120,55 @@ async function completeAnthropic(model, messages) {
   if (!response.ok) {
     fail(mapProviderStatus(response.status), providerError(data, "Anthropic request failed."));
   }
-  const text = (data.content || [])
-    .filter((part) => part.type === "text")
-    .map((part) => part.text)
-    .join("\n")
-    .trim();
-  if (!text) fail(502, "The model returned an empty response.");
+  const text = anthropicText(data);
+  if (!text) {
+    fail(502, emptyModelMessage(data.stop_reason, "Anthropic"));
+  }
   return text;
 }
 
+function anthropicText(data) {
+  return (data.content || [])
+    .filter((part) => part.type === "text" && part.text)
+    .map((part) => part.text)
+    .join("\n")
+    .trim();
+}
+
 async function completeOpenAi(model, messages) {
-  const payload = {
-    model,
-    messages,
-  };
+  const payload = openaiPayload(model, messages);
+  let data = await callOpenAi(payload);
+  if (!data.ok && isUnknownParameter(data.body, "reasoning_effort") && payload.reasoning_effort) {
+    delete payload.reasoning_effort;
+    data = await callOpenAi(payload);
+  }
+  if (!data.ok) {
+    fail(mapProviderStatus(data.status), providerError(data.body, "OpenAI request failed."));
+  }
+  const text = openaiText(data.body);
+  if (!text) {
+    const refusal = data.body?.choices?.[0]?.message?.refusal;
+    if (typeof refusal === "string" && refusal.trim()) {
+      fail(502, "The model refused to draft that rubric.");
+    }
+    const reason = data.body?.choices?.[0]?.finish_reason;
+    fail(502, emptyModelMessage(reason, "OpenAI"));
+  }
+  return text;
+}
+
+function openaiPayload(model, messages) {
+  const payload = { model, messages };
   if (model.startsWith("gpt-5") || model.startsWith("o")) {
     payload.max_completion_tokens = MAX_TOKENS;
+    payload.reasoning_effort = "low";
   } else {
     payload.max_tokens = MAX_TOKENS;
   }
+  return payload;
+}
+
+async function callOpenAi(payload) {
   const response = await fetch("https://api.openai.com/v1/chat/completions", {
     method: "POST",
     headers: {
@@ -147,13 +177,37 @@ async function completeOpenAi(model, messages) {
     },
     body: JSON.stringify(payload),
   });
-  const data = await response.json().catch(() => ({}));
-  if (!response.ok) {
-    fail(mapProviderStatus(response.status), providerError(data, "OpenAI request failed."));
+  const body = await response.json().catch(() => ({}));
+  return { ok: response.ok, status: response.status, body };
+}
+
+function openaiText(data) {
+  const message = data?.choices?.[0]?.message;
+  const content = message?.content;
+  if (typeof content === "string") return content.trim();
+  if (Array.isArray(content)) {
+    return content
+      .map((part) => (typeof part === "string" ? part : part?.text || part?.content || ""))
+      .join("\n")
+      .trim();
   }
-  const text = data.choices?.[0]?.message?.content?.trim() || "";
-  if (!text) fail(502, "The model returned an empty response.");
-  return text;
+  if (typeof message?.refusal === "string" && message.refusal.trim()) return "";
+  return "";
+}
+
+function isUnknownParameter(body, name) {
+  const message = String(body?.error?.message || "");
+  return message.toLowerCase().includes(name) && /unknown|unsupported|unrecognized|invalid/i.test(message);
+}
+
+function emptyModelMessage(reason, provider) {
+  if (reason === "length" || reason === "max_tokens") {
+    return `${provider} hit the token limit before writing any rubric text. Try Claude, or GPT-4o.`;
+  }
+  if (reason === "content_filter") {
+    return `${provider} blocked the draft. Try Draft from design, then edit.`;
+  }
+  return "The model returned an empty response.";
 }
 
 function normalizeMessages(raw) {

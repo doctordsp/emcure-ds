@@ -51,7 +51,7 @@ export function rubricDraftPrompt(design: EmcureDesign): string {
     "EM criteria must require observable work or interaction. Self-report alone is not sufficient evidence.",
     "Do not convert stakeholder satisfaction or partner feedback into a student grade.",
     "Do not include faculty studio notes, alignment-rule IDs, or discovery-reserved activity instructions.",
-    "Return Markdown only: a title, short intro, then Markdown tables. No preamble.",
+    "Return Markdown only: a title, short intro, then complete Markdown tables for every section. Never return an empty document or stop after the heading.",
     "",
     "Design facts:",
     facts,

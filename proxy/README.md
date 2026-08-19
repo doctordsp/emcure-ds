@@ -7,7 +7,7 @@ Small Cloud Run service that holds Anthropic/OpenAI keys and checks a time-limit
 - `GET /v1/health` — `{ "ok": true }`, no secrets
 - `POST /v1/complete` — `{ passcode, provider, model, messages }` → `{ text }` or 401/429
 
-Allowlisted models: `claude-sonnet-5`, `claude-sonnet-4-6`, `claude-haiku-4-5-20251001`, `gpt-5.5`, `gpt-5.4-mini`, `gpt-4o`. Responses cap `max_tokens` at 4096.
+Allowlisted models: `claude-sonnet-5`, `claude-sonnet-4-6`, `claude-haiku-4-5-20251001`, `gpt-5.5`, `gpt-5.4-mini`, `gpt-4o`. Responses cap output tokens at 8192. GPT-5 requests use `reasoning_effort=low` so a long rubric is not swallowed by hidden reasoning.
 
 ## Local
 

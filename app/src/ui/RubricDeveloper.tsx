@@ -59,6 +59,7 @@ export function RubricDeveloper() {
       const raw = await complete([{ role: "user", content: rubricDraftPrompt(design) }]);
       showSuggestion(normalizeRewrite(raw));
     } catch (caught) {
+      setSuggestion(null);
       setError(caught instanceof Error ? caught.message : "Rubric draft failed.");
     } finally {
       setBusy(false);

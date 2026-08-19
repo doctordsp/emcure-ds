@@ -10,6 +10,6 @@ describe("rubricDraftPrompt", () => {
     expect(prompt).toContain("Course and program evaluation");
     expect(prompt).toContain("Do not invent");
     expect(prompt).toContain("Self-report alone is not sufficient");
-    expect(prompt).toContain("Stormwater");
+    expect(prompt).toContain("Never return an empty document");
   });
 });
