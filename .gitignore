@@ -2,3 +2,7 @@
 *.pdf
 *.docx
 /package-lock.json
+/Roadmap_CoreDocFinal.jpg
+app/src/assets/hero.png
+app/src/assets/react.svg
+app/src/assets/vite.svg
