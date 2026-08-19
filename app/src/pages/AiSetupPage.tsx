@@ -126,9 +126,9 @@ export function AiSetupPage() {
       </header>
       <main id="main" className="stack" style={{ maxWidth: "46rem" }}>
         <p className="lede">
-          Default is no AI. A time-limited passcode (CODE+date, same pattern as cmapalyzer)
-          unlocks a proxy that calls Claude or ChatGPT. Provider keys stay on the server; they
-          are not stored in this browser or in the downloaded JavaScript.
+          Default is no AI. A passcode unlocks a proxy that calls Claude or ChatGPT. Provider
+          keys stay on the server; they are not stored in this browser or in the downloaded
+          JavaScript.
         </p>
 
         <p className={connected ? "pill pill-ok" : "pill"}>
@@ -150,17 +150,11 @@ export function AiSetupPage() {
           <div className="field-label-row">
             <label htmlFor="ai-passcode">Passcode</label>
           </div>
-          <p id="ai-passcode-hint" className="field-hint">
-            Format: a short code plus today’s date, for example EMCURE0315 (CODE+MMDD) or a
-            letter date such as EMCURECO. Valid for a limited number of days from that date.
-            Contact the studio operator if you need a current code.
-          </p>
           <input
             id="ai-passcode"
             type="password"
             autoComplete="off"
             value={setup.passcode}
-            aria-describedby="ai-passcode-hint"
             onChange={(event) =>
               persist({ ...setup, passcode: event.target.value, verified: false })
             }
