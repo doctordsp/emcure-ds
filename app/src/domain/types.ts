@@ -266,6 +266,20 @@ export interface StudentPackageOptions {
   includeActivities: boolean;
   includeSuccessCriteria: boolean;
   includeMvrc: boolean;
+  /** When omitted, student companion includes a student-facing rubric if one exists. */
+  includeRubric?: boolean;
+}
+
+export type RubricKind = "formative" | "summative" | "both";
+export type RubricAudience = "students" | "faculty" | "both";
+
+/** Faculty-authored assessment rubric, drafted from this EM-CURE and optionally AI-assisted. */
+export interface EmcureRubric {
+  title: string;
+  kind: RubricKind;
+  audience: RubricAudience;
+  body: string;
+  facultyNotes: string;
 }
 
 export const MVRC_OBJECT_ID = "emcure.mvrc";
@@ -301,6 +315,7 @@ export interface EmcureDesign {
   phases: Phase[];
   findings: AlignmentFinding[];
   card?: EmcureCard;
+  rubric?: EmcureRubric;
   distributionDocuments?: DistributionDocument[];
   studentPackageOptions?: StudentPackageOptions;
   createdAt: string;

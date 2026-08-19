@@ -47,6 +47,22 @@ describe("student package", () => {
     expect(markdown).not.toContain("usable evidence packet");
   });
 
+  it("includes a student-facing rubric when the package toggle is on", () => {
+    const markdown = studentPackageMarkdown({
+      ...EXAMPLE_DESIGN,
+      rubric: {
+        title: "Investigation rubric",
+        kind: "both",
+        audience: "students",
+        body: "## Student performance\n\nScore the evidence packet.",
+        facultyNotes: "Do not put this in the companion.",
+      },
+    });
+    expect(markdown).toContain("Assessment rubric");
+    expect(markdown).toContain("Score the evidence packet");
+    expect(markdown).not.toContain("Do not put this in the companion");
+  });
+
   it("lists discovery activities as excluded in the inventory", () => {
     const inventory = studentPackageInventory(EXAMPLE_DESIGN);
     const analysis = inventory.find((item) => item.id === "act-analyze");

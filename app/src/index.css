@@ -712,6 +712,10 @@ img {
   margin-bottom: 8px;
 }
 
+.ai-suggestion-wide {
+  max-width: none;
+}
+
 .field-hint {
   margin: 0;
   color: var(--emcure-muted);

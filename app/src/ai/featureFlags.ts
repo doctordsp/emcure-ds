@@ -12,3 +12,8 @@ import { isAiConnected } from "./config";
 export function cardAiRewriteEnabled(): boolean {
   return isAiConnected();
 }
+
+/** Rubric developer AI suggest — same connection gate; never silent overwrite. */
+export function rubricDeveloperEnabled(): boolean {
+  return isAiConnected();
+}

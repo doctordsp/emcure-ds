@@ -158,6 +158,14 @@ export function StudentDocumentsPanel() {
           />
           <span>Activity instructions (discovery-reserved items stay hidden)</span>
         </label>
+        <label className="inline-check">
+          <input
+            type="checkbox"
+            checked={Boolean(options.includeRubric)}
+            onChange={(event) => patchOptions({ includeRubric: event.target.checked })}
+          />
+          <span>Assessment rubric (student-facing draft only)</span>
+        </label>
       </fieldset>
 
       <div className="layout-split" style={{ gridTemplateColumns: "1fr 1fr" }}>

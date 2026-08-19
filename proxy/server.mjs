@@ -2,7 +2,7 @@ import http from "node:http";
 import { validateAccessPassword } from "./passcode.mjs";
 
 const PORT = Number(process.env.PORT || 8080);
-const MAX_TOKENS = 1024;
+const MAX_TOKENS = 4096;
 const MAX_MESSAGES = 20;
 const MAX_CONTENT_CHARS = 20_000;
 const RATE_LIMIT = 30;

@@ -31,6 +31,8 @@ Alignment rules live in `src/domain/alignment.ts` and run independently of the U
 
 AI rewrite of Description, Problem / Need, and Summary is available when an AI API is connected on **Setup AI API**. Suggestions must be accepted, edited, or dismissed; the card is never overwritten on arrival. Deterministic fill works without a model.
 
+**Rubric developer** on Export drafts a student-performance / EM / course-evaluation rubric from the design. **Draft from design** works without a model; **Suggest with AI** uses the proxy. Accept, edit, or dismiss — the saved rubric is never overwritten on arrival.
+
 Copy `app/.env.example` to `app/.env.local` and set `VITE_AI_PROXY_URL` to the Cloud Run (or local) proxy URL, then rebuild. Provider keys belong only in `proxy/` environment variables — never in Vite `VITE_*` values. See `proxy/README.md`.
 
 JSON documents are shaped for a later Firestore `designs/{id}` document.

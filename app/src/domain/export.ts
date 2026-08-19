@@ -189,6 +189,13 @@ export function designToMarkdown(design: EmcureDesign): string {
       ]),
       phase.activities.length === 0 ? "_No activities yet._\n" : "",
     ]),
+    "## Assessment rubric",
+    "",
+    design.rubric?.body.trim() || "_No rubric draft yet. Use Rubric developer on Export._",
+    "",
+    design.rubric?.facultyNotes.trim()
+      ? join(["### Faculty notes", "", design.rubric.facultyNotes, ""])
+      : "",
     "## Open alignment findings",
     "",
     ...open.map(

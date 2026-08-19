@@ -2,6 +2,7 @@ import { displayTitle, primaryBigRedX } from "./createDesign";
 import { getFrameworkItem } from "./frameworks";
 import { escapeHtml } from "./html";
 import { MVRC_LABEL, mvrcDeliverables, studentFacingMvrc } from "./mvrc";
+import { studentFacingRubricMarkdown } from "./rubric";
 import { stakeholderTypeLabel } from "./stakeholders";
 import type {
   DistributionDocument,
@@ -18,6 +19,7 @@ export function defaultStudentPackageOptions(): StudentPackageOptions {
     includeActivities: true,
     includeSuccessCriteria: true,
     includeMvrc: true,
+    includeRubric: true,
   };
 }
 
@@ -60,6 +62,18 @@ export function studentPackageInventory(design: EmcureDesign): PackageInventoryI
       reason: options.includeSuccessCriteria
         ? "Success criteria are visible to students."
         : "Turned off for this package.",
+    },
+    {
+      id: "rubric",
+      title: "Assessment rubric",
+      included: Boolean(options.includeRubric && studentFacingRubricMarkdown(design)),
+      reason: !studentFacingRubricMarkdown(design)
+        ? design.rubric?.audience === "faculty"
+          ? "Rubric is faculty-only."
+          : "No student-facing rubric draft yet."
+        : options.includeRubric
+          ? "Included from Rubric developer."
+          : "Turned off for this package.",
     },
   ];
 
@@ -218,6 +232,11 @@ export function studentPackageMarkdown(design: EmcureDesign): string {
       ]
     : [];
 
+  const rubricBody = options.includeRubric ? studentFacingRubricMarkdown(design) : null;
+  const rubric = rubricBody
+    ? ["## Assessment rubric", "", rubricBody, ""]
+    : [];
+
   const extras = (design.distributionDocuments ?? [])
     .filter((doc) => doc.audience === "students" || doc.audience === "both")
     .flatMap((doc) => {
@@ -242,6 +261,7 @@ export function studentPackageMarkdown(design: EmcureDesign): string {
     ...mvrc,
     ...success,
     ...activities,
+    ...rubric,
     ...extraSection,
     "---",
     "",

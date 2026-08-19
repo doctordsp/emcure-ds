@@ -3,11 +3,12 @@ import { designToHtml, designToMarkdown } from "../domain/export";
 import { displayTitle } from "../domain/createDesign";
 import { downloadDesignJson, downloadTextFile } from "../persistence/storage";
 import { CardEditor } from "../ui/CardEditor";
+import { RubricDeveloper } from "../ui/RubricDeveloper";
 import { StudentDocumentsPanel } from "../ui/StudentDocumentsPanel";
 import { ThreadView } from "../ui/ThreadView";
 import { useDesign } from "../ui/DesignContext";
 
-type PackageTab = "faculty" | "card" | "students";
+type PackageTab = "faculty" | "card" | "students" | "rubric";
 type Preview = "markdown" | "html" | "json";
 
 export function ExportPage() {
@@ -24,8 +25,9 @@ export function ExportPage() {
       <div className="stack">
         <h1>Export</h1>
         <p className="lede">
-          Choose a faculty specification, a public card, or student-facing documents. Hidden
-          discovery content is labeled in the faculty export and withheld from the student package.
+          Choose a faculty specification, a public card, student-facing documents, or a rubric
+          aligned to this EM-CURE. Hidden discovery content is labeled in the faculty export and
+          withheld from the student package.
         </p>
         <div className="pill-row" role="tablist" aria-label="Export package">
           {(
@@ -33,6 +35,7 @@ export function ExportPage() {
               ["faculty", "Faculty specification"],
               ["card", "Create a Card"],
               ["students", "Student documents"],
+              ["rubric", "Rubric developer"],
             ] as const
           ).map(([id, label]) => (
             <button
@@ -91,6 +94,7 @@ export function ExportPage() {
 
         {tab === "card" ? <CardEditor onOpenStudentDocuments={() => setTab("students")} /> : null}
         {tab === "students" ? <StudentDocumentsPanel /> : null}
+        {tab === "rubric" ? <RubricDeveloper /> : null}
       </div>
       {tab === "faculty" ? <ThreadView design={design} compact /> : null}
     </div>

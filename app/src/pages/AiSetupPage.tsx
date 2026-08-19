@@ -30,8 +30,9 @@ const CAPABILITIES = [
   {
     id: "rubric",
     name: "EM-CURE Rubric developer",
-    status: "planned" as const,
-    detail: "Not built yet. Will help faculty draft assessment rubrics aligned to the design.",
+    status: "ready" as const,
+    detail:
+      "Drafts a formative/summative rubric from this EM-CURE (student performance, EM, course evaluation). You accept, edit, or dismiss — the saved rubric is never overwritten on arrival.",
   },
   {
     id: "drafts",
