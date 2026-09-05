@@ -7,6 +7,8 @@ const INDEX_KEY = "emcure.designs.index.v1";
 const ACTIVE_KEY = "emcure.activeDesignId.v1";
 const designKey = (id: string) => `emcure.design.v1.${id}`;
 
+export type DesignStoragePlace = "cloud" | "local";
+
 export interface DesignSummary {
   id: string;
   title: string;
@@ -15,14 +17,27 @@ export interface DesignSummary {
   archivedAt?: string;
   openErrorCount: number;
   openWarningCount: number;
+  storagePlace: DesignStoragePlace;
 }
 
 function readIndex(): DesignSummary[] {
   const raw = localStorage.getItem(INDEX_KEY);
   if (!raw) return [];
   try {
-    const parsed = JSON.parse(raw) as DesignSummary[];
-    return Array.isArray(parsed) ? parsed : [];
+    const parsed = JSON.parse(raw) as Partial<DesignSummary>[];
+    if (!Array.isArray(parsed)) return [];
+    return parsed
+      .filter((item): item is Partial<DesignSummary> & { id: string } => Boolean(item?.id))
+      .map((item) => ({
+        id: item.id,
+        title: item.title ?? "Untitled EM-CURE",
+        status: item.status ?? "draft",
+        updatedAt: item.updatedAt ?? "",
+        archivedAt: item.archivedAt,
+        openErrorCount: item.openErrorCount ?? 0,
+        openWarningCount: item.openWarningCount ?? 0,
+        storagePlace: "local",
+      }));
   } catch {
     return [];
   }
@@ -42,6 +57,7 @@ export function toSummary(design: EmcureDesign): DesignSummary {
     archivedAt: design.archivedAt,
     openErrorCount: counts.error,
     openWarningCount: counts.warning,
+    storagePlace: "local",
   };
 }
 

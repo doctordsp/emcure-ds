@@ -571,6 +571,28 @@ img {
   color: var(--emcure-success);
 }
 
+.pill-local {
+  background: var(--emcure-surface-alt);
+  color: var(--emcure-muted);
+  border: 1px solid var(--emcure-border);
+}
+
+.card-public {
+  margin: 12px 0 0;
+}
+
+.card-public .field-hint {
+  margin: 4px 0 0;
+}
+
+.gallery-card-image {
+  width: 100%;
+  height: 8rem;
+  object-fit: cover;
+  border-radius: 8px;
+  margin: 0 0 12px;
+}
+
 .layout-split {
   display: grid;
   grid-template-columns: minmax(0, 1fr) minmax(16rem, 22rem);

@@ -11,11 +11,12 @@ import {
 import { Navigate, useParams } from "react-router-dom";
 import { useAuth } from "../auth/AuthContext";
 import type { EmcureDesign } from "../domain/types";
-import { getDesign, saveDesign } from "../persistence/storage";
+import { getDesignRecord, saveDesign } from "../persistence/storage";
 
 type DesignContextValue = {
   design: EmcureDesign;
   saveState: "saved" | "saving" | "error";
+  storagePlace: "cloud" | "local";
   update: (updater: (design: EmcureDesign) => EmcureDesign) => void;
 };
 
@@ -48,8 +49,9 @@ function mergeSavedAssets(latest: EmcureDesign, saved: EmcureDesign): EmcureDesi
 
 export function DesignProvider({ children }: { children: ReactNode }) {
   const { designId } = useParams();
-  const { ready } = useAuth();
+  const { ready, user } = useAuth();
   const [design, setDesign] = useState<EmcureDesign | null>(null);
+  const [storagePlace, setStoragePlace] = useState<"cloud" | "local">("local");
   const [loadState, setLoadState] = useState<"loading" | "missing" | "ready">("loading");
   const [saveState, setSaveState] = useState<"saved" | "saving" | "error">("saved");
   const persistChain = useRef(Promise.resolve());
@@ -58,10 +60,11 @@ export function DesignProvider({ children }: { children: ReactNode }) {
     if (!ready || !designId) return;
     let cancelled = false;
     setLoadState("loading");
-    void getDesign(designId).then((found) => {
+    void getDesignRecord(designId).then((found) => {
       if (cancelled) return;
       if (found) {
-        setDesign(found);
+        setDesign(found.design);
+        setStoragePlace(found.storagePlace);
         setLoadState("ready");
       } else {
         setDesign(null);
@@ -71,7 +74,7 @@ export function DesignProvider({ children }: { children: ReactNode }) {
     return () => {
       cancelled = true;
     };
-  }, [designId, ready]);
+  }, [designId, ready, user?.id]);
 
   const update = useCallback((updater: (current: EmcureDesign) => EmcureDesign) => {
     setDesign((current) => {
@@ -95,8 +98,8 @@ export function DesignProvider({ children }: { children: ReactNode }) {
   }, []);
 
   const value = useMemo(
-    () => (design ? { design, saveState, update } : null),
-    [design, saveState, update],
+    () => (design ? { design, saveState, storagePlace, update } : null),
+    [design, saveState, storagePlace, update],
   );
 
   if (!ready || loadState === "loading") {

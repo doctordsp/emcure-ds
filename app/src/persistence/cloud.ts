@@ -28,6 +28,7 @@ function rowToSummary(row: DesignRow): DesignSummary {
     archivedAt: row.archived_at ?? undefined,
     openErrorCount: row.open_error_count,
     openWarningCount: row.open_warning_count,
+    storagePlace: "cloud",
   };
 }
 

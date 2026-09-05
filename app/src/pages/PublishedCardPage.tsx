@@ -68,6 +68,9 @@ export function PublishedCardPage() {
           {error ??
             "This unlisted link is missing, unpublished, or the project is paused on the free tier."}
         </p>
+        <Link className="btn btn-secondary" to="/cards">
+          Public cards
+        </Link>
         <Link className="btn btn-secondary" to="/">
           EM-CURE Design Studio
         </Link>
@@ -149,7 +152,15 @@ export function PublishedCardPage() {
           {card.license ? <p>License: {card.license}</p> : null}
         </section>
       ) : null}
-      <p className="muted">Unlisted snapshot · published {new Date(row.published_at).toLocaleString()}</p>
+      <p className="muted">
+        {row.visibility === "public" ? "Public card" : "Unlisted snapshot"} · published{" "}
+        {new Date(row.published_at).toLocaleString()}
+      </p>
+      <p>
+        <Link to="/cards">Public cards</Link>
+        {" · "}
+        <Link to="/">EM-CURE Design Studio</Link>
+      </p>
     </article>
   );
 }

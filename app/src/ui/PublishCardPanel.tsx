@@ -54,10 +54,13 @@ export function PublishCardPanel() {
         designId: design.id,
         slug,
         card,
-        visibility: "unlisted",
       });
       setPublished(row);
-      setStatus("Published an unlisted snapshot. Anyone with the link can view it while this project is active.");
+      setStatus(
+        row.visibility === "public"
+          ? "Published snapshot updated. It stays listed in Public cards until you uncheck Public card in the library."
+          : "Published an unlisted snapshot. Anyone with the link can view it. Use Public card in the library to list it.",
+      );
     } catch (caught) {
       setError(caught instanceof Error ? caught.message : "Publish failed.");
     } finally {
@@ -94,7 +97,7 @@ export function PublishCardPanel() {
     return (
       <div className="eu-section">
         <h2>Publish card</h2>
-        <p className="muted">Sign in to publish an unlisted snapshot with a shareable link.</p>
+        <p className="muted">Sign in to publish a snapshot with a shareable link.</p>
       </div>
     );
   }
@@ -103,9 +106,10 @@ export function PublishCardPanel() {
     <div className="eu-section">
       <h2>Publish card</h2>
       <p className="field-hint">
-        Publishing copies the card as it stands now. Later studio edits do not change the public
+        Publishing copies the card as it stands now. Later studio edits do not change the live
         page until you update the published copy. Faculty specification, rubric notes, and
-        discovery-reserved text are not included. This is unlisted (no gallery).
+        discovery-reserved text are not included. Gallery listing is the Public card checkbox in
+        the library, not this panel.
       </p>
       {published ? (
         <p>
@@ -118,9 +122,19 @@ export function PublishCardPanel() {
       ) : (
         <p className="muted">Not published yet.</p>
       )}
+      {published?.visibility === "public" ? (
+        <p className="muted">
+          Listed in Public cards. Uncheck Public card in the library to keep the link only.
+        </p>
+      ) : (
+        <p className="muted">
+          Share link only. Check Public card in the library to list this in Public cards. The
+          studio design stays private.
+        </p>
+      )}
       <div className="card-actions" style={{ marginTop: 0 }}>
         <button type="button" className="btn btn-primary" disabled={busy} onClick={() => void onPublish()}>
-          {published ? (busy ? "Updating…" : "Update published copy") : busy ? "Publishing…" : "Publish unlisted"}
+          {published ? (busy ? "Updating…" : "Update published copy") : busy ? "Publishing…" : "Publish"}
         </button>
         {published ? (
           <>

@@ -12,10 +12,12 @@ const STATE_LABEL = {
 };
 
 function WorkspaceShell() {
-  const { design, saveState } = useDesign();
+  const { design, saveState, storagePlace } = useDesign();
   const sections = sectionStatuses(design);
   const counts = countBySeverity(design);
   const saved = new Date(design.updatedAt).toLocaleString();
+  const savedLabel =
+    storagePlace === "cloud" ? `Saved to cloud ${saved}` : `Saved locally ${saved}`;
 
   return (
     <div className="workspace">
@@ -54,7 +56,7 @@ function WorkspaceShell() {
             <div className="pill-row" aria-live="polite">
               <span className="pill">
                 {saveState === "saved"
-                  ? `Saved ${saved}`
+                  ? savedLabel
                   : saveState === "saving"
                     ? "Saving…"
                     : "Save failed, try export"}

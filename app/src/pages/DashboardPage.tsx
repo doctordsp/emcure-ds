@@ -11,14 +11,19 @@ import {
   createAndSaveDesign,
   deleteDesign,
   duplicateDesign,
-  getActiveDesignSummary,
+  getActiveDesignId,
   listDesigns,
   parseImportedDesign,
   restoreDesign,
-  saveDesign,
+  saveDesignToCloud,
+  saveNewDesign,
   setActiveDesignId,
   type DesignSummary,
 } from "../persistence/storage";
+import {
+  listOwnedPublishedMeta,
+  setDesignCardPublic,
+} from "../persistence/publish";
 import { RoadmapMap, THREAD_LEGEND } from "../ui/RoadmapMap";
 import { DraftNoticeBanner } from "../ui/DraftNoticeBanner";
 
@@ -33,12 +38,29 @@ export function DashboardPage() {
   const [busy, setBusy] = useState(false);
   const [designs, setDesigns] = useState<DesignSummary[]>([]);
   const [active, setActive] = useState<DesignSummary | null>(null);
+  const [publishedMeta, setPublishedMeta] = useState<
+    Record<string, { visibility: "unlisted" | "public"; slug: string }>
+  >({});
 
   async function refresh() {
-    const [nextDesigns, nextActive] = await Promise.all([listDesigns(), getActiveDesignSummary()]);
-    setDesigns(nextDesigns);
-    setActive(nextActive);
-    setLibraryOpen((open) => open || nextDesigns.length === 0);
+    try {
+      const nextDesigns = await listDesigns();
+      setDesigns(nextDesigns);
+      const id = getActiveDesignId();
+      setActive(nextDesigns.find((item) => item.id === id && !item.archivedAt) ?? null);
+      setLibraryOpen((open) => open || nextDesigns.length === 0);
+      if (user) {
+        try {
+          setPublishedMeta(await listOwnedPublishedMeta());
+        } catch {
+          setPublishedMeta({});
+        }
+      } else {
+        setPublishedMeta({});
+      }
+    } catch (caught) {
+      setError(caught instanceof Error ? caught.message : "Could not load the library.");
+    }
   }
 
   useEffect(() => {
@@ -98,6 +120,9 @@ export function DashboardPage() {
         <div className="header-tools">
           <AuthBar />
           <div className="header-actions">
+            <Link className="btn btn-secondary" to="/cards">
+              Public cards
+            </Link>
             <Link className="btn btn-secondary" to="/setup-ai">
               Setup AI API
             </Link>
@@ -186,7 +211,7 @@ export function DashboardPage() {
                     const title = exists
                       ? `${EXAMPLE_DESIGN.title} (copy)`
                       : EXAMPLE_DESIGN.title;
-                    const saved = await saveDesign(cloneDesign(EXAMPLE_DESIGN, title));
+                    const saved = await saveNewDesign(cloneDesign(EXAMPLE_DESIGN, title));
                     open(saved.id);
                   })
                 }
@@ -281,6 +306,13 @@ export function DashboardPage() {
                           </p>
                           <div className="pill-row">
                             <span
+                              className={
+                                item.storagePlace === "cloud" ? "pill pill-ok" : "pill pill-local"
+                              }
+                            >
+                              {item.storagePlace === "cloud" ? "Cloud" : "Local"}
+                            </span>
+                            <span
                               className={item.openErrorCount ? "pill pill-danger" : "pill pill-ok"}
                             >
                               {item.openErrorCount} errors
@@ -289,6 +321,33 @@ export function DashboardPage() {
                               {item.openWarningCount} warnings
                             </span>
                           </div>
+                          {user ? (
+                            <div className="card-public">
+                              <label
+                                className="inline-check"
+                                title="Lists the student-facing card in Public cards. The studio design stays private."
+                              >
+                                <input
+                                  type="checkbox"
+                                  checked={publishedMeta[item.id]?.visibility === "public"}
+                                  disabled={busy || item.storagePlace !== "cloud"}
+                                  onChange={(event) => {
+                                    const next = event.target.checked;
+                                    void run(async () => {
+                                      await setDesignCardPublic(item.id, next);
+                                      await refresh();
+                                    });
+                                  }}
+                                />
+                                Public card
+                              </label>
+                              <p className="field-hint">
+                                {item.storagePlace === "cloud"
+                                  ? "Lists the student-facing card in Public cards. The studio design stays private."
+                                  : "Save to cloud to list a public card."}
+                              </p>
+                            </div>
+                          ) : null}
                           <div className="card-actions">
                             <button
                               type="button"
@@ -297,6 +356,21 @@ export function DashboardPage() {
                             >
                               Open
                             </button>
+                            {user && item.storagePlace === "local" ? (
+                              <button
+                                type="button"
+                                className="btn btn-gold"
+                                disabled={busy}
+                                onClick={() =>
+                                  void run(async () => {
+                                    await saveDesignToCloud(item.id);
+                                    await refresh();
+                                  })
+                                }
+                              >
+                                Save to cloud
+                              </button>
+                            ) : null}
                             <button
                               type="button"
                               className="btn btn-secondary"

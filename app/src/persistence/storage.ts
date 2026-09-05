@@ -1,4 +1,4 @@
-export type { DesignSummary } from "./local";
+export type { DesignSummary, DesignStoragePlace } from "./local";
 export {
   archiveDesign,
   clearActiveDesignId,
@@ -8,10 +8,13 @@ export {
   getActiveDesignId,
   getActiveDesignSummary,
   getDesign,
+  getDesignRecord,
   listDesigns,
   parseImportedDesign,
   restoreDesign,
   saveDesign,
+  saveDesignToCloud,
+  saveNewDesign,
   setActiveDesignId,
   usingCloud,
 } from "./store";

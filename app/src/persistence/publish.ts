@@ -1,4 +1,11 @@
-import { studentSafeCard, type PublishedCardRow, type PublishedVisibility } from "../domain/publish";
+import { resolvedCard } from "../domain/card";
+import { displayTitle } from "../domain/createDesign";
+import {
+  cardSlug,
+  studentSafeCard,
+  type PublishedCardRow,
+  type PublishedVisibility,
+} from "../domain/publish";
 import type { EmcureCard } from "../domain/types";
 import {
   dataUrlToBlob,
@@ -6,6 +13,7 @@ import {
   publicCardImageUrl,
   uploadPublishedCardImage,
 } from "./assets";
+import { getCloudDesign } from "./cloud";
 import { currentUserId, getSupabase } from "./supabase";
 
 async function copyFeaturedImage(params: {
@@ -104,6 +112,86 @@ export async function unpublishCard(designId: string): Promise<void> {
     .eq("design_id", designId)
     .eq("owner_id", userId);
   if (error) throw error;
+}
+
+export async function listPublicCards(): Promise<PublishedCardRow[]> {
+  const supabase = getSupabase();
+  if (!supabase) return [];
+  const { data, error } = await supabase
+    .from("published_cards")
+    .select("*")
+    .eq("visibility", "public")
+    .order("published_at", { ascending: false });
+  if (error) throw error;
+  return (data as PublishedCardRow[]) ?? [];
+}
+
+export async function listOwnedPublishedMeta(): Promise<
+  Record<string, { visibility: PublishedVisibility; slug: string }>
+> {
+  const supabase = getSupabase();
+  const userId = await currentUserId();
+  if (!supabase || !userId) return {};
+  const { data, error } = await supabase
+    .from("published_cards")
+    .select("design_id, visibility, slug")
+    .eq("owner_id", userId);
+  if (error) throw error;
+  const map: Record<string, { visibility: PublishedVisibility; slug: string }> = {};
+  for (const row of data ?? []) {
+    map[row.design_id as string] = {
+      visibility: row.visibility as PublishedVisibility,
+      slug: row.slug as string,
+    };
+  }
+  return map;
+}
+
+export async function updatePublishedVisibility(
+  designId: string,
+  visibility: PublishedVisibility,
+): Promise<PublishedCardRow> {
+  const supabase = getSupabase();
+  const userId = await currentUserId();
+  if (!supabase || !userId) {
+    throw new Error("Sign in to change card visibility.");
+  }
+  const { data, error } = await supabase
+    .from("published_cards")
+    .update({ visibility })
+    .eq("design_id", designId)
+    .eq("owner_id", userId)
+    .select()
+    .single();
+  if (error) throw error;
+  return data as PublishedCardRow;
+}
+
+/** Gallery listing only. Does not expose the faculty studio JSON. */
+export async function setDesignCardPublic(
+  designId: string,
+  isPublic: boolean,
+): Promise<PublishedCardRow | null> {
+  const existing = await getPublishedCardForDesign(designId);
+  if (!isPublic) {
+    if (!existing) return null;
+    return updatePublishedVisibility(designId, "unlisted");
+  }
+  if (existing) {
+    if (existing.visibility === "public") return existing;
+    return updatePublishedVisibility(designId, "public");
+  }
+  const design = await getCloudDesign(designId);
+  if (!design) {
+    throw new Error("Save this EM-CURE to the cloud before listing a public card.");
+  }
+  const card = resolvedCard(design);
+  return publishCard({
+    designId,
+    slug: cardSlug(card.title || displayTitle(design), design.id),
+    card,
+    visibility: "public",
+  });
 }
 
 export function publishedImageSrc(row: PublishedCardRow): string | undefined {
