@@ -247,6 +247,8 @@ export interface EmcureCard {
   summary: string;
   featuredImageName?: string;
   featuredImageDataUrl?: string;
+  /** Supabase Storage path in the private `design-assets` bucket. */
+  featuredImagePath?: string;
 }
 
 export interface DistributionDocument {
@@ -258,6 +260,8 @@ export interface DistributionDocument {
   filename: string;
   mimeType: string;
   dataUrl?: string;
+  /** Supabase Storage path in the private `design-assets` bucket. */
+  storagePath?: string;
   notes?: string;
 }
 
@@ -293,7 +297,7 @@ export interface MinimumViableResearchContribution {
   studentFacingStatement?: string;
 }
 
-/** One design = one Firestore-shaped document (`designs/{id}`). */
+/** One design = one document (`designs.id` in Supabase, or localStorage). */
 export interface EmcureDesign {
   schemaVersion: typeof SCHEMA_VERSION;
   id: string;

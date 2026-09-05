@@ -66,7 +66,7 @@ export function RubricDeveloper() {
     }
   }
 
-  const downloadTitle = rubric.title.trim() || `Assessment rubric — ${displayTitle(design)}`;
+  const downloadTitle = rubric.title.trim() || `Assessment rubric, ${displayTitle(design)}`;
   const studentCopy = rubric.audience === "faculty" ? null : rubric.body.trim();
   const facultyCopy = facultyRubricMarkdown(design);
 
@@ -125,7 +125,7 @@ export function RubricDeveloper() {
             <strong>Technical objectives</strong>
             <span className="muted">
               {" "}
-              {sources.technicalObjectives || "None yet — add them on Course profile."}
+              {sources.technicalObjectives || "None yet, add them on Course profile."}
             </span>
           </li>
           <li>
@@ -171,7 +171,7 @@ export function RubricDeveloper() {
       {suggestion !== null ? (
         <div className="ai-suggestion ai-suggestion-wide" role="region" aria-label="Suggested rubric">
           <p className="muted">
-            Suggested rubric. Accept, edit, or dismiss — the saved rubric stays as-is until you
+            Suggested rubric. Accept, edit, or dismiss, the saved rubric stays as-is until you
             accept.
           </p>
           <textarea

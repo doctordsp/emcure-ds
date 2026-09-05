@@ -86,7 +86,7 @@ export function studentPackageInventory(design: EmcureDesign): PackageInventoryI
         title: `${phase.title}: ${activity.title || "Untitled activity"}`,
         included: options.includeActivities && !reserved,
         reason: reserved
-          ? "Marked for student discovery — title is listed, instructions are withheld."
+          ? "Marked for student discovery, title is listed, instructions are withheld."
           : options.includeActivities
             ? `Included (${activity.discoveryMode.replaceAll("_", " ")}).`
             : "Activity packet turned off for this package.",
@@ -102,7 +102,7 @@ export function studentPackageInventory(design: EmcureDesign): PackageInventoryI
       included: forStudents,
       reason: forStudents
         ? `Faculty document for ${doc.audience}.`
-        : "Faculty-only — excluded from the student package.",
+        : "Faculty-only, excluded from the student package.",
     });
   }
 
@@ -125,23 +125,23 @@ export function studentPackageMarkdown(design: EmcureDesign): string {
     ? [
         "## Why this work matters",
         "",
-        design.projectSituation || "—",
+        design.projectSituation || "-",
         "",
         "### Need",
         "",
-        design.needs.find((item) => item.statement.trim())?.statement || "—",
+        design.needs.find((item) => item.statement.trim())?.statement || "-",
         "",
         "### Opportunity",
         "",
-        design.opportunities.find((item) => item.statement.trim())?.statement || "—",
+        design.opportunities.find((item) => item.statement.trim())?.statement || "-",
         "",
         "### Intended impact",
         "",
-        design.intendedImpacts.find((item) => item.statement.trim())?.statement || "—",
+        design.intendedImpacts.find((item) => item.statement.trim())?.statement || "-",
         "",
         "### Line of sight",
         "",
-        design.lineOfSightStatement || "—",
+        design.lineOfSightStatement || "-",
         "",
         brx
           ? [
@@ -240,7 +240,7 @@ export function studentPackageMarkdown(design: EmcureDesign): string {
   const extras = (design.distributionDocuments ?? [])
     .filter((doc) => doc.audience === "students" || doc.audience === "both")
     .flatMap((doc) => {
-      if (doc.dataUrl && !doc.body.trim()) {
+      if ((doc.dataUrl || doc.storagePath) && !doc.body.trim()) {
         return [`### ${doc.title}`, "", `Attached file: ${doc.filename}`, ""];
       }
       return [`### ${doc.title}`, "", doc.body || `See attached file: ${doc.filename}`, ""];
@@ -251,7 +251,7 @@ export function studentPackageMarkdown(design: EmcureDesign): string {
   return [
     `# ${displayTitle(design)}`,
     "",
-    "Student project companion — EM-CURE Design Studio",
+    "Student project companion, EM-CURE Design Studio",
     "",
     design.courseProfile.code
       ? `${design.courseProfile.code}${design.courseProfile.level ? ` · ${design.courseProfile.level}` : ""}`
@@ -297,7 +297,10 @@ export function studentPackageHtml(design: EmcureDesign): string {
     .replace(/(<li>[\s\S]*?<\/li>\n)+/g, (block) => `<ul>${block}</ul>`);
 
   const attachments = (design.distributionDocuments ?? [])
-    .filter((doc) => (doc.audience === "students" || doc.audience === "both") && doc.dataUrl)
+    .filter(
+      (doc) =>
+        (doc.audience === "students" || doc.audience === "both") && (doc.dataUrl || doc.storagePath),
+    )
     .map(
       (doc) =>
         `<li><a download="${escapeHtml(doc.filename)}" href="${escapeHtml(doc.dataUrl ?? "")}">${escapeHtml(doc.title || doc.filename)}</a></li>`,
@@ -312,7 +315,7 @@ export function studentPackageHtml(design: EmcureDesign): string {
 <html lang="en">
 <head>
   <meta charset="utf-8" />
-  <title>${escapeHtml(displayTitle(design))} — student companion</title>
+  <title>${escapeHtml(displayTitle(design))}, student companion</title>
   <style>
     body { font-family: Mulish, Arial, Helvetica, sans-serif; color: #18323C; max-width: 46rem; margin: 2rem auto; line-height: 1.55; }
     h1, h2, h3, h4 { color: #125670; }

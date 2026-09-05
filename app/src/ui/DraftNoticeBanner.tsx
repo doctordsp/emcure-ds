@@ -29,8 +29,8 @@ export function DraftNoticeBanner() {
           Draft
         </h2>
         <p>
-          This EM-CURE Design Studio is a draft. There is no backend database for
-          persistence; designs save in this browser only. Optional AI is off until you
+          This EM-CURE Design Studio is a draft. Sign in to save designs in a dedicated
+          Supabase project; otherwise they stay in this browser. Optional AI is off until you
           connect a model on Setup AI API.
         </p>
       </div>

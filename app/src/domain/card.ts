@@ -1,8 +1,12 @@
 import { allActivities, displayTitle, primaryBigRedX } from "./createDesign";
+import { FEATURED_IMAGE_TYPES, MAX_ASSET_BYTES } from "./files";
 import { getFrameworkItem } from "./frameworks";
 import { escapeHtml } from "./html";
 import { MVRC_LABEL } from "./mvrc";
 import type { EmcureCard, EmcureDesign } from "./types";
+
+export { FEATURED_IMAGE_TYPES, MAX_ASSET_BYTES };
+export const FEATURED_IMAGE_MAX_BYTES = MAX_ASSET_BYTES;
 
 export const YEAR_LEVELS = [
   { id: "lower-division", label: "Lower Division (1st/2nd)" },
@@ -79,9 +83,6 @@ export const CARD_EM_OUTCOMES = [
   },
 ] as const;
 
-export const FEATURED_IMAGE_MAX_BYTES = 1_500_000;
-export const FEATURED_IMAGE_TYPES = ["image/jpeg", "image/png", "image/gif"];
-
 export function emptyCard(): EmcureCard {
   return {
     title: "",
@@ -154,7 +155,7 @@ const FILL_SOURCES: Record<CardFillField, string> = {
   title: "from Course profile",
   yearLevel: "from Course level",
   course: "from Course profile",
-  materials: "starter from course envelope and journey — not a supply list",
+  materials: "starter from course envelope and journey, not a supply list",
   problemNeed: "from Need + Opportunity",
   description: "from Situation, Opportunity, Impact, and line of sight",
   emComments: "from selected habits and behaviors",
@@ -182,7 +183,7 @@ export function cardYearLevelFromDesign(design: EmcureDesign): string {
 
 export function cardCourseFromDesign(design: EmcureDesign): string {
   return (
-    [design.courseProfile.code, design.courseProfile.title].filter(Boolean).join(" — ") ||
+    [design.courseProfile.code, design.courseProfile.title].filter(Boolean).join(", ") ||
     displayTitle(design)
   );
 }
@@ -395,18 +396,20 @@ export function generateCardSummary(card: EmcureCard): string {
     .join(" ");
 }
 
-export function cardToMarkdown(design: EmcureDesign): string {
-  const card = resolvedCard(design);
-  const brx = primaryBigRedX(design);
-  const labelList = (
-    options: readonly { id: string; label: string }[],
-    selected: string[],
-  ) =>
+function labelList(
+  options: readonly { id: string; label: string }[],
+  selected: string[],
+): string {
+  return (
     options
       .filter((item) => selected.includes(item.id))
       .map((item) => item.label)
-      .join(", ") || "—";
+      .join(", ") || "-"
+  );
+}
 
+/** Public/student-safe card text. Does not include faculty Big Red X or studio notes. */
+export function cardFieldsToMarkdown(card: EmcureCard, displayId: string): string {
   const outcomesByGroup = ["Curiosity", "Connections", "Creating Value"].flatMap((group) => {
     const items = CARD_EM_OUTCOMES.filter(
       (item) => item.group === group && card.emOutcomeIds.includes(item.id),
@@ -416,34 +419,34 @@ export function cardToMarkdown(design: EmcureDesign): string {
   });
 
   return [
-    `# ${card.title || displayTitle(design)}`,
+    `# ${card.title || "EM-CURE"}`,
     "",
     card.author ? `by ${card.author}` : "",
     card.author ? "" : "",
-    `Card ID: ${cardDisplayId(design.id)}`,
+    `Card ID: ${displayId}`,
     "",
     "## Details",
     "",
-    `- Year level: ${YEAR_LEVELS.find((item) => item.id === card.yearLevel)?.label || card.yearLevel || "—"}`,
-    `- Course: ${card.course || "—"}`,
-    `- Category: ${card.category || "—"}`,
-    `- Sub-category: ${card.subCategory || "—"}`,
+    `- Year level: ${YEAR_LEVELS.find((item) => item.id === card.yearLevel)?.label || card.yearLevel || "-"}`,
+    `- Course: ${card.course || "-"}`,
+    `- Category: ${card.category || "-"}`,
+    `- Sub-category: ${card.subCategory || "-"}`,
     "",
     "### Materials",
     "",
-    card.materials || "—",
+    card.materials || "-",
     "",
     "### Problem / Need",
     "",
-    card.problemNeed || "—",
+    card.problemNeed || "-",
     "",
     "### Description",
     "",
-    card.description || "—",
+    card.description || "-",
     "",
     "## Entrepreneurial Mindset",
     "",
-    card.emComments || "—",
+    card.emComments || "-",
     "",
     "## Educational Outcomes",
     "",
@@ -451,7 +454,7 @@ export function cardToMarkdown(design: EmcureDesign): string {
     outcomesByGroup.length === 0 ? "None selected.\n" : "",
     "### Learning objectives",
     "",
-    card.learningObjectives || "—",
+    card.learningObjectives || "-",
     "",
     "## Programming",
     "",
@@ -461,33 +464,41 @@ export function cardToMarkdown(design: EmcureDesign): string {
     "",
     "## Assessment",
     "",
-    card.assessment || "—",
+    card.assessment || "-",
     "",
-    brx ? `Primary investigation (Big Red X): ${brx.statement}` : "",
-    brx ? "" : "",
     "## Authoring details",
     "",
-    card.acknowledgments || "—",
+    card.acknowledgments || "-",
     "",
-    `- References: ${card.references || "—"}`,
-    `- License: ${card.license || "—"}`,
+    `- References: ${card.references || "-"}`,
+    `- License: ${card.license || "-"}`,
     "",
     "## Summary",
     "",
-    card.summary || "—",
+    card.summary || "-",
     "",
   ]
     .filter((line, index, lines) => !(line === "" && lines[index - 1] === ""))
     .join("\n");
 }
 
-export function cardToHtml(design: EmcureDesign): string {
+export function cardToMarkdown(design: EmcureDesign): string {
   const card = resolvedCard(design);
-  const markdownish = cardToMarkdown(design)
+  const brx = primaryBigRedX(design);
+  const base = cardFieldsToMarkdown(card, cardDisplayId(design.id));
+  if (!brx?.statement.trim()) return base;
+  return base.replace(
+    "\n## Authoring details\n",
+    `\nPrimary investigation (Big Red X): ${brx.statement}\n\n## Authoring details\n`,
+  );
+}
+
+function markdownishToHtml(markdown: string): string {
+  const escaped = markdown
     .replace(/&/g, "&amp;")
     .replace(/</g, "&lt;")
     .replace(/>/g, "&gt;");
-  const body = markdownish
+  return escaped
     .split("\n")
     .map((line) => {
       if (line.startsWith("# ")) return `<h1>${line.slice(2)}</h1>`;
@@ -499,22 +510,56 @@ export function cardToHtml(design: EmcureDesign): string {
     })
     .join("\n")
     .replace(/(<li>[\s\S]*?<\/li>\n)+/g, (block) => `<ul>${block}</ul>`);
+}
 
+const CARD_HTML_STYLE = `
+    body { font-family: Mulish, Arial, Helvetica, sans-serif; color: #18323C; max-width: 46rem; margin: 2rem auto; line-height: 1.55; }
+    h1, h2, h3 { color: #125670; }
+    .featured { width: 100%; height: auto; border-radius: 12px; margin: 0 0 1.5rem; }
+    li { margin: 0.25rem 0; }
+    @media print { body { margin: 0.75in; } }
+`;
+
+export function cardFieldsToHtml(
+  card: EmcureCard,
+  displayId: string,
+  imageSrc?: string,
+): string {
+  const body = markdownishToHtml(cardFieldsToMarkdown(card, displayId));
+  const title = card.title || "EM-CURE";
+  const image = imageSrc
+    ? `<img class="featured" src="${escapeHtml(imageSrc)}" alt="Featured image for ${escapeHtml(title)}" />`
+    : "";
+  return `<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>${escapeHtml(title)}, EM-CURE Card</title>
+  <style>${CARD_HTML_STYLE}
+  </style>
+</head>
+<body>
+${image}
+${body}
+</body>
+</html>`;
+}
+
+export function cardToHtml(design: EmcureDesign): string {
+  const card = resolvedCard(design);
+  const markdownish = cardToMarkdown(design);
+  const body = markdownishToHtml(markdownish);
+  const title = card.title || displayTitle(design);
   const image = card.featuredImageDataUrl
-    ? `<img class="featured" src="${escapeHtml(card.featuredImageDataUrl)}" alt="Featured image for ${escapeHtml(card.title || displayTitle(design))}" />`
+    ? `<img class="featured" src="${escapeHtml(card.featuredImageDataUrl)}" alt="Featured image for ${escapeHtml(title)}" />`
     : "";
 
   return `<!doctype html>
 <html lang="en">
 <head>
   <meta charset="utf-8" />
-  <title>${escapeHtml(card.title || displayTitle(design))} — EM-CURE Card</title>
-  <style>
-    body { font-family: Mulish, Arial, Helvetica, sans-serif; color: #18323C; max-width: 46rem; margin: 2rem auto; line-height: 1.55; }
-    h1, h2, h3 { color: #125670; }
-    .featured { width: 100%; height: auto; border-radius: 12px; margin: 0 0 1.5rem; }
-    li { margin: 0.25rem 0; }
-    @media print { body { margin: 0.75in; } }
+  <title>${escapeHtml(title)}, EM-CURE Card</title>
+  <style>${CARD_HTML_STYLE}
   </style>
 </head>
 <body>

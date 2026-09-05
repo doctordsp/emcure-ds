@@ -1,5 +1,6 @@
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { cardAiRewriteEnabled } from "../ai/featureFlags";
+import { useAuth } from "../auth/AuthContext";
 import {
   CARD_COMPONENTS,
   CARD_EM_OUTCOMES,
@@ -19,26 +20,42 @@ import {
   resolvedCard,
   type CardFillField,
 } from "../domain/card";
+import { assetTooLargeMessage, MAX_ASSET_BYTES } from "../domain/files";
 import { displayTitle } from "../domain/createDesign";
 import { createId } from "../domain/ids";
 import { studentFacingDocuments } from "../domain/studentPackage";
 import type { DistributionDocument, EmcureDesign } from "../domain/types";
+import { resolveCardImageSrc, uploadDesignAsset } from "../persistence/assets";
 import { downloadTextFile } from "../persistence/storage";
 import { AiRewriteSuggestion } from "./AiRewriteSuggestion";
 import { useDesign } from "./DesignContext";
 import { Checklist, SelectField, TagPills, TextArea, TextInput } from "./fields";
-
-const ASSET_MAX_BYTES = 1_500_000;
+import { PublishCardPanel } from "./PublishCardPanel";
 
 export function CardEditor({ onOpenStudentDocuments }: { onOpenStudentDocuments: () => void }) {
   const { design, update } = useDesign();
+  const { user } = useAuth();
   const card = resolvedCard(design);
   const fileRef = useRef<HTMLInputElement>(null);
   const assetRef = useRef<HTMLInputElement>(null);
   const [imageError, setImageError] = useState<string | null>(null);
   const [assetError, setAssetError] = useState<string | null>(null);
+  const [imageSrc, setImageSrc] = useState<string | undefined>(card.featuredImageDataUrl);
   const slug = displayTitle(design).replace(/[^\w]+/g, "-").toLowerCase() || "emcure";
   const studentDocs = studentFacingDocuments(design);
+
+  useEffect(() => {
+    let cancelled = false;
+    void resolveCardImageSrc({
+      dataUrl: card.featuredImageDataUrl,
+      path: card.featuredImagePath,
+    }).then((src) => {
+      if (!cancelled) setImageSrc(src);
+    });
+    return () => {
+      cancelled = true;
+    };
+  }, [card.featuredImageDataUrl, card.featuredImagePath]);
 
   function patch(partial: Partial<typeof card>) {
     update((current) => ({
@@ -66,7 +83,27 @@ export function CardEditor({ onOpenStudentDocuments }: { onOpenStudentDocuments:
       return;
     }
     if (file.size > FEATURED_IMAGE_MAX_BYTES) {
-      setImageError("Keep the featured image under 1.5 MB so this local prototype can save it.");
+      setImageError(assetTooLargeMessage("featured image"));
+      return;
+    }
+    if (user) {
+      void uploadDesignAsset({
+        userId: user.id,
+        designId: design.id,
+        folder: "card",
+        blob: file,
+        filename: file.name,
+      })
+        .then((path) => {
+          patch({
+            featuredImageName: file.name,
+            featuredImagePath: path,
+            featuredImageDataUrl: undefined,
+          });
+        })
+        .catch((caught: unknown) => {
+          setImageError(caught instanceof Error ? caught.message : "Could not upload the image.");
+        });
       return;
     }
     const reader = new FileReader();
@@ -74,6 +111,7 @@ export function CardEditor({ onOpenStudentDocuments }: { onOpenStudentDocuments:
       patch({
         featuredImageName: file.name,
         featuredImageDataUrl: String(reader.result),
+        featuredImagePath: undefined,
       });
     };
     reader.readAsDataURL(file);
@@ -82,12 +120,11 @@ export function CardEditor({ onOpenStudentDocuments }: { onOpenStudentDocuments:
   function onAsset(file: File | undefined) {
     setAssetError(null);
     if (!file) return;
-    if (file.size > ASSET_MAX_BYTES) {
-      setAssetError("Keep uploaded files under 1.5 MB so this local prototype can save them.");
+    if (file.size > MAX_ASSET_BYTES) {
+      setAssetError(assetTooLargeMessage());
       return;
     }
-    const reader = new FileReader();
-    reader.onload = () => {
+    const addDoc = (partial: Pick<DistributionDocument, "dataUrl" | "storagePath">) => {
       const next: DistributionDocument = {
         id: createId(),
         title: file.name.replace(/\.[^.]+$/, ""),
@@ -96,13 +133,29 @@ export function CardEditor({ onOpenStudentDocuments }: { onOpenStudentDocuments:
         body: "",
         filename: file.name,
         mimeType: file.type || "application/octet-stream",
-        dataUrl: String(reader.result),
+        ...partial,
       };
       update((current) => ({
         ...current,
         distributionDocuments: [...(current.distributionDocuments ?? []), next],
       }));
     };
+    if (user) {
+      void uploadDesignAsset({
+        userId: user.id,
+        designId: design.id,
+        folder: "assets",
+        blob: file,
+        filename: file.name,
+      })
+        .then((storagePath) => addDoc({ storagePath }))
+        .catch((caught: unknown) => {
+          setAssetError(caught instanceof Error ? caught.message : "Could not upload the file.");
+        });
+      return;
+    }
+    const reader = new FileReader();
+    reader.onload = () => addDoc({ dataUrl: String(reader.result) });
     reader.readAsDataURL(file);
   }
 
@@ -115,7 +168,7 @@ export function CardEditor({ onOpenStudentDocuments }: { onOpenStudentDocuments:
         on a field to refresh that field only. Edit anything that should appear on a public card; the
         studio design itself does not change.
         {cardAiRewriteEnabled()
-          ? " Suggest rewrite is on for Description, Problem / Need, and Summary — accept, edit, or dismiss; the field is never overwritten on arrival."
+          ? " Suggest rewrite is on for Description, Problem / Need, and Summary. Accept, edit, or dismiss; the field is never overwritten on arrival."
           : ""}
       </p>
       <div className="card-actions" style={{ marginTop: 0 }}>
@@ -144,6 +197,7 @@ export function CardEditor({ onOpenStudentDocuments }: { onOpenStudentDocuments:
                 author: resolvedCard(current).author,
                 featuredImageName: resolvedCard(current).featuredImageName,
                 featuredImageDataUrl: resolvedCard(current).featuredImageDataUrl,
+                featuredImagePath: resolvedCard(current).featuredImagePath,
               },
             }))
           }
@@ -151,6 +205,7 @@ export function CardEditor({ onOpenStudentDocuments }: { onOpenStudentDocuments:
           Reset fields from design
         </button>
       </div>
+      <PublishCardPanel />
 
       <TextInput
         id="card-title"
@@ -173,8 +228,8 @@ export function CardEditor({ onOpenStudentDocuments }: { onOpenStudentDocuments:
           Featured image
         </label>
         <p className="field-hint">
-          Recommended size 1200×630. Minimum 600×315. Aspect ratio 1.91:1. JPG, PNG, or GIF. This
-          prototype stores the image in the browser, so keep it under 1.5 MB.
+          Recommended size 1200×630. Minimum 600×315. Aspect ratio 1.91:1. JPG, PNG, or GIF.
+          Keep files under 2 MB.
         </p>
         <button
           type="button"
@@ -186,8 +241,8 @@ export function CardEditor({ onOpenStudentDocuments }: { onOpenStudentDocuments:
             onImage(event.dataTransfer.files[0]);
           }}
         >
-          {card.featuredImageDataUrl ? (
-            <img src={card.featuredImageDataUrl} alt="" />
+          {imageSrc ? (
+            <img src={imageSrc} alt="" />
           ) : (
             <span>
               <strong>Upload an image</strong>
@@ -203,13 +258,19 @@ export function CardEditor({ onOpenStudentDocuments }: { onOpenStudentDocuments:
           hidden
           onChange={(event) => onImage(event.target.files?.[0])}
         />
-        {card.featuredImageName ? (
+        {(card.featuredImageName || card.featuredImagePath || card.featuredImageDataUrl) ? (
           <p className="muted">
-            {card.featuredImageName}{" "}
+            {card.featuredImageName || "Featured image"}{" "}
             <button
               type="button"
               className="btn btn-ghost"
-              onClick={() => patch({ featuredImageName: undefined, featuredImageDataUrl: undefined })}
+              onClick={() =>
+                patch({
+                  featuredImageName: undefined,
+                  featuredImageDataUrl: undefined,
+                  featuredImagePath: undefined,
+                })
+              }
             >
               Remove
             </button>
@@ -472,7 +533,7 @@ function FillFromDesign({
       type="button"
       className="btn-fill"
       disabled={!enabled}
-      title={enabled ? source : `Nothing to fill — ${source}`}
+      title={enabled ? source : `Nothing to fill, ${source}`}
       onClick={(event) => {
         event.preventDefault();
         event.stopPropagation();

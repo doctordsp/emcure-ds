@@ -24,7 +24,7 @@ export function rubricDraftPrompt(design: EmcureDesign): string {
           .map((item) =>
             [item.statement, item.metric && `metric ${item.metric}`, item.target && `target ${item.target}`]
               .filter(Boolean)
-              .join(" — "),
+              .join(", "),
           )
           .join("; ")}`
       : "",

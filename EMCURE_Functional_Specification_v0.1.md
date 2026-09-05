@@ -1,5 +1,5 @@
 # EMCURE Design Studio
-## Functional Specification — Version 0.1
+## Functional Specification, Version 0.1
 
 **Status:** Working specification for prototype and MVP development  
 **Primary audience:** Product team, faculty design partners, UX designers, and AI-assisted software developers  
@@ -18,7 +18,7 @@ The application is a guided course-design studio. It is not intended to replace 
 
 ### Core product promise
 
-> Help faculty design an undergraduate research experience in which students can see—and demonstrate—how technical work connects to opportunity and impact.
+> Help faculty design an undergraduate research experience in which students can see and demonstrate how technical work connects to opportunity and impact.
 
 ### Primary differentiator
 
@@ -101,13 +101,13 @@ An engineering faculty member who knows the disciplinary content but may have li
 
 ### 4.2 Secondary personas
 
-**EMCURE coach or instructional designer** — reviews designs, comments, and supports faculty development.
+**EMCURE coach or instructional designer**, reviews designs, comments, and supports faculty development.
 
-**Project/stakeholder liaison** — helps clarify project context, stakeholder availability, constraints, and communication expectations.
+**Project/stakeholder liaison**, helps clarify project context, stakeholder availability, constraints, and communication expectations.
 
-**Assessment or SoTL partner** — reviews learning objectives, evidence, instruments, and course-level evaluation plans.
+**Assessment or SoTL partner**, reviews learning objectives, evidence, instruments, and course-level evaluation plans.
 
-**Program administrator** — views portfolio-level status and aggregate metadata in a later release.
+**Program administrator**, views portfolio-level status and aggregate metadata in a later release.
 
 ### 4.3 Roles and permissions
 
@@ -954,7 +954,7 @@ This section is advisory; the development team may choose equivalent technologie
 
 ## 16. MVP definition and phased roadmap
 
-### Phase 0 — Discovery and framework preparation
+### Phase 0, Discovery and framework preparation
 
 - Validate terminology and workflow with 5–8 faculty members.
 - Obtain authoritative Habits of EM and Observable Behaviors of EM documents.
@@ -963,7 +963,7 @@ This section is advisory; the development team may choose equivalent technologie
 - Test low-fidelity Opportunity-to-Impact Thread and Big Red X concepts.
 - Establish baseline design time and quality measures.
 
-### Phase 1 — Functional MVP
+### Phase 1, Functional MVP
 
 - Account and workspace basics.
 - Course Profile.
@@ -978,7 +978,7 @@ This section is advisory; the development team may choose equivalent technologie
 - Deterministic Alignment Review.
 - Markdown, printable HTML, and JSON exports.
 
-### Phase 2 — Faculty pilot
+### Phase 2, Faculty pilot
 
 - Comments and reviewer role.
 - Expanded activity and rubric templates.
@@ -987,7 +987,7 @@ This section is advisory; the development team may choose equivalent technologie
 - Usage analytics with privacy controls.
 - Course-copy and named-version comparison.
 
-### Phase 3 — Course operation and learning evidence
+### Phase 3, Course operation and learning evidence
 
 - LMS integration.
 - Authenticated Student Project Workspace.
@@ -996,7 +996,7 @@ This section is advisory; the development team may choose equivalent technologie
 - Evidence collection and assessment workflow.
 - SoTL/course-improvement reports.
 
-### Phase 4 — Program ecosystem
+### Phase 4, Program ecosystem
 
 - Organization libraries and governance.
 - Project/stakeholder repository.

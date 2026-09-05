@@ -1,5 +1,8 @@
-import { useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import { AuthBar } from "../auth/AuthBar";
+import { LocalImportBanner } from "../auth/LocalImportBanner";
+import { useAuth } from "../auth/AuthContext";
 import { EXAMPLE_DESIGN } from "../data/exampleDesign";
 import { cloneDesign } from "../domain/createDesign";
 import type { WorkspaceRoute } from "../domain/types";
@@ -21,13 +24,27 @@ import { DraftNoticeBanner } from "../ui/DraftNoticeBanner";
 
 export function DashboardPage() {
   const navigate = useNavigate();
+  const { ready, user } = useAuth();
   const fileRef = useRef<HTMLInputElement>(null);
   const [showArchived, setShowArchived] = useState(false);
-  const [libraryOpen, setLibraryOpen] = useState(() => listDesigns().length === 0);
+  const [libraryOpen, setLibraryOpen] = useState(false);
   const [needActive, setNeedActive] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [designs, setDesigns] = useState<DesignSummary[]>(() => listDesigns());
-  const [active, setActive] = useState<DesignSummary | null>(() => getActiveDesignSummary());
+  const [busy, setBusy] = useState(false);
+  const [designs, setDesigns] = useState<DesignSummary[]>([]);
+  const [active, setActive] = useState<DesignSummary | null>(null);
+
+  async function refresh() {
+    const [nextDesigns, nextActive] = await Promise.all([listDesigns(), getActiveDesignSummary()]);
+    setDesigns(nextDesigns);
+    setActive(nextActive);
+    setLibraryOpen((open) => open || nextDesigns.length === 0);
+  }
+
+  useEffect(() => {
+    if (!ready) return;
+    void refresh();
+  }, [ready, user?.id]);
 
   const visible = useMemo(
     () =>
@@ -35,14 +52,9 @@ export function DashboardPage() {
     [designs, showArchived],
   );
 
-  function refresh() {
-    setDesigns(listDesigns());
-    setActive(getActiveDesignSummary());
-  }
-
   function selectActive(id: string) {
     setActiveDesignId(id);
-    setActive(getActiveDesignSummary());
+    setActive(designs.find((item) => item.id === id) ?? null);
     setNeedActive(false);
   }
 
@@ -64,38 +76,49 @@ export function DashboardPage() {
     setLibraryOpen(false);
   }
 
+  async function run(action: () => Promise<void>) {
+    setError(null);
+    setBusy(true);
+    try {
+      await action();
+    } catch (caught) {
+      setError(caught instanceof Error ? caught.message : "That action failed.");
+    } finally {
+      setBusy(false);
+    }
+  }
+
   return (
     <div className="dashboard">
       <a className="skip-link" href="#main">
         Skip to content
       </a>
       <header className="app-header">
-        <div>
-          <p className="muted" style={{ marginBottom: 4 }}>
-            Faculty Design Studio · local prototype
-          </p>
-          <h1>EM-CURE Design Studio</h1>
-        </div>
-        <div className="header-actions">
-          <Link className="btn btn-secondary" to="/setup-ai">
-            Setup AI API
-          </Link>
-          {libraryOpen ? (
-            <button type="button" className="btn btn-primary" onClick={showRoadmap}>
-              Back to roadmap
-            </button>
-          ) : (
-            <button type="button" className="btn btn-secondary" onClick={showLibrary}>
-              Library of EM-CUREs
-            </button>
-          )}
+        <h1 className="site-title">EM-CURE Design Studio</h1>
+        <div className="header-tools">
+          <AuthBar />
+          <div className="header-actions">
+            <Link className="btn btn-secondary" to="/setup-ai">
+              Setup AI API
+            </Link>
+            {libraryOpen ? (
+              <button type="button" className="btn btn-primary" onClick={showRoadmap}>
+                Back to roadmap
+              </button>
+            ) : (
+              <button type="button" className="btn btn-secondary" onClick={showLibrary}>
+                Library of EM-CUREs
+              </button>
+            )}
+          </div>
         </div>
       </header>
       <main id="main">
         <DraftNoticeBanner />
+        {user ? <LocalImportBanner onImported={() => void refresh()} /> : null}
         <p className="lede">
-          Help faculty design an undergraduate research experience in which students
-          can see—and demonstrate—how technical work connects to opportunity and impact.
+          Design an undergraduate research experience in which students can see and
+          demonstrate how technical work connects to opportunity and impact.
         </p>
 
         <div className="active-banner" role="status">
@@ -120,7 +143,7 @@ export function DashboardPage() {
             </>
           ) : (
             <p style={{ margin: 0 }}>
-              No active EM-CURE — choose one from the library or start a new design.
+              No active EM-CURE, choose one from the library or start a new design.
             </p>
           )}
         </div>
@@ -141,28 +164,39 @@ export function DashboardPage() {
               <button
                 type="button"
                 className="btn btn-primary"
-                onClick={() => open(createAndSaveDesign("Untitled EM-CURE").id)}
+                disabled={busy}
+                onClick={() =>
+                  void run(async () => {
+                    const created = await createAndSaveDesign("Untitled EM-CURE");
+                    open(created.id);
+                  })
+                }
               >
                 Start from scratch
               </button>
               <button
                 type="button"
                 className="btn btn-gold"
-                onClick={() => {
-                  const exists = listDesigns().some(
-                    (item) => item.title === EXAMPLE_DESIGN.title,
-                  );
-                  const title = exists
-                    ? `${EXAMPLE_DESIGN.title} (copy)`
-                    : EXAMPLE_DESIGN.title;
-                  open(saveDesign(cloneDesign(EXAMPLE_DESIGN, title)).id);
-                }}
+                disabled={busy}
+                onClick={() =>
+                  void run(async () => {
+                    const exists = (await listDesigns()).some(
+                      (item) => item.title === EXAMPLE_DESIGN.title,
+                    );
+                    const title = exists
+                      ? `${EXAMPLE_DESIGN.title} (copy)`
+                      : EXAMPLE_DESIGN.title;
+                    const saved = await saveDesign(cloneDesign(EXAMPLE_DESIGN, title));
+                    open(saved.id);
+                  })
+                }
               >
                 Start from example
               </button>
               <button
                 type="button"
                 className="btn btn-secondary"
+                disabled={busy}
                 onClick={() => fileRef.current?.click()}
               >
                 Import JSON
@@ -177,11 +211,10 @@ export function DashboardPage() {
                   event.target.value = "";
                   if (!file) return;
                   void file.text().then((text) => {
-                    try {
-                      open(parseImportedDesign(JSON.parse(text) as unknown).id);
-                    } catch (caught) {
-                      setError(caught instanceof Error ? caught.message : "Import failed.");
-                    }
+                    void run(async () => {
+                      const imported = await parseImportedDesign(JSON.parse(text) as unknown);
+                      open(imported.id);
+                    });
                   });
                 }}
               />
@@ -232,7 +265,7 @@ export function DashboardPage() {
                               {isActive ? "Active EM-CURE" : "Make active"}
                             </label>
                           ) : (
-                            <p className="muted">Archived — restore to make active</p>
+                            <p className="muted">Archived, restore to make active</p>
                           )}
                           <h3>
                             <Link
@@ -267,13 +300,16 @@ export function DashboardPage() {
                             <button
                               type="button"
                               className="btn btn-secondary"
-                              onClick={() => {
-                                const copy = duplicateDesign(item.id);
-                                if (copy) {
-                                  selectActive(copy.id);
-                                  refresh();
-                                }
-                              }}
+                              disabled={busy}
+                              onClick={() =>
+                                void run(async () => {
+                                  const copy = await duplicateDesign(item.id);
+                                  if (copy) {
+                                    selectActive(copy.id);
+                                    await refresh();
+                                  }
+                                })
+                              }
                             >
                               Duplicate
                             </button>
@@ -281,10 +317,13 @@ export function DashboardPage() {
                               <button
                                 type="button"
                                 className="btn btn-secondary"
-                                onClick={() => {
-                                  restoreDesign(item.id);
-                                  refresh();
-                                }}
+                                disabled={busy}
+                                onClick={() =>
+                                  void run(async () => {
+                                    await restoreDesign(item.id);
+                                    await refresh();
+                                  })
+                                }
                               >
                                 Restore
                               </button>
@@ -292,10 +331,13 @@ export function DashboardPage() {
                               <button
                                 type="button"
                                 className="btn btn-secondary"
-                                onClick={() => {
-                                  archiveDesign(item.id);
-                                  refresh();
-                                }}
+                                disabled={busy}
+                                onClick={() =>
+                                  void run(async () => {
+                                    await archiveDesign(item.id);
+                                    await refresh();
+                                  })
+                                }
                               >
                                 Archive
                               </button>
@@ -303,10 +345,13 @@ export function DashboardPage() {
                             <button
                               type="button"
                               className="btn btn-danger"
+                              disabled={busy}
                               onClick={() => {
                                 if (confirm(`Delete “${item.title}”? This cannot be undone.`)) {
-                                  deleteDesign(item.id);
-                                  refresh();
+                                  void run(async () => {
+                                    await deleteDesign(item.id);
+                                    await refresh();
+                                  });
                                 }
                               }}
                             >

@@ -13,7 +13,7 @@ export function cardAiRewriteEnabled(): boolean {
   return isAiConnected();
 }
 
-/** Rubric developer AI suggest — same connection gate; never silent overwrite. */
+/** Rubric developer AI suggest, same connection gate; never silent overwrite. */
 export function rubricDeveloperEnabled(): boolean {
   return isAiConnected();
 }

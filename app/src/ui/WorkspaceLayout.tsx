@@ -1,4 +1,5 @@
 import { Link, NavLink, Outlet, useParams } from "react-router-dom";
+import { AuthBar } from "../auth/AuthBar";
 import { countBySeverity } from "../domain/alignment";
 import { displayTitle } from "../domain/createDesign";
 import { sectionStatuses } from "../domain/progress";
@@ -48,11 +49,15 @@ function WorkspaceShell() {
         <header className="workspace-header">
           <div>
             <p className="muted" style={{ marginBottom: 4 }}>
-              Local prototype · no account required
+              {saveState === "saving" ? "Saving…" : "Faculty workspace"}
             </p>
             <div className="pill-row" aria-live="polite">
               <span className="pill">
-                {saveState === "saved" ? `Saved ${saved}` : "Save failed — try export"}
+                {saveState === "saved"
+                  ? `Saved ${saved}`
+                  : saveState === "saving"
+                    ? "Saving…"
+                    : "Save failed, try export"}
               </span>
               <span className={counts.error ? "pill pill-danger" : "pill pill-ok"}>
                 {counts.error} open error{counts.error === 1 ? "" : "s"}
@@ -63,9 +68,14 @@ function WorkspaceShell() {
               <span className="pill">{design.status}</span>
             </div>
           </div>
-          <Link className="btn btn-secondary" to="/">
-            Back to roadmap
-          </Link>
+          <div className="header-tools">
+            <AuthBar />
+            <div className="header-actions">
+              <Link className="btn btn-secondary" to="/">
+                Back to roadmap
+              </Link>
+            </div>
+          </div>
         </header>
         <main id="main">
           <Outlet />

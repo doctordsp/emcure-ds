@@ -88,20 +88,20 @@ export function canDraftRubric(design: EmcureDesign): boolean {
 }
 
 export function kindLabel(kind: RubricKind): string {
-  if (kind === "formative") return "Formative — feedback during the investigation.";
-  if (kind === "summative") return "Summative — judgment of the end-of-term evidence packet.";
+  if (kind === "formative") return "Formative, feedback during the investigation.";
+  if (kind === "summative") return "Summative, judgment of the end-of-term evidence packet.";
   return "Formative and summative. Use the same criteria for feedback, then for the final packet.";
 }
 
 export function audienceLabel(audience: RubricAudience): string {
-  if (audience === "faculty") return "Faculty only — not released to students.";
+  if (audience === "faculty") return "Faculty only, not released to students.";
   if (audience === "both") return "Shared with students; faculty notes stay off the student copy.";
   return "Student-facing.";
 }
 
 export function draftRubricFromDesign(design: EmcureDesign, rubric = resolvedRubric(design)): string {
   const sources = collectRubricSources(design);
-  const title = `${rubric.title.trim() || "Assessment rubric"} — ${sources.title}`;
+  const title = `${rubric.title.trim() || "Assessment rubric"}, ${sources.title}`;
   const performance = performanceRows(sources);
   const em = emRows(sources);
   const lines = [
@@ -200,7 +200,7 @@ function emRows(sources: RubricSourceSummary): string[][] {
     row(
       `${item.name} (${item.priority})`,
       item.definition || item.name,
-      "Observable product, conversation, or decision — not a self-report survey alone.",
+      "Observable product, conversation, or decision, not a self-report survey alone.",
     ),
   );
 }
@@ -232,7 +232,7 @@ export function studentFacingRubricMarkdown(design: EmcureDesign): string | null
 
 export function facultyRubricMarkdown(design: EmcureDesign): string {
   const rubric = resolvedRubric(design);
-  const title = rubric.title.trim() || `Assessment rubric — ${displayTitle(design)}`;
+  const title = rubric.title.trim() || `Assessment rubric, ${displayTitle(design)}`;
   const notes = rubric.facultyNotes.trim();
   const body = rubric.body.trim() || "_No rubric draft yet._";
   return [

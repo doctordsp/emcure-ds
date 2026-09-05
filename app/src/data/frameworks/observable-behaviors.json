@@ -27,7 +27,7 @@
       "externalId": "B-ADQ",
       "type": "observable_behavior",
       "name": "Asks Discerning Questions",
-      "definition": "Asks discerning, open-ended questions before offering solutions—especially when a quick fix or familiar approach is already on the table.",
+      "definition": "Asks discerning, open-ended questions before offering solutions, especially when a quick fix or familiar approach is already on the table.",
       "group": "Observable Behaviors",
       "examples": [
         "When a team jumps to gamification for an app engagement problem, an EM-minded engineer first asks what users experience today and what blocks deeper engagement."
@@ -66,7 +66,7 @@
       "definition": "Notices problems and friction points that may signal broader opportunities to create value.",
       "group": "Observable Behaviors",
       "examples": [
-        "When software crashes under certain loads, investigates whether others share the problem—a possible product gap."
+        "When software crashes under certain loads, investigates whether others share the problem, a possible product gap."
       ],
       "canonical": true
     },
@@ -90,7 +90,7 @@
       "definition": "Considers how a solution affects multiple stakeholder groups, including indirect and potentially negative impacts.",
       "group": "Observable Behaviors",
       "examples": [
-        "Evaluates an automated parking system for drivers, planners, businesses, and enforcement—not only end users."
+        "Evaluates an automated parking system for drivers, planners, businesses, and enforcement, not only end users."
       ],
       "canonical": true
     },

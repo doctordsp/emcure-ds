@@ -78,10 +78,10 @@ export function CourseProfilePage() {
           patch({ autonomyLevel: autonomyLevel as typeof profile.autonomyLevel })
         }
         options={[
-          { value: "low", label: "Low — tightly scaffolded" },
+          { value: "low", label: "Low, tightly scaffolded" },
           { value: "guided", label: "Guided" },
           { value: "mixed", label: "Mixed" },
-          { value: "high", label: "High — student-directed" },
+          { value: "high", label: "High, student-directed" },
         ]}
       />
       <TextArea

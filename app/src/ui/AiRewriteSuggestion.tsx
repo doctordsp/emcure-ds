@@ -94,7 +94,7 @@ export function AiRewriteSuggestion({
           aria-label={`Suggested rewrite for ${cardRewriteLabel(field)}`}
         >
           <p className="muted">
-            Suggested rewrite. Accept, edit, or dismiss — the card field stays as-is until you
+            Suggested rewrite. Accept, edit, or dismiss, the card field stays as-is until you
             accept.
           </p>
           <textarea

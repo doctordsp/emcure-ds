@@ -116,15 +116,44 @@ img {
   display: flex;
   justify-content: space-between;
   gap: 16px;
-  align-items: center;
+  align-items: flex-start;
   flex-wrap: wrap;
+}
+
+.app-header h1 {
+  margin: 0;
+}
+
+.app-header .site-title {
+  font-size: 3rem;
+  line-height: 1.05;
+  flex: 1 1 auto;
+  white-space: nowrap;
+}
+
+.header-tools {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 6px;
+  margin-left: auto;
+  width: min(20rem, 100%);
 }
 
 .header-actions {
   display: flex;
-  gap: 12px;
+  gap: 6px;
   flex-wrap: wrap;
   align-items: center;
+  justify-content: stretch;
+}
+
+.header-tools .btn {
+  min-height: 32px;
+  min-width: 0;
+  padding: 4px 10px;
+  font-size: 0.8125rem;
+  flex: 1 1 auto;
 }
 
 .muted {
@@ -1024,7 +1053,98 @@ td {
   border: 0;
 }
 
+.auth-panel {
+  width: 100%;
+  background: var(--emcure-surface);
+  border: 1px solid var(--emcure-border);
+  border-radius: var(--radius-control);
+  padding: 6px 8px 8px;
+  text-align: left;
+}
+
+.auth-kicker {
+  margin: 0 0 4px;
+  font-size: 0.6875rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--emcure-teal-700);
+}
+
+.auth-form,
+.auth-row {
+  display: flex;
+  flex-wrap: nowrap;
+  align-items: center;
+  gap: 6px;
+}
+
+.auth-form {
+  flex-direction: column;
+  align-items: stretch;
+}
+
+.auth-email {
+  margin: 0;
+  font-weight: 700;
+  font-size: 0.8125rem;
+  word-break: break-word;
+  flex: 1 1 auto;
+}
+
+.auth-note,
+.auth-status,
+.auth-panel .field-error {
+  margin: 0;
+  font-size: 0.75rem;
+}
+
+.auth-input {
+  min-height: 32px;
+  min-width: 0;
+  flex: 1 1 auto;
+  padding: 4px 8px;
+  border: 1px solid var(--emcure-border);
+  border-radius: var(--radius-control);
+  font: inherit;
+  font-size: 0.8125rem;
+}
+
+.public-card {
+  max-width: 46rem;
+  margin: 0 auto;
+  padding: 32px 24px 64px;
+}
+
+.public-card-image {
+  width: 100%;
+  height: auto;
+  border-radius: var(--radius-card);
+  margin: 0 0 1.5rem;
+}
+
+.public-card-meta {
+  display: grid;
+  grid-template-columns: 8rem 1fr;
+  gap: 4px 12px;
+  margin: 0 0 1.5rem;
+}
+
+.public-card-meta dt {
+  color: var(--emcure-muted);
+  font-size: 0.875rem;
+}
+
+.public-card-meta dd {
+  margin: 0;
+}
+
 @media (max-width: 900px) {
+  .app-header .site-title {
+    font-size: 2rem;
+    white-space: normal;
+  }
+
   .workspace {
     grid-template-columns: 1fr;
   }

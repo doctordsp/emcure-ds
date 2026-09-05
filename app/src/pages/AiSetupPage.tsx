@@ -25,14 +25,14 @@ const CAPABILITIES = [
     name: "Card rewrite",
     status: "ready" as const,
     detail:
-      "Suggests a rewrite of Description, Problem / Need, and Summary. You accept, edit, or dismiss — the card is never overwritten on arrival.",
+      "Suggests a rewrite of Description, Problem / Need, and Summary. You accept, edit, or dismiss, the card is never overwritten on arrival.",
   },
   {
     id: "rubric",
     name: "EM-CURE Rubric developer",
     status: "ready" as const,
     detail:
-      "Drafts a formative/summative rubric from this EM-CURE (student performance, EM, course evaluation). You accept, edit, or dismiss — the saved rubric is never overwritten on arrival.",
+      "Drafts a formative/summative rubric from this EM-CURE (student performance, EM, course evaluation). You accept, edit, or dismiss, the saved rubric is never overwritten on arrival.",
   },
   {
     id: "drafts",
@@ -115,12 +115,7 @@ export function AiSetupPage() {
         Skip to content
       </a>
       <header className="app-header">
-        <div>
-          <p className="muted" style={{ marginBottom: 4 }}>
-            Faculty Design Studio
-          </p>
-          <h1>AI API setup</h1>
-        </div>
+        <h1>AI API setup</h1>
         <Link className="btn btn-secondary" to="/">
           Back to roadmap
         </Link>
@@ -201,7 +196,7 @@ export function AiSetupPage() {
                 <li key={item.id}>
                   <strong>
                     {item.name}
-                    {item.status === "planned" ? " (planned)" : on ? " — on" : " — off until connected"}
+                    {item.status === "planned" ? " (planned)" : on ? ", on" : ", off until connected"}
                   </strong>
                   <span className="muted"> {item.detail}</span>
                 </li>

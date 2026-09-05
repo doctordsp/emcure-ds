@@ -1,5 +1,7 @@
 import { useRef, useState } from "react";
+import { useAuth } from "../auth/AuthContext";
 import { displayTitle } from "../domain/createDesign";
+import { assetTooLargeMessage, MAX_ASSET_BYTES } from "../domain/files";
 import { createId } from "../domain/ids";
 import {
   emptyHandout,
@@ -12,13 +14,13 @@ import {
 import { MVRC_LABEL } from "../domain/mvrc";
 import type { DistributionDocument, DocumentAudience } from "../domain/types";
 import { downloadTextFile } from "../persistence/storage";
+import { resolveDocumentHref, uploadDesignAsset } from "../persistence/assets";
 import { useDesign } from "./DesignContext";
 import { SelectField, TextArea, TextInput } from "./fields";
 
-const MAX_ASSET_BYTES = 1_500_000;
-
 export function StudentDocumentsPanel() {
   const { design, update } = useDesign();
+  const { user } = useAuth();
   const options = resolvedStudentPackageOptions(design);
   const documents = design.distributionDocuments ?? [];
   const inventory = studentPackageInventory(design);
@@ -61,11 +63,10 @@ export function StudentDocumentsPanel() {
     setUploadError(null);
     if (!file) return;
     if (file.size > MAX_ASSET_BYTES) {
-      setUploadError("Keep uploaded files under 1.5 MB so this local prototype can save them.");
+      setUploadError(assetTooLargeMessage());
       return;
     }
-    const reader = new FileReader();
-    reader.onload = () => {
+    const addDoc = (partial: Pick<DistributionDocument, "dataUrl" | "storagePath">) => {
       setDocuments([
         ...documents,
         {
@@ -76,17 +77,34 @@ export function StudentDocumentsPanel() {
           body: "",
           filename: file.name,
           mimeType: file.type || "application/octet-stream",
-          dataUrl: String(reader.result),
+          ...partial,
         },
       ]);
     };
+    if (user) {
+      void uploadDesignAsset({
+        userId: user.id,
+        designId: design.id,
+        folder: "assets",
+        blob: file,
+        filename: file.name,
+      })
+        .then((storagePath) => addDoc({ storagePath }))
+        .catch((caught: unknown) => {
+          setUploadError(caught instanceof Error ? caught.message : "Could not upload the file.");
+        });
+      return;
+    }
+    const reader = new FileReader();
+    reader.onload = () => addDoc({ dataUrl: String(reader.result) });
     reader.readAsDataURL(file);
   }
 
-  function downloadAttachment(doc: DistributionDocument) {
-    if (doc.dataUrl) {
+  async function downloadAttachment(doc: DistributionDocument) {
+    const href = await resolveDocumentHref({ dataUrl: doc.dataUrl, storagePath: doc.storagePath });
+    if (href) {
       const anchor = document.createElement("a");
-      anchor.href = doc.dataUrl;
+      anchor.href = href;
       anchor.download = doc.filename;
       anchor.click();
       return;
@@ -237,8 +255,7 @@ export function StudentDocumentsPanel() {
       <div className="eu-section">
         <h2>Resources</h2>
         <p className="field-hint">
-          Upload assets for distribution (PDF, images, or text). Files stay in this browser; keep
-          each under 1.5 MB.
+          Upload assets for distribution (PDF, images, or text). Keep each under 2 MB.
         </p>
         <SelectField
           id="upload-audience"
@@ -280,7 +297,11 @@ export function StudentDocumentsPanel() {
                   </span>
                 </div>
                 <div className="card-actions" style={{ marginTop: 0 }}>
-                  <button type="button" className="btn btn-secondary" onClick={() => downloadAttachment(doc)}>
+                  <button
+                    type="button"
+                    className="btn btn-secondary"
+                    onClick={() => void downloadAttachment(doc)}
+                  >
                     Download
                   </button>
                   <button

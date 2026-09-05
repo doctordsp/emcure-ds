@@ -81,7 +81,7 @@ export function BigRedXPage() {
                 <tr key={item.id}>
                   <td>{item.statement || "Untitled candidate"}</td>
                   {BRX_CRITERIA.map((criterion) => (
-                    <td key={criterion.key}>{item.scores[criterion.key] ?? "—"}</td>
+                    <td key={criterion.key}>{item.scores[criterion.key] ?? "-"}</td>
                   ))}
                   <td>
                     {item.designation === "primary_big_red_x" ? (
@@ -276,7 +276,7 @@ export function BigRedXPage() {
         <h2>{MVRC_LABEL}</h2>
         <p className="muted">
           This is {MVRC_DEFINITION}. After you choose the Big Red X, name that floor. This
-          is not stakeholder success and not the full intended impact — it is the
+          is not stakeholder success and not the full intended impact, it is the
           contribution that would inform the decision if the uncertainty is resolved.
         </p>
         <TextArea

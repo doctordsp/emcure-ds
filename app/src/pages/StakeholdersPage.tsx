@@ -29,10 +29,10 @@ const ROLES = [
 ];
 
 const EVIDENCE: { value: EvidenceStatus; label: string }[] = [
-  { value: "assumption", label: "Assumption — not yet checked with them" },
-  { value: "anecdotal", label: "Anecdotal — informal or secondhand" },
-  { value: "supported", label: "Supported — documented contact or record" },
-  { value: "validated", label: "Validated — they have confirmed this" },
+  { value: "assumption", label: "Assumption, not yet checked with them" },
+  { value: "anecdotal", label: "Anecdotal, informal or secondhand" },
+  { value: "supported", label: "Supported, documented contact or record" },
+  { value: "validated", label: "Validated, they have confirmed this" },
 ];
 
 function emptyStakeholder(): Stakeholder {
@@ -69,7 +69,7 @@ export function StakeholdersPage() {
       <p className="muted">
         Type is who they are to this EM-CURE (primary vs secondary, internal vs external). Roles
         are what they do in the work (beneficiary, decision-maker, and so on). Then consider both
-        layers of interest, influence, and impact — stated and underlying, formal and relational,
+        layers of interest, influence, and impact, stated and underlying, formal and relational,
         immediate and longer-term.
       </p>
       <TextArea
@@ -171,7 +171,7 @@ export function StakeholdersPage() {
           </div>
           <Checklist
             legend="Roles in the work"
-            hint="Who they are in the project — not the same as priority. A primary stakeholder may be a beneficiary, a decision-maker, or both."
+            hint="Who they are in the project, not the same as priority. A primary stakeholder may be a beneficiary, a decision-maker, or both."
             items={ROLES.map((role) => ({ id: role, label: role }))}
             selected={stk.roles}
             onChange={(roles) =>
@@ -187,7 +187,7 @@ export function StakeholdersPage() {
             </summary>
             <p className="field-hint">
               For each column, note the surface layer and the layer underneath. Leave blank if
-              unknown — that is useful too.
+              unknown, that is useful too.
             </p>
             <div className="lens-grid">
               {(["Interest", "Influence", "Impact"] as const).map((column) => (
@@ -269,7 +269,7 @@ export function StakeholdersPage() {
             <SelectField
               id={`stk-ev-${stk.id}`}
               label="How well we know this"
-              hint="Support for this profile — not how they participate in the research."
+              hint="Support for this profile, not how they participate in the research."
               value={stk.evidenceStatus}
               onChange={(evidenceStatus) =>
                 update((current) => ({
@@ -365,7 +365,7 @@ export function StakeholdersPage() {
             <SelectField
               id={`need-status-${need.id}`}
               label="How well we know this need"
-              hint="Support for the need statement — not student discovery of it."
+              hint="Support for the need statement, not student discovery of it."
               value={need.evidenceStatus}
               onChange={(evidenceStatus) =>
                 update((current) => ({
