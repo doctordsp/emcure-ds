@@ -628,6 +628,10 @@ img {
   background: var(--emcure-danger);
 }
 
+.thread-brx-x {
+  color: var(--emcure-danger);
+}
+
 .thread-node.mvrc .thread-marker {
   background: var(--emcure-gold-500);
 }
@@ -1082,6 +1086,11 @@ td {
 .auth-form {
   flex-direction: column;
   align-items: stretch;
+}
+
+.auth-row .btn {
+  flex: 0 0 auto;
+  white-space: nowrap;
 }
 
 .auth-email {

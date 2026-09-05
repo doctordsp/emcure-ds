@@ -42,8 +42,13 @@ export function ThreadView({
                 <span className="thread-marker" aria-hidden="true" />
                 <span>
                   <strong>
-                    {node.label}
-                    {node.key === "brx" ? <span aria-hidden="true"> ✕</span> : null}
+                    {node.key === "brx" ? (
+                      <>
+                        Big Red <span className="thread-brx-x">X</span>
+                      </>
+                    ) : (
+                      node.label
+                    )}
                   </strong>
                   <span className="sr-only">
                     {node.filled ? ", complete" : ", gap"}

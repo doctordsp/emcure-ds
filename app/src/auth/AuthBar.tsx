@@ -37,8 +37,8 @@ export function AuthBar() {
 
   if (user) {
     return (
-      <section className="auth-panel" aria-label="Account">
-        <p className="auth-kicker">Account</p>
+      <section className="auth-panel" aria-label="Cloud save">
+        <p className="auth-kicker">Cloud save</p>
         <div className="auth-row">
           <p className="auth-email">{user.email ?? "faculty"}</p>
           <button
@@ -57,8 +57,8 @@ export function AuthBar() {
   }
 
   return (
-    <section className="auth-panel" aria-label="Sign in">
-      <p className="auth-kicker">Cloud save</p>
+    <section className="auth-panel" aria-label="Local save">
+      <p className="auth-kicker">Local save</p>
       <form className="auth-form" onSubmit={(event) => void onSignIn(event)}>
         <div className="auth-row">
           <label className="sr-only" htmlFor="auth-email">
@@ -78,6 +78,7 @@ export function AuthBar() {
             {busy ? "Sending…" : "Sign in"}
           </button>
         </div>
+        <p className="muted auth-note">Sign in for cloud save</p>
         {status ? (
           <p className="auth-status" role="status">
             {status}
