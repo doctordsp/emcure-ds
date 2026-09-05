@@ -10,6 +10,7 @@ import {
 } from "react";
 import { Navigate, useParams } from "react-router-dom";
 import { useAuth } from "../auth/AuthContext";
+import { applyAlignment } from "../domain/alignment";
 import type { EmcureDesign } from "../domain/types";
 import { getDesignRecord, saveDesign } from "../persistence/storage";
 
@@ -63,7 +64,7 @@ export function DesignProvider({ children }: { children: ReactNode }) {
     void getDesignRecord(designId).then((found) => {
       if (cancelled) return;
       if (found) {
-        setDesign(found.design);
+        setDesign(applyAlignment(found.design));
         setStoragePlace(found.storagePlace);
         setLoadState("ready");
       } else {
@@ -79,7 +80,7 @@ export function DesignProvider({ children }: { children: ReactNode }) {
   const update = useCallback((updater: (current: EmcureDesign) => EmcureDesign) => {
     setDesign((current) => {
       if (!current) return current;
-      const next = updater(current);
+      const next = applyAlignment(updater(current));
       setSaveState("saving");
       persistChain.current = persistChain.current
         .then(() => saveDesign(next))
