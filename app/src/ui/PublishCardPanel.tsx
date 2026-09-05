@@ -89,7 +89,7 @@ export function PublishCardPanel() {
       path: card.featuredImagePath,
       publishedPath: published?.image_path,
     });
-    const html = cardFieldsToHtml(card, cardDisplayId(design.id), imageSrc);
+    const html = cardFieldsToHtml(card, cardDisplayId(design.id), imageSrc, shareUrl);
     downloadTextFile(`${slug}-card.html`, html, "text/html");
   }
 

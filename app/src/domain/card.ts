@@ -3,6 +3,8 @@ import { FEATURED_IMAGE_TYPES, MAX_ASSET_BYTES } from "./files";
 import { getFrameworkItem } from "./frameworks";
 import { escapeHtml } from "./html";
 import { MVRC_LABEL } from "./mvrc";
+import { cardProseToHtml } from "./cardProse";
+import { qrSvg } from "./qrSvg";
 import type { EmcureCard, EmcureDesign } from "./types";
 
 export { FEATURED_IMAGE_TYPES, MAX_ASSET_BYTES };
@@ -234,12 +236,12 @@ export function cardEmCommentsFromDesign(design: EmcureDesign): string {
   return design.frameworkSelections
     .map((sel) => {
       const item = getFrameworkItem(sel.frameworkItemId);
-      const interpretation = sel.localInterpretation
-        ? ` Local interpretation: ${sel.localInterpretation}`
-        : "";
-      return `${item?.name ?? sel.frameworkItemId} (${sel.priority})${interpretation}`;
+      const name = item?.name ?? sel.frameworkItemId;
+      const head = `${name} (${sel.priority})`;
+      const interpretation = sel.localInterpretation?.trim();
+      return interpretation ? `${head}\n${interpretation}` : head;
     })
-    .join("\n");
+    .join("\n\n");
 }
 
 export function cardEmOutcomeIdsFromDesign(design: EmcureDesign): string[] {
@@ -494,27 +496,52 @@ export function cardToMarkdown(design: EmcureDesign): string {
 }
 
 function markdownishToHtml(markdown: string): string {
-  const escaped = markdown
-    .replace(/&/g, "&amp;")
-    .replace(/</g, "&lt;")
-    .replace(/>/g, "&gt;");
-  return escaped
-    .split("\n")
-    .map((line) => {
-      if (line.startsWith("# ")) return `<h1>${line.slice(2)}</h1>`;
-      if (line.startsWith("## ")) return `<h2>${line.slice(3)}</h2>`;
-      if (line.startsWith("### ")) return `<h3>${line.slice(4)}</h3>`;
-      if (line.startsWith("- ")) return `<li>${line.slice(2)}</li>`;
-      if (line.trim() === "") return "";
-      return `<p>${line}</p>`;
-    })
-    .join("\n")
-    .replace(/(<li>[\s\S]*?<\/li>\n)+/g, (block) => `<ul>${block}</ul>`);
+  const lines = markdown.split("\n");
+  const out: string[] = [];
+  let proseBuffer: string[] | null = null;
+
+  function flushProse() {
+    if (!proseBuffer) return;
+    const text = proseBuffer.join("\n").trim();
+    if (text) out.push(`<div class="card-prose">${cardProseToHtml(text)}</div>`);
+    proseBuffer = null;
+  }
+
+  for (const line of lines) {
+    if (line.startsWith("# ") || line.startsWith("## ") || line.startsWith("### ")) {
+      flushProse();
+      const level = line.startsWith("# ") ? 1 : line.startsWith("## ") ? 2 : 3;
+      const text = line.replace(/^#{1,3} /, "");
+      out.push(`<h${level}>${escapeHtml(text)}</h${level}>`);
+      if (text === "Entrepreneurial Mindset" || text === "Description") proseBuffer = [];
+      continue;
+    }
+    if (proseBuffer) {
+      proseBuffer.push(line);
+      continue;
+    }
+    if (line.startsWith("- ")) {
+      out.push(`<li>${escapeHtml(line.slice(2))}</li>`);
+      continue;
+    }
+    if (line.trim() === "") {
+      out.push("");
+      continue;
+    }
+    out.push(`<p>${escapeHtml(line)}</p>`);
+  }
+  flushProse();
+  return out.join("\n").replace(/(<li>[\s\S]*?<\/li>\n)+/g, (block) => `<ul>${block}</ul>`);
 }
 
 const CARD_HTML_STYLE = `
     body { font-family: Mulish, Arial, Helvetica, sans-serif; color: #18323C; max-width: 46rem; margin: 2rem auto; line-height: 1.55; }
     h1, h2, h3 { color: #125670; }
+    .card-top { display: flex; justify-content: space-between; align-items: flex-start; gap: 16px; }
+    .share-qr { margin: 0; text-align: center; max-width: 9rem; }
+    .share-qr svg { display: block; background: #fff; }
+    .share-qr figcaption { margin-top: 6px; font-size: 0.7rem; word-break: break-all; }
+    .card-prose p { margin: 0 0 0.85em; }
     .featured { width: 100%; height: auto; border-radius: 12px; margin: 0 0 1.5rem; }
     li { margin: 0.25rem 0; }
     @media print { body { margin: 0.75in; } }
@@ -524,11 +551,15 @@ export function cardFieldsToHtml(
   card: EmcureCard,
   displayId: string,
   imageSrc?: string,
+  shareUrl?: string,
 ): string {
   const body = markdownishToHtml(cardFieldsToMarkdown(card, displayId));
   const title = card.title || "EM-CURE";
   const image = imageSrc
     ? `<img class="featured" src="${escapeHtml(imageSrc)}" alt="Featured image for ${escapeHtml(title)}" />`
+    : "";
+  const qr = shareUrl
+    ? `<figure class="share-qr">${qrSvg(shareUrl, 112)}<figcaption><a href="${escapeHtml(shareUrl)}">${escapeHtml(shareUrl)}</a></figcaption></figure>`
     : "";
   return `<!doctype html>
 <html lang="en">
@@ -539,7 +570,10 @@ export function cardFieldsToHtml(
   </style>
 </head>
 <body>
-${image}
+<div class="card-top">
+  <div>${image}</div>
+  ${qr}
+</div>
 ${body}
 </body>
 </html>`;

@@ -8,6 +8,9 @@ import {
   YEAR_LEVELS,
   cardDisplayId,
 } from "../domain/card";
+import { publishedCardShareUrl } from "../domain/publish";
+import { CardProse } from "../ui/CardProse";
+import { ShareQr } from "../ui/ShareQr";
 import { isSupabaseConfigured } from "../persistence/supabase";
 import { getPublishedCardBySlug, publishedImageSrc } from "../persistence/publish";
 import type { PublishedCardRow } from "../domain/publish";
@@ -82,12 +85,19 @@ export function PublishedCardPage() {
   const image = publishedImageSrc(row);
   const year = YEAR_LEVELS.find((item) => item.id === card.yearLevel)?.label || card.yearLevel;
   const outcomeGroups = ["Curiosity", "Connections", "Creating Value"] as const;
+  const shareUrl =
+    typeof window !== "undefined" ? window.location.href.split("#")[0] : publishedCardShareUrl(row.slug);
 
   return (
     <article className="public-card">
-      <p className="muted">EM-CURE · {cardDisplayId(row.design_id)}</p>
-      <h1>{card.title || "EM-CURE"}</h1>
-      {card.author ? <p className="lede">by {card.author}</p> : null}
+      <div className="public-card-top">
+        <div>
+          <p className="muted">EM-CURE · {cardDisplayId(row.design_id)}</p>
+          <h1>{card.title || "EM-CURE"}</h1>
+          {card.author ? <p className="lede">by {card.author}</p> : null}
+        </div>
+        <ShareQr url={shareUrl} />
+      </div>
       {image ? <img className="public-card-image" src={image} alt="" /> : null}
       <dl className="public-card-meta">
         {year ? (
@@ -179,7 +189,7 @@ function Section({
   return (
     <section>
       <Heading>{title}</Heading>
-      <p style={{ whiteSpace: "pre-wrap" }}>{body}</p>
+      <CardProse text={body} />
     </section>
   );
 }
