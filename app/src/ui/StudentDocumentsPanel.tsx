@@ -1,23 +1,36 @@
 import { useMemo, useState } from "react";
 import { displayTitle } from "../domain/createDesign";
+import { hasStudentFacingRubric } from "../domain/rubric";
 import {
   defaultStudentPackageOptions,
+  resolvedStudentPackageOptions,
   studentPackageHtml,
   studentPackageMarkdown,
 } from "../domain/studentPackage";
 import { studentPackageDocx } from "../domain/studentPackageDocx";
 import { downloadBlob, downloadTextFile } from "../persistence/storage";
 import { useDesign } from "./DesignContext";
+import { IncludeRubricCheck } from "./IncludeRubricCheck";
 
 type HandoutFormat = "html" | "markdown" | "word";
 
 export function StudentDocumentsPanel() {
-  const { design } = useDesign();
+  const { design, update } = useDesign();
   const [format, setFormat] = useState<HandoutFormat>("word");
   const slug = displayTitle(design).replace(/[^\w]+/g, "-").toLowerCase() || "emcure";
+  const hasRubric = hasStudentFacingRubric(design);
+  const options = resolvedStudentPackageOptions(design);
+  const includeRubric = hasRubric && options.includeRubric !== false;
   const studentDesign = useMemo(
-    () => ({ ...design, studentPackageOptions: defaultStudentPackageOptions() }),
-    [design],
+    () => ({
+      ...design,
+      studentPackageOptions: {
+        ...defaultStudentPackageOptions(),
+        ...design.studentPackageOptions,
+        includeRubric,
+      },
+    }),
+    [design, includeRubric],
   );
   const markdown = useMemo(() => studentPackageMarkdown(studentDesign), [studentDesign]);
   const html = useMemo(() => studentPackageHtml(studentDesign), [studentDesign]);
@@ -77,6 +90,19 @@ export function StudentDocumentsPanel() {
         >
           Download
         </button>
+        <IncludeRubricCheck
+          hasRubric={hasRubric}
+          checked={includeRubric}
+          onChange={(next) =>
+            update((current) => ({
+              ...current,
+              studentPackageOptions: {
+                ...resolvedStudentPackageOptions(current),
+                includeRubric: next,
+              },
+            }))
+          }
+        />
       </div>
       <pre className="preview" tabIndex={0}>
         {format === "html" ? html : markdown}

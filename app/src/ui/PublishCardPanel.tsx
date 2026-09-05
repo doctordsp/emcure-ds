@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { cardFieldsToHtml, resolvedCard } from "../domain/card";
+import { cardFieldsToHtml, cardForPublicOutput, resolvedCard } from "../domain/card";
 import { displayTitle } from "../domain/createDesign";
 import {
   cardSlug,
@@ -50,7 +50,7 @@ export function PublishCardPanel({
       const row = await publishCard({
         designId: design.id,
         slug,
-        card,
+        card: cardForPublicOutput(design),
       });
       onPublishedChange(row);
       setStatus(
@@ -86,7 +86,7 @@ export function PublishCardPanel({
       path: card.featuredImagePath,
       publishedPath: published?.image_path,
     });
-    const html = cardFieldsToHtml(card, imageSrc, shareUrl);
+    const html = cardFieldsToHtml(cardForPublicOutput(design), imageSrc, shareUrl);
     downloadTextFile(`${slug}.html`, html, "text/html");
   }
 

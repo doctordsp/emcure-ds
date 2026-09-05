@@ -256,6 +256,10 @@ export interface EmcureCard {
   featuredImageDataUrl?: string;
   /** Supabase Storage path in the private `design-assets` bucket. */
   featuredImagePath?: string;
+  /** When true, the public page includes the student-facing rubric snapshot. */
+  includeRubric?: boolean;
+  /** Student-facing rubric body copied onto the public snapshot when includeRubric is on. */
+  rubricMarkdown?: string;
 }
 
 export interface DistributionDocument {

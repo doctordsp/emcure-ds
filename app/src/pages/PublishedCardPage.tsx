@@ -7,6 +7,7 @@ import {
   CARD_STAGES,
   YEAR_LEVELS,
 } from "../domain/card";
+import { markdownToPrintableHtml } from "../domain/rubric";
 import { publishedCardShareUrl } from "../domain/publish";
 import { CardProse } from "../ui/CardProse";
 import { ShareQr } from "../ui/ShareQr";
@@ -170,6 +171,15 @@ export function PublishedCardPage() {
         <p>Format: {labels(CARD_FORMATS, card.formats) || "-"}</p>
       </section>
       <Section title="Assessment" body={card.assessment} />
+      {card.includeRubric && card.rubricMarkdown?.trim() ? (
+        <section>
+          <h2>Assessment rubric</h2>
+          <div
+            className="rubric-html"
+            dangerouslySetInnerHTML={{ __html: markdownToPrintableHtml(card.rubricMarkdown) }}
+          />
+        </section>
+      ) : null}
       <Section title="Summary" body={card.summary} />
       {card.acknowledgments || card.references || card.license ? (
         <section>

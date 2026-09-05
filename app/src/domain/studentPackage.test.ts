@@ -2,6 +2,7 @@ import { describe, expect, it } from "vitest";
 import { EXAMPLE_DESIGN } from "../data/exampleDesign";
 import {
   handoutHtml,
+  studentPackageHtml,
   studentPackageInventory,
   studentPackageMarkdown,
   studentVisibleActivityInstructions,
@@ -62,6 +63,36 @@ describe("student package", () => {
     expect(markdown).toContain("Assessment rubric");
     expect(markdown).toContain("Score the evidence packet");
     expect(markdown).not.toContain("Do not put this in the companion");
+  });
+
+  it("renders rubric tables as HTML tables in the student handout", () => {
+    const html = studentPackageHtml({
+      ...EXAMPLE_DESIGN,
+      studentPackageOptions: {
+        includeBrief: false,
+        includeActivities: false,
+        includeSuccessCriteria: false,
+        includeMvrc: false,
+        includeRubric: true,
+      },
+      rubric: {
+        title: "Investigation rubric",
+        kind: "both",
+        audience: "students",
+        body: [
+          "## Entrepreneurial mindset",
+          "",
+          "| Criterion | Beginning |",
+          "| --- | --- |",
+          "| Experimentation (primary). Try ideas. | Little evidence. |",
+        ].join("\n"),
+        facultyNotes: "",
+      },
+    });
+    expect(html).toContain("<table>");
+    expect(html).toContain("<th>Criterion</th>");
+    expect(html).toContain("<td>Experimentation (primary). Try ideas.</td>");
+    expect(html).not.toContain("| --- | --- |");
   });
 
   it("lists discovery activities as excluded in the inventory", () => {

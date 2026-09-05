@@ -43,6 +43,18 @@ describe("published card text", () => {
     expect(markdown).not.toMatch(/Card ID/i);
   });
 
+  it("includes a student-facing rubric snapshot when Include rubric is on", () => {
+    const markdown = cardFieldsToMarkdown({
+      ...emptyCard(),
+      title: "Public card",
+      includeRubric: true,
+      rubricMarkdown: "## Student performance\n\n| Criterion | Beginning |\n| --- | --- |\n| Packet | Little evidence. |",
+    });
+    expect(markdown).toContain("Assessment rubric");
+    expect(markdown).toContain("Student performance");
+    expect(markdown).toContain("| Criterion | Beginning |");
+  });
+
   it("still includes the Big Red X on the faculty card export", () => {
     const markdown = cardToMarkdown(EXAMPLE_DESIGN);
     expect(markdown).toMatch(/Big Red X/i);

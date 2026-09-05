@@ -22,9 +22,11 @@ import { assetTooLargeMessage } from "../domain/files";
 import type { EmcureDesign } from "../domain/types";
 import { resolveCardImageSrc, uploadDesignAsset } from "../persistence/assets";
 import { getPublishedCardForDesign } from "../persistence/publish";
+import { hasStudentFacingRubric } from "../domain/rubric";
 import { AiRewriteSuggestion } from "./AiRewriteSuggestion";
 import { useDesign } from "./DesignContext";
 import { Checklist, SelectField, TagPills, TextArea, TextInput } from "./fields";
+import { IncludeRubricCheck } from "./IncludeRubricCheck";
 import { PublishCardPanel } from "./PublishCardPanel";
 
 function resetCardFromDesign(current: EmcureDesign): EmcureDesign {
@@ -37,6 +39,7 @@ function resetCardFromDesign(current: EmcureDesign): EmcureDesign {
       featuredImageName: existing.featuredImageName,
       featuredImageDataUrl: existing.featuredImageDataUrl,
       featuredImagePath: existing.featuredImagePath,
+      includeRubric: existing.includeRubric,
     },
   };
 }
@@ -162,6 +165,11 @@ export function CardEditor() {
           </p>
         ) : null}
       </div>
+      <IncludeRubricCheck
+        hasRubric={hasStudentFacingRubric(design)}
+        checked={Boolean(card.includeRubric)}
+        onChange={(includeRubric) => patch({ includeRubric })}
+      />
       <PublishCardPanel
         published={published}
         onPublishedChange={setPublished}

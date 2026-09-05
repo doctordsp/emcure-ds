@@ -930,6 +930,15 @@ textarea {
   margin-top: 2px;
 }
 
+.inline-check.is-disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+.inline-check.is-disabled input {
+  cursor: not-allowed;
+}
+
 .item-card {
   display: grid;
   gap: 1.25rem;
@@ -1271,6 +1280,25 @@ td {
   max-width: 46rem;
   margin: 0 auto;
   padding: 32px 24px 64px;
+}
+
+.public-card table {
+  border-collapse: collapse;
+  width: 100%;
+  font-size: 0.9rem;
+  margin: 1rem 0;
+}
+
+.public-card th,
+.public-card td {
+  border: 1px solid var(--emcure-border);
+  padding: 8px;
+  vertical-align: top;
+}
+
+.public-card th {
+  background: var(--emcure-teal-100);
+  text-align: left;
 }
 
 .public-card-top {

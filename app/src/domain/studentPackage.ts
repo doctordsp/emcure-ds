@@ -2,7 +2,7 @@ import { displayTitle, primaryBigRedX } from "./createDesign";
 import { getFrameworkItem } from "./frameworks";
 import { escapeHtml } from "./html";
 import { MVRC_LABEL, mvrcDeliverables, studentFacingMvrc } from "./mvrc";
-import { studentFacingRubricMarkdown } from "./rubric";
+import { markdownToPrintableHtml, studentFacingRubricMarkdown } from "./rubric";
 import { stakeholderTypeLabel } from "./stakeholders";
 import type {
   DistributionDocument,
@@ -273,28 +273,7 @@ export function studentPackageMarkdown(design: EmcureDesign): string {
 }
 
 export function studentPackageHtml(design: EmcureDesign): string {
-  const markdownish = studentPackageMarkdown(design)
-    .replace(/&/g, "&amp;")
-    .replace(/</g, "&lt;")
-    .replace(/>/g, "&gt;");
-  const body = markdownish
-    .split("\n")
-    .map((line) => {
-      if (line.startsWith("# ")) return `<h1>${line.slice(2)}</h1>`;
-      if (line.startsWith("## ")) return `<h2>${line.slice(3)}</h2>`;
-      if (line.startsWith("### ")) return `<h3>${line.slice(4)}</h3>`;
-      if (line.startsWith("#### ")) return `<h4>${line.slice(5)}</h4>`;
-      if (line.startsWith("- ")) {
-        const item = line.slice(2).replace(/\*\*(.*?)\*\*/g, "<strong>$1</strong>");
-        return `<li>${item}</li>`;
-      }
-      if (line.startsWith("---")) return "<hr />";
-      if (line.trim() === "") return "";
-      const text = line.replace(/\*\*(.*?)\*\*/g, "<strong>$1</strong>");
-      return `<p>${text}</p>`;
-    })
-    .join("\n")
-    .replace(/(<li>[\s\S]*?<\/li>\n)+/g, (block) => `<ul>${block}</ul>`);
+  const body = markdownToPrintableHtml(studentPackageMarkdown(design));
 
   const attachments = (design.distributionDocuments ?? [])
     .filter(
@@ -317,10 +296,13 @@ export function studentPackageHtml(design: EmcureDesign): string {
   <meta charset="utf-8" />
   <title>${escapeHtml(displayTitle(design))}, student handout</title>
   <style>
-    body { font-family: Mulish, Arial, Helvetica, sans-serif; color: #18323C; max-width: 46rem; margin: 2rem auto; line-height: 1.55; }
+    body { font-family: Mulish, Arial, Helvetica, sans-serif; color: #18323C; max-width: 56rem; margin: 2rem auto; line-height: 1.55; }
     h1, h2, h3, h4 { color: #125670; }
     li { margin: 0.25rem 0; }
-    @media print { body { margin: 0.75in; } }
+    table { border-collapse: collapse; width: 100%; font-size: 0.85rem; margin: 1rem 0; }
+    th, td { border: 1px solid #cbd8dd; padding: 8px; vertical-align: top; }
+    th { background: #dcebf0; text-align: left; }
+    @media print { body { margin: 0.6in; } table { font-size: 0.75rem; } }
   </style>
 </head>
 <body>

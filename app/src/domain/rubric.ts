@@ -230,6 +230,10 @@ export function studentFacingRubricMarkdown(design: EmcureDesign): string | null
   return rubric.body.trim();
 }
 
+export function hasStudentFacingRubric(design: EmcureDesign): boolean {
+  return studentFacingRubricMarkdown(design) !== null;
+}
+
 export function facultyRubricMarkdown(design: EmcureDesign): string {
   const rubric = resolvedRubric(design);
   const title = rubric.title.trim() || `Assessment rubric, ${displayTitle(design)}`;
@@ -290,7 +294,9 @@ export function markdownToPrintableHtml(markdown: string): string {
     if (line.startsWith("# ")) out.push(`<h1>${inline(line.slice(2))}</h1>`);
     else if (line.startsWith("## ")) out.push(`<h2>${inline(line.slice(3))}</h2>`);
     else if (line.startsWith("### ")) out.push(`<h3>${inline(line.slice(4))}</h3>`);
+    else if (line.startsWith("#### ")) out.push(`<h4>${inline(line.slice(5))}</h4>`);
     else if (line.startsWith("- ")) out.push(`<li>${inline(line.slice(2))}</li>`);
+    else if (line.startsWith("---")) out.push("<hr />");
     else if (line.startsWith("_") && line.endsWith("_") && line.length > 2) {
       out.push(`<p><em>${inline(line.slice(1, -1))}</em></p>`);
     } else if (line.trim() === "") out.push("");

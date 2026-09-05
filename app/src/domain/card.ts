@@ -5,6 +5,7 @@ import { escapeHtml } from "./html";
 import { MVRC_LABEL } from "./mvrc";
 import { cardProseToHtml } from "./cardProse";
 import { qrSvg } from "./qrSvg";
+import { isTableDivider, isTableRow, markdownToPrintableHtml, studentFacingRubricMarkdown } from "./rubric";
 import type { EmcureCard, EmcureDesign } from "./types";
 
 export { FEATURED_IMAGE_TYPES, MAX_ASSET_BYTES };
@@ -413,6 +414,16 @@ export function resolvedCard(design: EmcureDesign): EmcureCard {
   return { ...emptyCard(), ...design.card };
 }
 
+/** Public export/publish card, with a fresh rubric snapshot when Include rubric is on. */
+export function cardForPublicOutput(design: EmcureDesign): EmcureCard {
+  const card = resolvedCard(design);
+  const rubric = studentFacingRubricMarkdown(design);
+  if (card.includeRubric && rubric) {
+    return { ...card, rubricMarkdown: rubric };
+  }
+  return { ...card, rubricMarkdown: undefined };
+}
+
 export function generateCardSummary(card: EmcureCard): string {
   const year =
     YEAR_LEVELS.find((item) => item.id === card.yearLevel)?.label || card.yearLevel || "undergraduate";
@@ -512,6 +523,9 @@ export function cardFieldsToMarkdown(card: EmcureCard): string {
     "",
     card.assessment || "-",
     "",
+    ...(card.includeRubric && card.rubricMarkdown?.trim()
+      ? ["## Assessment rubric", "", card.rubricMarkdown.trim(), ""]
+      : []),
     "## Authoring details",
     "",
     card.acknowledgments || "-",
@@ -543,6 +557,7 @@ function markdownishToHtml(markdown: string): string {
   const lines = markdown.split("\n");
   const out: string[] = [];
   let proseBuffer: string[] | null = null;
+  let i = 0;
 
   function flushProse() {
     if (!proseBuffer) return;
@@ -551,28 +566,44 @@ function markdownishToHtml(markdown: string): string {
     proseBuffer = null;
   }
 
-  for (const line of lines) {
+  while (i < lines.length) {
+    const line = lines[i];
+    if (isTableRow(line) && i + 1 < lines.length && isTableDivider(lines[i + 1])) {
+      flushProse();
+      const chunk: string[] = [];
+      while (i < lines.length && isTableRow(lines[i])) {
+        chunk.push(lines[i]);
+        i += 1;
+      }
+      out.push(markdownToPrintableHtml(chunk.join("\n")));
+      continue;
+    }
     if (line.startsWith("# ") || line.startsWith("## ") || line.startsWith("### ")) {
       flushProse();
       const level = line.startsWith("# ") ? 1 : line.startsWith("## ") ? 2 : 3;
       const text = line.replace(/^#{1,3} /, "");
       out.push(`<h${level}>${escapeHtml(text)}</h${level}>`);
       if (text === "Entrepreneurial Mindset" || text === "Description") proseBuffer = [];
+      i += 1;
       continue;
     }
     if (proseBuffer) {
       proseBuffer.push(line);
+      i += 1;
       continue;
     }
     if (line.startsWith("- ")) {
       out.push(`<li>${escapeHtml(line.slice(2))}</li>`);
+      i += 1;
       continue;
     }
     if (line.trim() === "") {
       out.push("");
+      i += 1;
       continue;
     }
     out.push(`<p>${escapeHtml(line)}</p>`);
+    i += 1;
   }
   flushProse();
   return out.join("\n").replace(/(<li>[\s\S]*?<\/li>\n)+/g, (block) => `<ul>${block}</ul>`);
@@ -588,6 +619,9 @@ const CARD_HTML_STYLE = `
     .card-prose p { margin: 0 0 0.85em; }
     .featured { width: 100%; height: auto; border-radius: 12px; margin: 0 0 1.5rem; }
     li { margin: 0.25rem 0; }
+    table { border-collapse: collapse; width: 100%; font-size: 0.9rem; margin: 1rem 0; }
+    th, td { border: 1px solid #cbd8dd; padding: 8px; vertical-align: top; }
+    th { background: #dcebf0; text-align: left; }
     @media print { body { margin: 0.75in; } }
 `;
 

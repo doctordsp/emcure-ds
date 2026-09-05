@@ -1,4 +1,4 @@
-import { resolvedCard } from "../domain/card";
+import { cardForPublicOutput } from "../domain/card";
 import { displayTitle } from "../domain/createDesign";
 import {
   cardSlug,
@@ -185,7 +185,7 @@ export async function setDesignCardPublic(
   if (!design) {
     throw new Error("Save this EM-CURE to the cloud before listing it in the Public Gallery.");
   }
-  const card = resolvedCard(design);
+  const card = cardForPublicOutput(design);
   return publishCard({
     designId,
     slug: cardSlug(card.title || displayTitle(design), design.id),
