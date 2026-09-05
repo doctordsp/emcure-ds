@@ -31,7 +31,7 @@ export function PublishedCardPage() {
   useEffect(() => {
     if (!slug) return;
     if (!isSupabaseConfigured()) {
-      setError("This card gallery is not connected to a database.");
+      setError("The public gallery is not connected to a database.");
       setLoading(false);
       return;
     }
@@ -63,13 +63,13 @@ export function PublishedCardPage() {
   if (error || !row) {
     return (
       <div className="public-card">
-        <h1>Card not found</h1>
+        <h1>EM-CURE not found</h1>
         <p className="lede">
           {error ??
-            "This unlisted link is missing, unpublished, or the project is paused on the free tier."}
+            "This link is missing, unpublished, or the project is paused on the free tier."}
         </p>
         <Link className="btn btn-secondary" to="/cards">
-          Public cards
+          Public Gallery
         </Link>
         <Link className="btn btn-secondary" to="/">
           EM-CURE Design Studio
@@ -85,7 +85,7 @@ export function PublishedCardPage() {
 
   return (
     <article className="public-card">
-      <p className="muted">EM-CURE card · {cardDisplayId(row.design_id)}</p>
+      <p className="muted">EM-CURE · {cardDisplayId(row.design_id)}</p>
       <h1>{card.title || "EM-CURE"}</h1>
       {card.author ? <p className="lede">by {card.author}</p> : null}
       {image ? <img className="public-card-image" src={image} alt="" /> : null}
@@ -153,11 +153,11 @@ export function PublishedCardPage() {
         </section>
       ) : null}
       <p className="muted">
-        {row.visibility === "public" ? "Public card" : "Unlisted snapshot"} · published{" "}
+        {row.visibility === "public" ? "Public EM-CURE" : "Unlisted EM-CURE"} · published{" "}
         {new Date(row.published_at).toLocaleString()}
       </p>
       <p>
-        <Link to="/cards">Public cards</Link>
+        <Link to="/cards">Public Gallery</Link>
         {" · "}
         <Link to="/">EM-CURE Design Studio</Link>
       </p>

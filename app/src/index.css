@@ -142,10 +142,15 @@ img {
 
 .header-actions {
   display: flex;
+  flex-direction: column;
   gap: 6px;
-  flex-wrap: wrap;
-  align-items: center;
-  justify-content: stretch;
+  align-items: stretch;
+}
+
+.header-actions-row {
+  display: flex;
+  gap: 6px;
+  align-items: stretch;
 }
 
 .header-tools .btn {
@@ -153,7 +158,14 @@ img {
   min-width: 0;
   padding: 4px 10px;
   font-size: 0.8125rem;
-  flex: 1 1 auto;
+}
+
+.header-actions > .btn {
+  width: 100%;
+}
+
+.header-actions-row .btn {
+  flex: 1 1 0;
 }
 
 .muted {
@@ -709,12 +721,46 @@ img {
   line-height: 1.3;
 }
 
+.field-label-row label {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
 .legend {
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: 8px;
   width: 100%;
+}
+
+.ready-dot {
+  display: inline-block;
+  width: 0.5rem;
+  height: 0.5rem;
+  border-radius: 50%;
+  flex: none;
+}
+
+.ready-dot.is-missing {
+  background: var(--emcure-danger);
+}
+
+.ready-dot.is-ok {
+  background: var(--emcure-success);
+}
+
+.ready-control {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.with-ready-dot {
+  display: flex;
+  align-items: center;
+  gap: 8px;
 }
 
 .btn-fill {

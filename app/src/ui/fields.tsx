@@ -1,5 +1,25 @@
 import type { ReactNode } from "react";
 
+export function ReadyDot({ ok }: { ok: boolean }) {
+  return (
+    <span
+      className={ok ? "ready-dot is-ok" : "ready-dot is-missing"}
+      title={ok ? "Complete for Ready" : "Required for Ready"}
+    >
+      <span className="sr-only">{ok ? "Complete for Ready" : "Required for Ready"}</span>
+    </span>
+  );
+}
+
+export function ReadyControl({ ok, children }: { ok: boolean; children: ReactNode }) {
+  return (
+    <span className="ready-control">
+      <ReadyDot ok={ok} />
+      {children}
+    </span>
+  );
+}
+
 interface FieldProps {
   id: string;
   label: string;
@@ -7,13 +27,17 @@ interface FieldProps {
   children: ReactNode;
   wide?: boolean;
   action?: ReactNode;
+  readyOk?: boolean;
 }
 
-export function Field({ id, label, hint, children, wide, action }: FieldProps) {
+export function Field({ id, label, hint, children, wide, action, readyOk }: FieldProps) {
   return (
     <div className={wide ? "field field-wide" : "field"}>
       <div className="field-label-row">
-        <label htmlFor={id}>{label}</label>
+        <label htmlFor={id}>
+          {readyOk !== undefined ? <ReadyDot ok={readyOk} /> : null}
+          {label}
+        </label>
         {action}
       </div>
       {hint ? (
@@ -35,6 +59,7 @@ interface TextInputProps {
   type?: string;
   wide?: boolean;
   action?: ReactNode;
+  readyOk?: boolean;
 }
 
 export function TextInput({
@@ -46,9 +71,10 @@ export function TextInput({
   type = "text",
   wide,
   action,
+  readyOk,
 }: TextInputProps) {
   return (
-    <Field id={id} label={label} hint={hint} wide={wide} action={action}>
+    <Field id={id} label={label} hint={hint} wide={wide} action={action} readyOk={readyOk}>
       <input
         id={id}
         type={type}
@@ -66,11 +92,12 @@ interface NumberInputProps {
   hint?: string;
   value: number | undefined;
   onChange: (value: number | undefined) => void;
+  readyOk?: boolean;
 }
 
-export function NumberInput({ id, label, hint, value, onChange }: NumberInputProps) {
+export function NumberInput({ id, label, hint, value, onChange, readyOk }: NumberInputProps) {
   return (
-    <Field id={id} label={label} hint={hint}>
+    <Field id={id} label={label} hint={hint} readyOk={readyOk}>
       <input
         id={id}
         type="number"
@@ -95,6 +122,7 @@ interface TextAreaProps {
   rows?: number;
   wide?: boolean;
   action?: ReactNode;
+  readyOk?: boolean;
 }
 
 export function TextArea({
@@ -106,9 +134,10 @@ export function TextArea({
   rows = 4,
   wide,
   action,
+  readyOk,
 }: TextAreaProps) {
   return (
-    <Field id={id} label={label} hint={hint} wide={wide} action={action}>
+    <Field id={id} label={label} hint={hint} wide={wide} action={action} readyOk={readyOk}>
       <textarea
         id={id}
         rows={rows}
@@ -128,11 +157,21 @@ interface SelectProps {
   onChange: (value: string) => void;
   options: { value: string; label: string }[];
   action?: ReactNode;
+  readyOk?: boolean;
 }
 
-export function SelectField({ id, label, hint, value, onChange, options, action }: SelectProps) {
+export function SelectField({
+  id,
+  label,
+  hint,
+  value,
+  onChange,
+  options,
+  action,
+  readyOk,
+}: SelectProps) {
   return (
-    <Field id={id} label={label} hint={hint} action={action}>
+    <Field id={id} label={label} hint={hint} action={action} readyOk={readyOk}>
       <select
         id={id}
         value={value}

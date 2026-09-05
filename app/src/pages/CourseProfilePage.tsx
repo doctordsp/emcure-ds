@@ -1,3 +1,4 @@
+import { filledText } from "../domain/progress";
 import { NumberInput, SelectField, TextArea, TextInput } from "../ui/fields";
 import { useDesign } from "../ui/DesignContext";
 
@@ -25,6 +26,7 @@ export function CourseProfilePage() {
         label="Course or experience title"
         value={profile.title}
         onChange={(title) => patch({ title })}
+        readyOk={filledText(profile.title)}
       />
       <TextInput
         id="course-code"
@@ -63,6 +65,7 @@ export function CourseProfilePage() {
         hint="Used to warn if too many EM priorities are selected."
         value={profile.durationWeeks}
         onChange={(durationWeeks) => patch({ durationWeeks })}
+        readyOk={Boolean(profile.durationWeeks)}
       />
       <TextInput
         id="meeting"

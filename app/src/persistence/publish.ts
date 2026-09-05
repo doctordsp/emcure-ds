@@ -183,7 +183,7 @@ export async function setDesignCardPublic(
   }
   const design = await getCloudDesign(designId);
   if (!design) {
-    throw new Error("Save this EM-CURE to the cloud before listing a public card.");
+    throw new Error("Save this EM-CURE to the cloud before listing it in the Public Gallery.");
   }
   const card = resolvedCard(design);
   return publishCard({

@@ -1,15 +1,16 @@
 import { Link } from "react-router-dom";
-import { createActivity, primaryBigRedX } from "../domain/createDesign";
+import { allActivities, createActivity, primaryBigRedX } from "../domain/createDesign";
 import { getFrameworkItem } from "../domain/frameworks";
 import { MVRC_OBJECT_ID, type Activity, type DiscoveryMode, type Grouping } from "../domain/types";
 import { MVRC_DEFINITION, MVRC_LABEL, mvrcStatement } from "../domain/mvrc";
 import { replaceById } from "../domain/replaceById";
-import { Checklist, NumberInput, SelectField, TextArea, TextInput } from "../ui/fields";
+import { Checklist, NumberInput, ReadyControl, SelectField, TextArea, TextInput } from "../ui/fields";
 import { useDesign } from "../ui/DesignContext";
 
 export function JourneyPage() {
   const { design, update } = useDesign();
   const brx = primaryBigRedX(design);
+  const hasJourney = allActivities(design).length > 0;
 
   const linkItems = [
     ...design.frameworkSelections.map((sel) => ({
@@ -95,22 +96,24 @@ export function JourneyPage() {
       {design.phases.map((phase) => (
         <section className="item-card" key={phase.id}>
           <h2>{phase.title}</h2>
-          <button
-            type="button"
-            className="btn btn-primary"
-            onClick={() =>
-              update((current) => ({
-                ...current,
-                phases: current.phases.map((row) =>
-                  row.id === phase.id
-                    ? { ...row, activities: [...row.activities, createActivity()] }
-                    : row,
-                ),
-              }))
-            }
-          >
-            Add activity
-          </button>
+          <ReadyControl ok={hasJourney}>
+            <button
+              type="button"
+              className="btn btn-primary"
+              onClick={() =>
+                update((current) => ({
+                  ...current,
+                  phases: current.phases.map((row) =>
+                    row.id === phase.id
+                      ? { ...row, activities: [...row.activities, createActivity()] }
+                      : row,
+                  ),
+                }))
+              }
+            >
+              Add activity
+            </button>
+          </ReadyControl>
           {phase.activities.length === 0 ? (
             <p className="muted">No activities in this phase yet.</p>
           ) : null}

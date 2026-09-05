@@ -58,8 +58,8 @@ export function PublishCardPanel() {
       setPublished(row);
       setStatus(
         row.visibility === "public"
-          ? "Published snapshot updated. It stays listed in Public cards until you uncheck Public card in the library."
-          : "Published an unlisted snapshot. Anyone with the link can view it. Use Public card in the library to list it.",
+          ? "Published snapshot updated. It stays listed in the Public Gallery until you uncheck Public EM-CURE in the library."
+          : "Published an unlisted snapshot. Anyone with the link can view it. Use Public EM-CURE in the library to list it.",
       );
     } catch (caught) {
       setError(caught instanceof Error ? caught.message : "Publish failed.");
@@ -108,7 +108,7 @@ export function PublishCardPanel() {
       <p className="field-hint">
         Publishing copies the card as it stands now. Later studio edits do not change the live
         page until you update the published copy. Faculty specification, rubric notes, and
-        discovery-reserved text are not included. Gallery listing is the Public card checkbox in
+        discovery-reserved text are not included. Gallery listing is the Public EM-CURE checkbox in
         the library, not this panel.
       </p>
       {published ? (
@@ -124,11 +124,11 @@ export function PublishCardPanel() {
       )}
       {published?.visibility === "public" ? (
         <p className="muted">
-          Listed in Public cards. Uncheck Public card in the library to keep the link only.
+          Listed in the Public Gallery. Uncheck Public EM-CURE in the library to keep the link only.
         </p>
       ) : (
         <p className="muted">
-          Share link only. Check Public card in the library to list this in Public cards. The
+          Share link only. Check Public EM-CURE in the library to list this in the Public Gallery. The
           studio design stays private.
         </p>
       )}

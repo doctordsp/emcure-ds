@@ -1,7 +1,8 @@
 import type { SuccessCriterion } from "../domain/types";
 import { createId } from "../domain/ids";
 import { replaceById } from "../domain/replaceById";
-import { Checklist, TextArea, TextInput } from "../ui/fields";
+import { filledText, readySlot } from "../domain/progress";
+import { Checklist, ReadyControl, TextArea, TextInput } from "../ui/fields";
 import { useDesign } from "../ui/DesignContext";
 
 function emptyCriterion(): SuccessCriterion {
@@ -14,6 +15,7 @@ function emptyCriterion(): SuccessCriterion {
 
 export function SuccessPage() {
   const { design, update } = useDesign();
+  const hasSuccess = design.successCriteria.some((item) => filledText(item.statement));
   const linkItems = [
     ...design.opportunities.map((item) => ({
       id: item.id,
@@ -36,18 +38,20 @@ export function SuccessPage() {
         Make success measurable enough that evidence can inform a decision. Vague
         criteria will appear in alignment review.
       </p>
-      <button
-        type="button"
-        className="btn btn-primary"
-        onClick={() =>
-          update((current) => ({
-            ...current,
-            successCriteria: [...current.successCriteria, emptyCriterion()],
-          }))
-        }
-      >
-        Add success criterion
-      </button>
+      <ReadyControl ok={hasSuccess}>
+        <button
+          type="button"
+          className="btn btn-primary"
+          onClick={() =>
+            update((current) => ({
+              ...current,
+              successCriteria: [...current.successCriteria, emptyCriterion()],
+            }))
+          }
+        >
+          Add success criterion
+        </button>
+      </ReadyControl>
       {design.successCriteria.map((criterion, index) => (
         <article className="item-card" key={criterion.id}>
           <h2>Criterion {index + 1}</h2>
@@ -64,6 +68,7 @@ export function SuccessPage() {
               }))
             }
             wide
+            readyOk={readySlot(filledText(criterion.statement), hasSuccess)}
           />
           <TextInput
             id={`sc-metric-${criterion.id}`}

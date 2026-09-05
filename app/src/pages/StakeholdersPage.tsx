@@ -14,7 +14,8 @@ import {
   patchLens,
   stakeholderTypeLabel,
 } from "../domain/stakeholders";
-import { ChoicePills, Checklist, SelectField, TextArea, TextInput } from "../ui/fields";
+import { filledText, readySlot } from "../domain/progress";
+import { ChoicePills, Checklist, ReadyControl, SelectField, TextArea, TextInput } from "../ui/fields";
 import { useDesign } from "../ui/DesignContext";
 
 const ROLES = [
@@ -58,6 +59,8 @@ function emptyNeed(): Need {
 
 export function StakeholdersPage() {
   const { design, update } = useDesign();
+  const hasStakeholder = design.stakeholders.length > 0;
+  const hasNeedStatement = design.needs.some((need) => filledText(need.statement));
 
   return (
     <div className="stack">
@@ -83,30 +86,34 @@ export function StakeholdersPage() {
       />
 
       <div className="card-actions">
-        <button
-          type="button"
-          className="btn btn-primary"
-          onClick={() =>
-            update((current) => ({
-              ...current,
-              stakeholders: [...current.stakeholders, emptyStakeholder()],
-            }))
-          }
-        >
-          Add stakeholder
-        </button>
-        <button
-          type="button"
-          className="btn btn-secondary"
-          onClick={() =>
-            update((current) => ({
-              ...current,
-              needs: [...current.needs, emptyNeed()],
-            }))
-          }
-        >
-          Add need
-        </button>
+        <ReadyControl ok={hasStakeholder}>
+          <button
+            type="button"
+            className="btn btn-primary"
+            onClick={() =>
+              update((current) => ({
+                ...current,
+                stakeholders: [...current.stakeholders, emptyStakeholder()],
+              }))
+            }
+          >
+            Add stakeholder
+          </button>
+        </ReadyControl>
+        <ReadyControl ok={hasNeedStatement}>
+          <button
+            type="button"
+            className="btn btn-secondary"
+            onClick={() =>
+              update((current) => ({
+                ...current,
+                needs: [...current.needs, emptyNeed()],
+              }))
+            }
+          >
+            Add need
+          </button>
+        </ReadyControl>
       </div>
 
       {design.stakeholders.map((stk, index) => (
@@ -311,6 +318,7 @@ export function StakeholdersPage() {
               }))
             }
             wide
+            readyOk={readySlot(filledText(need.statement), hasNeedStatement)}
           />
           <TextArea
             id={`need-ctx-${need.id}`}

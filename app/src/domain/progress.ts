@@ -17,23 +17,35 @@ export interface SectionStatus {
     | "destination";
 }
 
+export function filledText(value: string | undefined | null): boolean {
+  return Boolean(value?.trim());
+}
+
+/**
+ * Dot state for “at least one of these” fields.
+ * `true` = green, `false` = red, `undefined` = optional (no dot).
+ */
+export function readySlot(thisFilled: boolean, groupOk: boolean): boolean | undefined {
+  if (thisFilled) return true;
+  if (!groupOk) return false;
+  return undefined;
+}
+
 export function sectionStatuses(design: EmcureDesign): SectionStatus[] {
   const hasProfile =
-    Boolean(design.courseProfile.title.trim()) &&
-    Boolean(design.courseProfile.durationWeeks);
+    filledText(design.courseProfile.title) && Boolean(design.courseProfile.durationWeeks);
   const hasFramework = design.frameworkSelections.length > 0;
   const hasNeed =
-    design.stakeholders.length > 0 &&
-    design.needs.some((need) => need.statement.trim());
+    design.stakeholders.length > 0 && design.needs.some((need) => filledText(need.statement));
   const hasThread =
-    design.opportunities.some((item) => item.statement.trim()) &&
-    design.intendedImpacts.some((item) => item.statement.trim());
-  const hasSuccess = design.successCriteria.some((item) => item.statement.trim());
+    design.opportunities.some((item) => filledText(item.statement)) &&
+    design.intendedImpacts.some((item) => filledText(item.statement));
+  const hasSuccess = design.successCriteria.some((item) => filledText(item.statement));
   const brx = primaryBigRedX(design);
   const hasBrx = Boolean(
-    brx?.statement.trim() &&
-      brx.decisionIfResolved?.trim() &&
-      design.minimumViableResearchContribution?.statement.trim(),
+    filledText(brx?.statement) &&
+      filledText(brx?.decisionIfResolved) &&
+      filledText(design.minimumViableResearchContribution?.statement),
   );
   const hasJourney = allActivities(design).length > 0;
   const openErrors = design.findings.filter(

@@ -9,7 +9,7 @@ export function PublicCardsPage() {
   const configured = isSupabaseConfigured();
   const [rows, setRows] = useState<PublishedCardRow[]>([]);
   const [error, setError] = useState<string | null>(
-    configured ? null : "Public cards are not connected to a database.",
+    configured ? null : "The public gallery is not connected to a database.",
   );
   const [loading, setLoading] = useState(configured);
 
@@ -24,7 +24,7 @@ export function PublicCardsPage() {
       })
       .catch((caught: unknown) => {
         if (cancelled) return;
-        setError(caught instanceof Error ? caught.message : "Could not load public cards.");
+        setError(caught instanceof Error ? caught.message : "Could not load public EM-CUREs.");
         setLoading(false);
       });
     return () => {
@@ -35,7 +35,7 @@ export function PublicCardsPage() {
   return (
     <div className="dashboard">
       <header className="app-header">
-        <h1 className="site-title">Public cards</h1>
+        <h1 className="site-title">Public EM-CUREs</h1>
         <div className="header-tools">
           <div className="header-actions">
             <Link className="btn btn-secondary" to="/">
@@ -46,10 +46,9 @@ export function PublicCardsPage() {
       </header>
       <main id="main">
         <p className="lede">
-          Student-facing EM-CURE cards that faculty have listed as public. Studio designs stay
-          private.
+          Student-facing EM-CUREs that faculty have listed as public. Studio designs stay private.
         </p>
-        {loading ? <p>Loading public cards…</p> : null}
+        {loading ? <p>Loading public EM-CUREs…</p> : null}
         {error ? (
           <p className="callout callout-warn" role="alert">
             {error}
@@ -59,7 +58,7 @@ export function PublicCardsPage() {
           <div className="card">
             <h2>Nothing public yet</h2>
             <p>
-              When a faculty author checks Public card on an owned EM-CURE in the library, it
+              When a faculty author checks Public EM-CURE on an owned design in the library, it
               appears here.
             </p>
           </div>
@@ -87,7 +86,7 @@ export function PublicCardsPage() {
                   </p>
                   <div className="card-actions">
                     <Link className="btn btn-primary" to={publishedCardSharePath(row.slug)}>
-                      View card
+                      View EM-CURE
                     </Link>
                   </div>
                 </article>

@@ -2,7 +2,8 @@ import type { EvidenceStatus, ImpactClaimLevel, IntendedImpact, Opportunity } fr
 import { createId } from "../domain/ids";
 import { draftLineOfSight } from "../domain/thread";
 import { replaceById } from "../domain/replaceById";
-import { Checklist, SelectField, TextArea } from "../ui/fields";
+import { filledText, readySlot } from "../domain/progress";
+import { Checklist, ReadyControl, SelectField, TextArea } from "../ui/fields";
 import { ThreadView } from "../ui/ThreadView";
 import { useDesign } from "../ui/DesignContext";
 
@@ -38,6 +39,8 @@ function emptyImpact(): IntendedImpact {
 
 export function OpportunityImpactPage() {
   const { design, update } = useDesign();
+  const hasOpportunity = design.opportunities.some((item) => filledText(item.statement));
+  const hasImpact = design.intendedImpacts.some((item) => filledText(item.statement));
 
   return (
     <div className="layout-split">
@@ -48,30 +51,34 @@ export function OpportunityImpactPage() {
           output, outcome, potential impact, and demonstrated impact.
         </p>
         <div className="card-actions">
-          <button
-            type="button"
-            className="btn btn-gold"
-            onClick={() =>
-              update((current) => ({
-                ...current,
-                opportunities: [...current.opportunities, emptyOpportunity()],
-              }))
-            }
-          >
-            Add opportunity
-          </button>
-          <button
-            type="button"
-            className="btn btn-primary"
-            onClick={() =>
-              update((current) => ({
-                ...current,
-                intendedImpacts: [...current.intendedImpacts, emptyImpact()],
-              }))
-            }
-          >
-            Add intended impact
-          </button>
+          <ReadyControl ok={hasOpportunity}>
+            <button
+              type="button"
+              className="btn btn-gold"
+              onClick={() =>
+                update((current) => ({
+                  ...current,
+                  opportunities: [...current.opportunities, emptyOpportunity()],
+                }))
+              }
+            >
+              Add opportunity
+            </button>
+          </ReadyControl>
+          <ReadyControl ok={hasImpact}>
+            <button
+              type="button"
+              className="btn btn-primary"
+              onClick={() =>
+                update((current) => ({
+                  ...current,
+                  intendedImpacts: [...current.intendedImpacts, emptyImpact()],
+                }))
+              }
+            >
+              Add intended impact
+            </button>
+          </ReadyControl>
         </div>
 
         {design.opportunities.map((opp, index) => (
@@ -88,6 +95,7 @@ export function OpportunityImpactPage() {
                 }))
               }
               wide
+              readyOk={readySlot(filledText(opp.statement), hasOpportunity)}
             />
             <TextArea
               id={`opp-val-${opp.id}`}
@@ -172,6 +180,7 @@ export function OpportunityImpactPage() {
                 }))
               }
               wide
+              readyOk={readySlot(filledText(impact.statement), hasImpact)}
             />
             <SelectField
               id={`imp-cat-${impact.id}`}

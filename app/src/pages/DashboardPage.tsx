@@ -120,21 +120,23 @@ export function DashboardPage() {
         <div className="header-tools">
           <AuthBar />
           <div className="header-actions">
-            <Link className="btn btn-secondary" to="/cards">
-              Public cards
-            </Link>
-            <Link className="btn btn-secondary" to="/setup-ai">
-              Setup AI API
-            </Link>
             {libraryOpen ? (
               <button type="button" className="btn btn-primary" onClick={showRoadmap}>
                 Back to roadmap
               </button>
             ) : (
               <button type="button" className="btn btn-secondary" onClick={showLibrary}>
-                Library of EM-CUREs
+                My Library of EM-CUREs
               </button>
             )}
+            <div className="header-actions-row">
+              <Link className="btn btn-secondary" to="/setup-ai">
+                Setup AI API
+              </Link>
+              <Link className="btn btn-secondary" to="/cards">
+                Public Gallery
+              </Link>
+            </div>
           </div>
         </div>
       </header>
@@ -175,10 +177,10 @@ export function DashboardPage() {
 
         {libraryOpen ? (
           <section id="library" className="library-section" aria-labelledby="library-heading">
-            <h2 id="library-heading">Library of EM-CUREs</h2>
+            <h2 id="library-heading">My Library of EM-CUREs</h2>
             <p className="muted">
               Select one active design. That EM-CURE is what the roadmap and Continue
-              button use. Open a card when you are ready to edit it.
+              button use. Open an EM-CURE when you are ready to edit it.
             </p>
             {needActive && !active ? (
               <p className="callout callout-warn" role="alert">
@@ -325,7 +327,7 @@ export function DashboardPage() {
                             <div className="card-public">
                               <label
                                 className="inline-check"
-                                title="Lists the student-facing card in Public cards. The studio design stays private."
+                                title="Lists this EM-CURE in the Public Gallery. The studio design stays private."
                               >
                                 <input
                                   type="checkbox"
@@ -339,12 +341,12 @@ export function DashboardPage() {
                                     });
                                   }}
                                 />
-                                Public card
+                                Public EM-CURE
                               </label>
                               <p className="field-hint">
                                 {item.storagePlace === "cloud"
-                                  ? "Lists the student-facing card in Public cards. The studio design stays private."
-                                  : "Save to cloud to list a public card."}
+                                  ? "Lists this EM-CURE in the Public Gallery. The studio design stays private."
+                                  : "Save to cloud to list a public EM-CURE."}
                               </p>
                             </div>
                           ) : null}

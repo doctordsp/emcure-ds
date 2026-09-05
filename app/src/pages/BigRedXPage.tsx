@@ -1,8 +1,10 @@
 import { BRX_CRITERIA, type Uncertainty, type UncertaintyDesignation, type UncertaintyType } from "../domain/types";
 import { createId } from "../domain/ids";
+import { primaryBigRedX } from "../domain/createDesign";
 import { mvrcOf, patchMvrc, MVRC_DEFINITION, MVRC_LABEL } from "../domain/mvrc";
 import { replaceById } from "../domain/replaceById";
-import { Checklist, NumberInput, SelectField, TextArea } from "../ui/fields";
+import { filledText } from "../domain/progress";
+import { Checklist, NumberInput, ReadyControl, SelectField, TextArea } from "../ui/fields";
 import { useDesign } from "../ui/DesignContext";
 
 function emptyUncertainty(): Uncertainty {
@@ -19,6 +21,9 @@ function emptyUncertainty(): Uncertainty {
 
 export function BigRedXPage() {
   const { design, update } = useDesign();
+  const brx = primaryBigRedX(design);
+  const hasPrimary = Boolean(brx);
+  const hasCandidate = design.uncertainties.length > 0;
 
   function selectPrimary(id: string) {
     update((current) => ({
@@ -45,18 +50,20 @@ export function BigRedXPage() {
         The Big Red X is the uncertainty, barrier, or assumption whose resolution most
         strongly affects whether the opportunity can produce the intended impact.
       </p>
-      <button
-        type="button"
-        className="btn btn-primary"
-        onClick={() =>
-          update((current) => ({
-            ...current,
-            uncertainties: [...current.uncertainties, emptyUncertainty()],
-          }))
-        }
-      >
-        Add candidate
-      </button>
+      <ReadyControl ok={hasCandidate}>
+        <button
+          type="button"
+          className="btn btn-primary"
+          onClick={() =>
+            update((current) => ({
+              ...current,
+              uncertainties: [...current.uncertainties, emptyUncertainty()],
+            }))
+          }
+        >
+          Add candidate
+        </button>
+      </ReadyControl>
 
       {design.uncertainties.length > 0 ? (
         <div className="table-wrap">
@@ -122,6 +129,11 @@ export function BigRedXPage() {
               }))
             }
             wide
+            readyOk={
+              item.designation === "primary_big_red_x" || item.id === design.currentBigRedXId
+                ? filledText(item.statement)
+                : undefined
+            }
           />
           <SelectField
             id={`u-type-${item.id}`}
@@ -146,6 +158,13 @@ export function BigRedXPage() {
             id={`u-des-${item.id}`}
             label="Designation"
             value={item.designation}
+            readyOk={
+              item.designation === "primary_big_red_x" || item.id === design.currentBigRedXId
+                ? true
+                : hasPrimary
+                  ? undefined
+                  : false
+            }
             onChange={(designation) =>
               update((current) => {
                 const next = designation as UncertaintyDesignation;
@@ -217,6 +236,11 @@ export function BigRedXPage() {
               }))
             }
             wide
+            readyOk={
+              item.designation === "primary_big_red_x" || item.id === design.currentBigRedXId
+                ? filledText(item.decisionIfResolved)
+                : undefined
+            }
           />
           <Checklist
             legend="Linked intended impacts"
@@ -287,6 +311,7 @@ export function BigRedXPage() {
           onChange={(statement) => update((current) => patchMvrc(current, { statement }))}
           rows={5}
           wide
+          readyOk={filledText(mvrcOf(design).statement)}
         />
         <TextArea
           id="mvrc-deliverables"

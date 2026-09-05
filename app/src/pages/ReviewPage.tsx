@@ -1,7 +1,7 @@
 import { useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import type { FindingSeverity, FindingStatus } from "../domain/types";
-import { TextArea } from "../ui/fields";
+import { TextArea, ReadyDot } from "../ui/fields";
 import { useDesign } from "../ui/DesignContext";
 
 const FILTERS: { value: "all" | FindingSeverity; label: string }[] = [
@@ -62,7 +62,10 @@ export function ReviewPage() {
           <p className="muted" style={{ marginBottom: 4 }}>
             {finding.ruleId} · {finding.severity} · {finding.status}
           </p>
-          <h2>{finding.title}</h2>
+          <h2 className="with-ready-dot">
+            {finding.severity === "error" ? <ReadyDot ok={finding.status !== "open"} /> : null}
+            {finding.title}
+          </h2>
           <p>{finding.explanation}</p>
           {finding.suggestedAction ? <p>{finding.suggestedAction}</p> : null}
           <TextArea
