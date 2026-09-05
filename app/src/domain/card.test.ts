@@ -20,6 +20,10 @@ describe("draftCardFromDesign", () => {
     expect(card.emOutcomeIds).toContain("val-opportunity");
     expect(card.formats).toContain("service-learning");
     expect(card.learningObjectives).toContain("measurement plan");
+    expect(card.institution).toBe("Riverside State University");
+    expect(card.department).toBe("Civil engineering");
+    expect(card.instructor).toBe("Jordan Hale");
+    expect(card.author).toBe("Jordan Hale");
   });
 
   it("leaves year level empty when the course has no level", () => {
@@ -71,5 +75,20 @@ describe("fillCardField", () => {
     expect(canFillCardField(empty, "assessment")).toBe(false);
     expect(canFillCardField(empty, "emOutcomeIds")).toBe(false);
     expect(fillCardField(card, empty, "problemNeed")).toEqual(card);
+  });
+
+  it("copies affiliation from the course profile and prefills author from instructor", () => {
+    const empty = emptyCard();
+    empty.author = "Keep this byline";
+    const filled = fillCardField(
+      fillCardField(fillCardField(empty, EXAMPLE_DESIGN, "institution"), EXAMPLE_DESIGN, "department"),
+      EXAMPLE_DESIGN,
+      "instructor",
+    );
+    expect(filled.institution).toBe("Riverside State University");
+    expect(filled.department).toBe("Civil engineering");
+    expect(filled.instructor).toBe("Jordan Hale");
+    expect(fillCardField(empty, EXAMPLE_DESIGN, "author").author).toBe("Jordan Hale");
+    expect(fillCardField(empty, EXAMPLE_DESIGN, "author").author).not.toBe("Keep this byline");
   });
 });

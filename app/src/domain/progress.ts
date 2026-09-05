@@ -49,6 +49,9 @@ export function courseProfileReady(design: EmcureDesign): boolean {
   const profile = design.courseProfile;
   return (
     filledText(profile.title) &&
+    filledText(profile.institution) &&
+    filledText(profile.department) &&
+    filledText(profile.instructor) &&
     filledText(profile.code) &&
     filledText(profile.discipline) &&
     filledText(profile.level) &&

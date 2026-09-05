@@ -60,6 +60,9 @@ const EXAMPLE_CORE: EmcureDesign = {
   ],
   courseProfile: {
     title: "Stormwater sensors for neighborhood flooding",
+    institution: "Riverside State University",
+    department: "Civil engineering",
+    instructor: "Jordan Hale",
     code: "CIVE 390",
     discipline: "Civil engineering",
     level: "Junior",
@@ -515,7 +518,7 @@ const EXAMPLE_CORE: EmcureDesign = {
 
 export const EXAMPLE_DESIGN: EmcureDesign = applyAlignment(
   withExportSurfaces(EXAMPLE_CORE, {
-    cardAuthor: "Jordan Hale, Department of Civil Engineering",
+    cardAuthor: "Jordan Hale",
     cardAcknowledgments:
       "Public-works liaison and community contact who scheduled site access. Neighborhood residents are not named in student products.",
     cardSubCategory: "Hydrology / green infrastructure",

@@ -30,6 +30,21 @@ function withProfile(
   return { ...design, courseProfile: { ...design.courseProfile, ...patch } };
 }
 
+const READY_PROFILE: Partial<EmcureDesign["courseProfile"]> = {
+  institution: "Riverside State University",
+  department: "Civil engineering",
+  instructor: "Jordan Hale",
+  code: "CIVE 390",
+  discipline: "Civil engineering",
+  level: "Junior",
+  enrollment: 24,
+  teamSize: 4,
+  durationWeeks: 14,
+  meetingPattern: "Studio twice weekly",
+  prerequisites: "Fluid mechanics",
+  technicalObjectives: "Design a measurement plan.",
+};
+
 describe("filled helpers", () => {
   it("treats whitespace as empty text", () => {
     expect(filledText("")).toBe(false);
@@ -68,14 +83,7 @@ describe("courseProfileReady", () => {
 
   it("requires the main profile fields, not only title", () => {
     const almost = withProfile(createEmptyDesign("Stormwater studio"), {
-      code: "CIVE 390",
-      discipline: "Civil engineering",
-      level: "Junior",
-      enrollment: 24,
-      teamSize: 4,
-      durationWeeks: 14,
-      meetingPattern: "Studio twice weekly",
-      prerequisites: "Fluid mechanics",
+      ...READY_PROFILE,
       technicalObjectives: "",
     });
     expect(courseProfileReady(almost)).toBe(false);
@@ -84,17 +92,17 @@ describe("courseProfileReady", () => {
     );
   });
 
+  it("requires institution, department, and instructor", () => {
+    const ready = withProfile(createEmptyDesign("Stormwater studio"), READY_PROFILE);
+    expect(courseProfileReady(ready)).toBe(true);
+    expect(courseProfileReady(withProfile(ready, { institution: "" }))).toBe(false);
+    expect(courseProfileReady(withProfile(ready, { department: "" }))).toBe(false);
+    expect(courseProfileReady(withProfile(ready, { instructor: "" }))).toBe(false);
+  });
+
   it("does not gate autonomy, which already has a default", () => {
     const ready = withProfile(createEmptyDesign("Stormwater studio"), {
-      code: "CIVE 390",
-      discipline: "Civil engineering",
-      level: "Junior",
-      enrollment: 24,
-      teamSize: 4,
-      durationWeeks: 14,
-      meetingPattern: "Studio twice weekly",
-      prerequisites: "Fluid mechanics",
-      technicalObjectives: "Design a measurement plan.",
+      ...READY_PROFILE,
       autonomyLevel: "guided",
     });
     expect(courseProfileReady(ready)).toBe(true);

@@ -77,6 +77,9 @@ export type BrxCriterionKey = (typeof BRX_CRITERIA)[number]["key"];
 
 export interface CourseProfile {
   title: string;
+  institution: string;
+  department: string;
+  instructor: string;
   code: string;
   discipline: string;
   level: string;
@@ -228,6 +231,9 @@ export type DistributionDocumentKind =
 export interface EmcureCard {
   title: string;
   author: string;
+  institution: string;
+  department: string;
+  instructor: string;
   yearLevel: string;
   course: string;
   materials: string;

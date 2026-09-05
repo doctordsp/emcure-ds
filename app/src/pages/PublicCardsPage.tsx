@@ -1,12 +1,22 @@
-import { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
+import { useEffect, useMemo, useState } from "react";
+import { Link, useSearchParams } from "react-router-dom";
 import { YEAR_LEVELS } from "../domain/card";
+import {
+  affiliationSearchParams,
+  filterGalleryRows,
+  galleryFilterOptions,
+  nextAffiliationFilters,
+  parseAffiliationSearch,
+} from "../domain/galleryFilters";
 import { publishedCardSharePath, type PublishedCardRow } from "../domain/publish";
 import { listPublicCards, publishedImageSrc } from "../persistence/publish";
 import { isSupabaseConfigured } from "../persistence/supabase";
+import { SelectField } from "../ui/fields";
 
 export function PublicCardsPage() {
   const configured = isSupabaseConfigured();
+  const [searchParams, setSearchParams] = useSearchParams();
+  const filters = parseAffiliationSearch(searchParams);
   const [rows, setRows] = useState<PublishedCardRow[]>([]);
   const [error, setError] = useState<string | null>(
     configured ? null : "The public gallery is not connected to a database.",
@@ -32,6 +42,15 @@ export function PublicCardsPage() {
     };
   }, [configured]);
 
+  const options = useMemo(() => galleryFilterOptions(rows, filters), [rows, filters]);
+  const visible = useMemo(() => filterGalleryRows(rows, filters), [rows, filters]);
+  const hasFilters = Boolean(filters.institution || filters.department || filters.instructor);
+
+  function setFilter(change: Parameters<typeof nextAffiliationFilters>[1]) {
+    const next = nextAffiliationFilters(filters, change, rows);
+    setSearchParams(affiliationSearchParams(next), { replace: true });
+  }
+
   return (
     <div className="dashboard">
       <header className="app-header">
@@ -48,6 +67,40 @@ export function PublicCardsPage() {
         <p className="lede">
           Student-facing EM-CUREs that faculty have listed as public. Studio designs stay private.
         </p>
+        {rows.length > 0 ? (
+          <div className="gallery-filters">
+            <SelectField
+              id="filter-institution"
+              label="Institution"
+              value={filters.institution}
+              onChange={(institution) => setFilter({ institution })}
+              options={[
+                { value: "", label: "All institutions" },
+                ...options.institutions.map((value) => ({ value, label: value })),
+              ]}
+            />
+            <SelectField
+              id="filter-department"
+              label="Department"
+              value={filters.department}
+              onChange={(department) => setFilter({ department })}
+              options={[
+                { value: "", label: "All departments" },
+                ...options.departments.map((value) => ({ value, label: value })),
+              ]}
+            />
+            <SelectField
+              id="filter-instructor"
+              label="Instructor"
+              value={filters.instructor}
+              onChange={(instructor) => setFilter({ instructor })}
+              options={[
+                { value: "", label: "All instructors" },
+                ...options.instructors.map((value) => ({ value, label: value })),
+              ]}
+            />
+          </div>
+        ) : null}
         {loading ? <p>Loading public EM-CUREs…</p> : null}
         {error ? (
           <p className="callout callout-warn" role="alert">
@@ -63,13 +116,27 @@ export function PublicCardsPage() {
             </p>
           </div>
         ) : null}
-        {rows.length > 0 ? (
+        {!loading && !error && rows.length > 0 && visible.length === 0 ? (
+          <div className="card">
+            <h2>No EM-CUREs match these filters</h2>
+            <p>Try All institutions, or a broader department or instructor.</p>
+            {hasFilters ? (
+              <button type="button" className="btn btn-secondary" onClick={() => setSearchParams({})}>
+                Clear filters
+              </button>
+            ) : null}
+          </div>
+        ) : null}
+        {visible.length > 0 ? (
           <div className="card-grid">
-            {rows.map((row) => {
+            {visible.map((row) => {
               const year =
                 YEAR_LEVELS.find((item) => item.id === row.card.yearLevel)?.label ||
                 row.card.yearLevel;
               const image = publishedImageSrc(row);
+              const affiliation = [row.card.institution, row.card.department, row.card.instructor]
+                .filter(Boolean)
+                .join(" · ");
               return (
                 <article className="card" key={row.id}>
                   {image ? (
@@ -81,6 +148,7 @@ export function PublicCardsPage() {
                     </Link>
                   </h3>
                   {row.card.author ? <p className="muted">by {row.card.author}</p> : null}
+                  {affiliation ? <p className="muted">{affiliation}</p> : null}
                   <p className="muted">
                     {[year, row.card.course].filter(Boolean).join(" · ") || "-"}
                   </p>

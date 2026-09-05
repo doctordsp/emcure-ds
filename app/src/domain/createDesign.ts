@@ -21,6 +21,9 @@ const STARTER_PHASE_TITLES = [
 export function emptyCourseProfile(): CourseProfile {
   return {
     title: "",
+    institution: "",
+    department: "",
+    instructor: "",
     code: "",
     discipline: "",
     level: "",

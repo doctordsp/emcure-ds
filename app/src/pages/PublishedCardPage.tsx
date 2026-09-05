@@ -100,6 +100,24 @@ export function PublishedCardPage() {
       </div>
       {image ? <img className="public-card-image" src={image} alt="" /> : null}
       <dl className="public-card-meta">
+        {card.institution ? (
+          <>
+            <dt>Institution</dt>
+            <dd>{card.institution}</dd>
+          </>
+        ) : null}
+        {card.department ? (
+          <>
+            <dt>Department</dt>
+            <dd>{card.department}</dd>
+          </>
+        ) : null}
+        {card.instructor ? (
+          <>
+            <dt>Instructor</dt>
+            <dd>{card.instructor}</dd>
+          </>
+        ) : null}
         {year ? (
           <>
             <dt>Year level</dt>

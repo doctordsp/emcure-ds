@@ -89,6 +89,9 @@ export function emptyCard(): EmcureCard {
   return {
     title: "",
     author: "",
+    institution: "",
+    department: "",
+    instructor: "",
     yearLevel: "",
     course: "",
     materials: "",
@@ -138,6 +141,10 @@ export function yearLevelFromCourse(level: string): string {
 /** Fields that can be copied from the studio design without AI. */
 export type CardFillField =
   | "title"
+  | "author"
+  | "institution"
+  | "department"
+  | "instructor"
   | "yearLevel"
   | "course"
   | "materials"
@@ -155,6 +162,10 @@ export type CardFillField =
 
 const FILL_SOURCES: Record<CardFillField, string> = {
   title: "from Course profile",
+  author: "from Instructor",
+  institution: "from Course profile",
+  department: "from Course profile",
+  instructor: "from Course profile",
   yearLevel: "from Course level",
   course: "from Course profile",
   materials: "starter from course envelope and journey, not a supply list",
@@ -177,6 +188,22 @@ export function cardFillSource(field: CardFillField): string {
 
 export function cardTitleFromDesign(design: EmcureDesign): string {
   return displayTitle(design);
+}
+
+export function cardInstitutionFromDesign(design: EmcureDesign): string {
+  return design.courseProfile.institution?.trim() ?? "";
+}
+
+export function cardDepartmentFromDesign(design: EmcureDesign): string {
+  return design.courseProfile.department?.trim() ?? "";
+}
+
+export function cardInstructorFromDesign(design: EmcureDesign): string {
+  return design.courseProfile.instructor?.trim() ?? "";
+}
+
+export function cardAuthorFromDesign(design: EmcureDesign): string {
+  return cardInstructorFromDesign(design);
 }
 
 export function cardYearLevelFromDesign(design: EmcureDesign): string {
@@ -293,6 +320,14 @@ export function cardFillValue(
   switch (field) {
     case "title":
       return cardTitleFromDesign(design);
+    case "author":
+      return cardAuthorFromDesign(design);
+    case "institution":
+      return cardInstitutionFromDesign(design);
+    case "department":
+      return cardDepartmentFromDesign(design);
+    case "instructor":
+      return cardInstructorFromDesign(design);
     case "yearLevel":
       return cardYearLevelFromDesign(design);
     case "course":
@@ -330,6 +365,10 @@ export function canFillCardField(design: EmcureDesign, field: CardFillField): bo
   if (field === "title" || field === "course") {
     return Boolean(design.courseProfile.title.trim() || design.title.trim());
   }
+  if (field === "institution" || field === "department" || field === "instructor" || field === "author") {
+    const key = field === "author" ? "instructor" : field;
+    return Boolean(design.courseProfile[key]?.trim());
+  }
   const value = cardFillValue(design, field);
   if (Array.isArray(value)) return value.length > 0;
   return value.trim().length > 0;
@@ -349,6 +388,10 @@ export function draftCardFromDesign(design: EmcureDesign): EmcureCard {
   return {
     ...emptyCard(),
     title: cardTitleFromDesign(design),
+    author: cardAuthorFromDesign(design),
+    institution: cardInstitutionFromDesign(design),
+    department: cardDepartmentFromDesign(design),
+    instructor: cardInstructorFromDesign(design),
     yearLevel: cardYearLevelFromDesign(design),
     course: cardCourseFromDesign(design),
     materials: cardMaterialsFromDesign(design),
@@ -430,6 +473,9 @@ export function cardFieldsToMarkdown(card: EmcureCard, displayId: string): strin
     "## Details",
     "",
     `- Year level: ${YEAR_LEVELS.find((item) => item.id === card.yearLevel)?.label || card.yearLevel || "-"}`,
+    `- Institution: ${card.institution || "-"}`,
+    `- Department: ${card.department || "-"}`,
+    `- Instructor: ${card.instructor || "-"}`,
     `- Course: ${card.course || "-"}`,
     `- Category: ${card.category || "-"}`,
     `- Sub-category: ${card.subCategory || "-"}`,

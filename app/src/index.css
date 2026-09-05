@@ -389,6 +389,19 @@ img {
   gap: 16px;
 }
 
+.gallery-filters {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px 16px;
+  margin: 0 0 1.5rem;
+}
+
+@media (max-width: 800px) {
+  .gallery-filters {
+    grid-template-columns: 1fr;
+  }
+}
+
 .card {
   background: var(--emcure-surface);
   border: 1px solid var(--emcure-border);

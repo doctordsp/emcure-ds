@@ -69,6 +69,9 @@ const ORTHOTIC_CORE: EmcureDesign = {
   ],
   courseProfile: {
     title: "3D-printed orthotic materials under wet conditions",
+    institution: "Riverside State University",
+    department: "Biomedical engineering",
+    instructor: "Amina Ortiz",
     code: "BME 422",
     discipline: "Biomedical engineering",
     level: "Senior",
@@ -527,7 +530,7 @@ const ORTHOTIC_CORE: EmcureDesign = {
 
 export const ORTHOTIC_EXAMPLE: EmcureDesign = applyAlignment(
   withExportSurfaces(ORTHOTIC_CORE, {
-    cardAuthor: "Amina Ortiz, Department of Biomedical Engineering",
+    cardAuthor: "Amina Ortiz",
     cardAcknowledgments:
       "Campus clinic prosthetist who provided geometry and filaments. Orthotic users are not named and were not enrolled. Lab manager who scheduled the Instron.",
     cardSubCategory: "Biomaterials / additive manufacturing",

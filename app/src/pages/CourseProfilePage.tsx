@@ -30,6 +30,27 @@ export function CourseProfilePage() {
         readyOk={filledText(profile.title)}
       />
       <TextInput
+        id="institution"
+        label="Institution"
+        value={profile.institution ?? ""}
+        onChange={(institution) => patch({ institution })}
+        readyOk={filledText(profile.institution)}
+      />
+      <TextInput
+        id="department"
+        label="Department"
+        value={profile.department ?? ""}
+        onChange={(department) => patch({ department })}
+        readyOk={filledText(profile.department)}
+      />
+      <TextInput
+        id="instructor"
+        label="Instructor"
+        value={profile.instructor ?? ""}
+        onChange={(instructor) => patch({ instructor })}
+        readyOk={filledText(profile.instructor)}
+      />
+      <TextInput
         id="course-code"
         label="Course code"
         value={profile.code}

@@ -218,9 +218,32 @@ export function CardEditor({ onOpenStudentDocuments }: { onOpenStudentDocuments:
       <TextInput
         id="card-author"
         label="Author"
-        hint="Appears as “by …” on the card."
+        hint="Appears as “by …” on the card. Prefills from Instructor."
         value={card.author}
         onChange={(author) => patch({ author })}
+        action={fillAction("author")}
+      />
+      <TextInput
+        id="card-institution"
+        label="Institution"
+        value={card.institution ?? ""}
+        onChange={(institution) => patch({ institution })}
+        action={fillAction("institution")}
+      />
+      <TextInput
+        id="card-department"
+        label="Department"
+        value={card.department ?? ""}
+        onChange={(department) => patch({ department })}
+        action={fillAction("department")}
+      />
+      <TextInput
+        id="card-instructor"
+        label="Instructor"
+        hint="Used to filter the Public Gallery. Separate from the Author byline."
+        value={card.instructor ?? ""}
+        onChange={(instructor) => patch({ instructor })}
+        action={fillAction("instructor")}
       />
 
       <div className="eu-section">
