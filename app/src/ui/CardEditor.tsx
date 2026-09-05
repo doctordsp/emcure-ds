@@ -10,38 +10,49 @@ import {
   FEATURED_IMAGE_TYPES,
   YEAR_LEVELS,
   canFillCardField,
-  cardDisplayId,
   cardFillSource,
-  cardToHtml,
-  cardToMarkdown,
   draftCardFromDesign,
   fillCardField,
   generateCardSummary,
   resolvedCard,
   type CardFillField,
 } from "../domain/card";
+import type { PublishedCardRow } from "../domain/publish";
 import { assetTooLargeMessage, MAX_ASSET_BYTES } from "../domain/files";
-import { displayTitle } from "../domain/createDesign";
 import { createId } from "../domain/ids";
 import { studentFacingDocuments } from "../domain/studentPackage";
 import type { DistributionDocument, EmcureDesign } from "../domain/types";
 import { resolveCardImageSrc, uploadDesignAsset } from "../persistence/assets";
-import { downloadTextFile } from "../persistence/storage";
+import { getPublishedCardForDesign } from "../persistence/publish";
 import { AiRewriteSuggestion } from "./AiRewriteSuggestion";
 import { useDesign } from "./DesignContext";
 import { Checklist, SelectField, TagPills, TextArea, TextInput } from "./fields";
 import { PublishCardPanel } from "./PublishCardPanel";
 
+function resetCardFromDesign(current: EmcureDesign): EmcureDesign {
+  const existing = resolvedCard(current);
+  return {
+    ...current,
+    card: {
+      ...draftCardFromDesign(current),
+      author: existing.author,
+      featuredImageName: existing.featuredImageName,
+      featuredImageDataUrl: existing.featuredImageDataUrl,
+      featuredImagePath: existing.featuredImagePath,
+    },
+  };
+}
+
 export function CardEditor({ onOpenStudentDocuments }: { onOpenStudentDocuments: () => void }) {
   const { design, update } = useDesign();
-  const { user } = useAuth();
+  const { configured, user } = useAuth();
   const card = resolvedCard(design);
   const fileRef = useRef<HTMLInputElement>(null);
   const assetRef = useRef<HTMLInputElement>(null);
   const [imageError, setImageError] = useState<string | null>(null);
   const [assetError, setAssetError] = useState<string | null>(null);
   const [imageSrc, setImageSrc] = useState<string | undefined>(card.featuredImageDataUrl);
-  const slug = displayTitle(design).replace(/[^\w]+/g, "-").toLowerCase() || "emcure";
+  const [published, setPublished] = useState<PublishedCardRow | null>(null);
   const studentDocs = studentFacingDocuments(design);
 
   useEffect(() => {
@@ -56,6 +67,24 @@ export function CardEditor({ onOpenStudentDocuments }: { onOpenStudentDocuments:
       cancelled = true;
     };
   }, [card.featuredImageDataUrl, card.featuredImagePath]);
+
+  useEffect(() => {
+    if (!configured || !user) {
+      setPublished(null);
+      return;
+    }
+    let cancelled = false;
+    void getPublishedCardForDesign(design.id)
+      .then((row) => {
+        if (!cancelled) setPublished(row);
+      })
+      .catch(() => {
+        if (!cancelled) setPublished(null);
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, [configured, user, design.id]);
 
   function patch(partial: Partial<typeof card>) {
     update((current) => ({
@@ -163,49 +192,28 @@ export function CardEditor({ onOpenStudentDocuments }: { onOpenStudentDocuments:
 
   return (
     <div className="eu-card">
-      <p className="muted">
-        Card {cardDisplayId(design.id)}. Prefills from this EM-CURE. Use <strong>Fill from design</strong>{" "}
-        on a field to refresh that field only. Edit anything that should appear on a public card; the
-        studio design itself does not change.
-        {cardAiRewriteEnabled()
-          ? " Suggest rewrite is on for Description, Problem / Need, and Summary. Accept, edit, or dismiss; the field is never overwritten on arrival."
-          : ""}
-      </p>
-      <div className="card-actions" style={{ marginTop: 0 }}>
-        <button
-          type="button"
-          className="btn btn-primary"
-          onClick={() => downloadTextFile(`${slug}-card.html`, cardToHtml(design), "text/html")}
-        >
-          Download card HTML
-        </button>
-        <button
-          type="button"
-          className="btn btn-secondary"
-          onClick={() => downloadTextFile(`${slug}-card.md`, cardToMarkdown(design), "text/markdown")}
-        >
-          Download card Markdown
-        </button>
-        <button
-          type="button"
-          className="btn btn-ghost"
-          onClick={() =>
-            update((current) => ({
-              ...current,
-              card: {
-                ...draftCardFromDesign(current),
-                author: resolvedCard(current).author,
-                featuredImageName: resolvedCard(current).featuredImageName,
-                featuredImageDataUrl: resolvedCard(current).featuredImageDataUrl,
-                featuredImagePath: resolvedCard(current).featuredImagePath,
-              },
-            }))
-          }
-        >
-          Reset fields from design
-        </button>
+      <h2>Share a live link</h2>
+      <div className="public-page-intro">
+        <p className="muted">
+          This page is what others see. Fill from design refreshes one field. Edits here do not
+          change the studio design.
+        </p>
+        <p className="muted">
+          Publishing copies this page now. Studio edits do not change the live link until you
+          publish again. List it in the Public Gallery with Public EM-CURE in the library.
+        </p>
+        {cardAiRewriteEnabled() ? (
+          <p className="muted">
+            Suggest rewrite is on for Description, Problem / Need, and Summary. Accept, edit, or
+            dismiss; the field is never overwritten on arrival.
+          </p>
+        ) : null}
       </div>
-      <PublishCardPanel />
+      <PublishCardPanel
+        published={published}
+        onPublishedChange={setPublished}
+        onResetFields={() => update(resetCardFromDesign)}
+      />
 
       <TextInput
         id="card-title"
@@ -218,7 +226,7 @@ export function CardEditor({ onOpenStudentDocuments }: { onOpenStudentDocuments:
       <TextInput
         id="card-author"
         label="Author"
-        hint="Appears as “by …” on the card. Prefills from Instructor."
+        hint="Appears as “by …” on this page. Prefills from Instructor."
         value={card.author}
         onChange={(author) => patch({ author })}
         action={fillAction("author")}
@@ -357,7 +365,7 @@ export function CardEditor({ onOpenStudentDocuments }: { onOpenStudentDocuments:
         <TextArea
           id="card-em-comments"
           label="Habits"
-          hint="Selected studio habits and behaviors, plus any notes for the public card."
+          hint="Selected studio habits and behaviors, plus any notes for the public page."
           value={card.emComments}
           onChange={(emComments) => patch({ emComments })}
           action={fillAction("emComments")}
@@ -481,8 +489,8 @@ export function CardEditor({ onOpenStudentDocuments }: { onOpenStudentDocuments:
       <div className="eu-section">
         <h2>Resources</h2>
         <p className="field-hint">
-          Files tagged for students are included in the student package. Write longer handouts on
-          Student documents.
+          Files tagged for students are included in the student document. Write longer handouts on
+          Student document.
         </p>
         {studentDocs.length > 0 ? (
           <ul className="inventory-list">
@@ -500,7 +508,7 @@ export function CardEditor({ onOpenStudentDocuments }: { onOpenStudentDocuments:
             + Upload assets
           </button>
           <button type="button" className="btn btn-ghost" onClick={onOpenStudentDocuments}>
-            Create student documents
+            Create student document
           </button>
         </div>
         <input

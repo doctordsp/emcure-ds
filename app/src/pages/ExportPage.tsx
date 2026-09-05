@@ -23,16 +23,16 @@ export function ExportPage() {
     <div className="stack">
       <h1>Export</h1>
       <p className="lede">
-        Choose a faculty specification, a public card, student-facing documents, or a rubric
-        aligned to this EM-CURE. Hidden discovery content is labeled in the faculty export and
-        withheld from the student package.
+        Choose an EM-CURE specification, a public page, a student document, or a rubric
+        aligned to this EM-CURE. Hidden discovery content is labeled in the specification and
+        withheld from the student document.
       </p>
       <div className="pill-row export-tabs" role="tablist" aria-label="Export package">
         {(
           [
-            ["faculty", "Faculty specification"],
-            ["card", "Create a Card"],
-            ["students", "Student documents"],
+            ["faculty", "EM-CURE specification"],
+            ["card", "Public page"],
+            ["students", "Student document"],
             ["rubric", "Rubric developer"],
           ] as const
         ).map(([id, label]) => (
@@ -51,38 +51,45 @@ export function ExportPage() {
 
       {tab === "faculty" ? (
         <>
-          <div className="card-actions">
+          <div className="export-download-row">
+            <span className="export-format-label" id="spec-format-label">
+              Format:
+            </span>
+            <div className="pill-row" role="tablist" aria-labelledby="spec-format-label">
+              {(
+                [
+                  ["markdown", "Markdown"],
+                  ["html", "HTML"],
+                  ["json", "JSON"],
+                ] as const
+              ).map(([id, label]) => (
+                <button
+                  key={id}
+                  type="button"
+                  role="tab"
+                  aria-selected={preview === id}
+                  className={preview === id ? "btn btn-primary" : "btn btn-secondary"}
+                  onClick={() => setPreview(id)}
+                >
+                  {label}
+                </button>
+              ))}
+            </div>
             <button
               type="button"
-              className="btn btn-primary"
-              onClick={() => downloadTextFile(`${slug}.md`, markdown, "text/markdown")}
+              className="btn btn-gold"
+              onClick={() => {
+                if (preview === "markdown") {
+                  downloadTextFile(`${slug}.md`, markdown, "text/markdown");
+                } else if (preview === "html") {
+                  downloadTextFile(`${slug}.html`, html, "text/html");
+                } else {
+                  downloadDesignJson(design);
+                }
+              }}
             >
-              Download Markdown
+              Download
             </button>
-            <button
-              type="button"
-              className="btn btn-secondary"
-              onClick={() => downloadTextFile(`${slug}.html`, html, "text/html")}
-            >
-              Download printable HTML
-            </button>
-            <button type="button" className="btn btn-gold" onClick={() => downloadDesignJson(design)}>
-              Download JSON
-            </button>
-          </div>
-          <div className="pill-row" role="tablist" aria-label="Preview format">
-            {(["markdown", "html", "json"] as const).map((item) => (
-              <button
-                key={item}
-                type="button"
-                role="tab"
-                aria-selected={preview === item}
-                className={preview === item ? "btn btn-primary" : "btn btn-secondary"}
-                onClick={() => setPreview(item)}
-              >
-                {item}
-              </button>
-            ))}
           </div>
           <pre className="preview" tabIndex={0}>
             {preview === "markdown" ? markdown : preview === "html" ? html : json}

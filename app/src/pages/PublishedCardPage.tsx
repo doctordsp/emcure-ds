@@ -6,7 +6,6 @@ import {
   CARD_FORMATS,
   CARD_STAGES,
   YEAR_LEVELS,
-  cardDisplayId,
 } from "../domain/card";
 import { publishedCardShareUrl } from "../domain/publish";
 import { CardProse } from "../ui/CardProse";
@@ -92,7 +91,7 @@ export function PublishedCardPage() {
     <article className="public-card">
       <div className="public-card-top">
         <div>
-          <p className="muted">EM-CURE · {cardDisplayId(row.design_id)}</p>
+          <p className="muted">EM-CURE</p>
           <h1>{card.title || "EM-CURE"}</h1>
           {card.author ? <p className="lede">by {card.author}</p> : null}
         </div>

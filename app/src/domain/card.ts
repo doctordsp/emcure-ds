@@ -427,7 +427,7 @@ export function generateCardSummary(card: EmcureCard): string {
   const em =
     outcomes.length > 0
       ? `Entrepreneurial mindset outcomes include ${outcomes.join("; ")}.`
-      : "Selected entrepreneurial mindset habits are listed on the card.";
+      : "Selected entrepreneurial mindset habits are listed on this page.";
   const objectives = card.learningObjectives.trim()
     ? `Learning objectives: ${card.learningObjectives.trim()}`
     : "";
@@ -454,7 +454,7 @@ function labelList(
 }
 
 /** Public/student-safe card text. Does not include faculty Big Red X or studio notes. */
-export function cardFieldsToMarkdown(card: EmcureCard, displayId: string): string {
+export function cardFieldsToMarkdown(card: EmcureCard): string {
   const outcomesByGroup = ["Curiosity", "Connections", "Creating Value"].flatMap((group) => {
     const items = CARD_EM_OUTCOMES.filter(
       (item) => item.group === group && card.emOutcomeIds.includes(item.id),
@@ -468,8 +468,6 @@ export function cardFieldsToMarkdown(card: EmcureCard, displayId: string): strin
     "",
     card.author ? `by ${card.author}` : "",
     card.author ? "" : "",
-    `Card ID: ${displayId}`,
-    "",
     "## Details",
     "",
     `- Year level: ${YEAR_LEVELS.find((item) => item.id === card.yearLevel)?.label || card.yearLevel || "-"}`,
@@ -533,7 +531,7 @@ export function cardFieldsToMarkdown(card: EmcureCard, displayId: string): strin
 export function cardToMarkdown(design: EmcureDesign): string {
   const card = resolvedCard(design);
   const brx = primaryBigRedX(design);
-  const base = cardFieldsToMarkdown(card, cardDisplayId(design.id));
+  const base = cardFieldsToMarkdown(card);
   if (!brx?.statement.trim()) return base;
   return base.replace(
     "\n## Authoring details\n",
@@ -595,11 +593,10 @@ const CARD_HTML_STYLE = `
 
 export function cardFieldsToHtml(
   card: EmcureCard,
-  displayId: string,
   imageSrc?: string,
   shareUrl?: string,
 ): string {
-  const body = markdownishToHtml(cardFieldsToMarkdown(card, displayId));
+  const body = markdownishToHtml(cardFieldsToMarkdown(card));
   const title = card.title || "EM-CURE";
   const image = imageSrc
     ? `<img class="featured" src="${escapeHtml(imageSrc)}" alt="Featured image for ${escapeHtml(title)}" />`
@@ -611,7 +608,7 @@ export function cardFieldsToHtml(
 <html lang="en">
 <head>
   <meta charset="utf-8" />
-  <title>${escapeHtml(title)}, EM-CURE Card</title>
+  <title>${escapeHtml(title)}</title>
   <style>${CARD_HTML_STYLE}
   </style>
 </head>
@@ -638,7 +635,7 @@ export function cardToHtml(design: EmcureDesign): string {
 <html lang="en">
 <head>
   <meta charset="utf-8" />
-  <title>${escapeHtml(title)}, EM-CURE Card</title>
+  <title>${escapeHtml(title)}</title>
   <style>${CARD_HTML_STYLE}
   </style>
 </head>
@@ -647,12 +644,6 @@ ${image}
 ${body}
 </body>
 </html>`;
-}
-
-export function cardDisplayId(designId: string): string {
-  const digits = designId.replace(/\D/g, "");
-  if (digits.length >= 5) return digits.slice(0, 5);
-  return designId.slice(0, 8);
 }
 
 function guessFormats(design: EmcureDesign): string[] {

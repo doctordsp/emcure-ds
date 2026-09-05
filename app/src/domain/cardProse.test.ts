@@ -43,7 +43,6 @@ describe("card QR", () => {
   it("embeds a QR code in pause-proof HTML when a share URL is provided", () => {
     const html = cardFieldsToHtml(
       draftCardFromDesign(EXAMPLE_DESIGN),
-      "12345",
       undefined,
       "https://example.test/c/demo",
     );
@@ -51,6 +50,7 @@ describe("card QR", () => {
     expect(html).toContain("<svg");
     expect(html).toContain("<strong>Opportunity Seeking</strong>");
     expect(html).toContain(`<strong>${MVRC_LABEL}</strong>`);
+    expect(html).not.toMatch(/Card ID/i);
   });
 });
 

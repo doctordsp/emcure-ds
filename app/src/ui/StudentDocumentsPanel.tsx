@@ -118,8 +118,8 @@ export function StudentDocumentsPanel() {
   return (
     <div className="stack">
       <p>
-        Build a student package that omits faculty-only notes and instructions marked for student
-        discovery. Add handouts or upload files for distribution.
+        Create a printable student document that omits faculty-only notes and instructions marked
+        for student discovery. Add handouts or upload files for distribution.
       </p>
       <div className="card-actions" style={{ marginTop: 0 }}>
         <button
