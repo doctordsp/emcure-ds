@@ -55,7 +55,7 @@ export function MvrcPage() {
       <TextArea
         id="mvrc-student"
         label="Student-facing wording (optional)"
-        hint="Used in the student companion. If blank, students see the minimum contribution statement."
+        hint="Optional wording for a student handout. If blank, they see the minimum contribution statement."
         value={mvrc.studentFacingStatement ?? ""}
         onChange={(studentFacingStatement) =>
           update((current) => patchMvrc(current, { studentFacingStatement }))

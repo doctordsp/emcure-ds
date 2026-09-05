@@ -18,10 +18,8 @@ import {
   type CardFillField,
 } from "../domain/card";
 import type { PublishedCardRow } from "../domain/publish";
-import { assetTooLargeMessage, MAX_ASSET_BYTES } from "../domain/files";
-import { createId } from "../domain/ids";
-import { studentFacingDocuments } from "../domain/studentPackage";
-import type { DistributionDocument, EmcureDesign } from "../domain/types";
+import { assetTooLargeMessage } from "../domain/files";
+import type { EmcureDesign } from "../domain/types";
 import { resolveCardImageSrc, uploadDesignAsset } from "../persistence/assets";
 import { getPublishedCardForDesign } from "../persistence/publish";
 import { AiRewriteSuggestion } from "./AiRewriteSuggestion";
@@ -43,17 +41,14 @@ function resetCardFromDesign(current: EmcureDesign): EmcureDesign {
   };
 }
 
-export function CardEditor({ onOpenStudentDocuments }: { onOpenStudentDocuments: () => void }) {
+export function CardEditor() {
   const { design, update } = useDesign();
   const { configured, user } = useAuth();
   const card = resolvedCard(design);
   const fileRef = useRef<HTMLInputElement>(null);
-  const assetRef = useRef<HTMLInputElement>(null);
   const [imageError, setImageError] = useState<string | null>(null);
-  const [assetError, setAssetError] = useState<string | null>(null);
   const [imageSrc, setImageSrc] = useState<string | undefined>(card.featuredImageDataUrl);
   const [published, setPublished] = useState<PublishedCardRow | null>(null);
-  const studentDocs = studentFacingDocuments(design);
 
   useEffect(() => {
     let cancelled = false;
@@ -143,48 +138,6 @@ export function CardEditor({ onOpenStudentDocuments }: { onOpenStudentDocuments:
         featuredImagePath: undefined,
       });
     };
-    reader.readAsDataURL(file);
-  }
-
-  function onAsset(file: File | undefined) {
-    setAssetError(null);
-    if (!file) return;
-    if (file.size > MAX_ASSET_BYTES) {
-      setAssetError(assetTooLargeMessage());
-      return;
-    }
-    const addDoc = (partial: Pick<DistributionDocument, "dataUrl" | "storagePath">) => {
-      const next: DistributionDocument = {
-        id: createId(),
-        title: file.name.replace(/\.[^.]+$/, ""),
-        audience: "students",
-        kind: "uploaded",
-        body: "",
-        filename: file.name,
-        mimeType: file.type || "application/octet-stream",
-        ...partial,
-      };
-      update((current) => ({
-        ...current,
-        distributionDocuments: [...(current.distributionDocuments ?? []), next],
-      }));
-    };
-    if (user) {
-      void uploadDesignAsset({
-        userId: user.id,
-        designId: design.id,
-        folder: "assets",
-        blob: file,
-        filename: file.name,
-      })
-        .then((storagePath) => addDoc({ storagePath }))
-        .catch((caught: unknown) => {
-          setAssetError(caught instanceof Error ? caught.message : "Could not upload the file.");
-        });
-      return;
-    }
-    const reader = new FileReader();
-    reader.onload = () => addDoc({ dataUrl: String(reader.result) });
     reader.readAsDataURL(file);
   }
 
@@ -485,43 +438,6 @@ export function CardEditor({ onOpenStudentDocuments }: { onOpenStudentDocuments:
           wide
         />
       </details>
-
-      <div className="eu-section">
-        <h2>Resources</h2>
-        <p className="field-hint">
-          Files tagged for students are included in the student document. Write longer handouts on
-          Student document.
-        </p>
-        {studentDocs.length > 0 ? (
-          <ul className="inventory-list">
-            {studentDocs.map((doc) => (
-              <li key={doc.id}>
-                {doc.title || doc.filename} <span className="muted">({doc.filename})</span>
-              </li>
-            ))}
-          </ul>
-        ) : (
-          <p className="muted">No student files yet.</p>
-        )}
-        <div className="card-actions">
-          <button type="button" className="btn btn-secondary" onClick={() => assetRef.current?.click()}>
-            + Upload assets
-          </button>
-          <button type="button" className="btn btn-ghost" onClick={onOpenStudentDocuments}>
-            Create student document
-          </button>
-        </div>
-        <input
-          ref={assetRef}
-          type="file"
-          hidden
-          onChange={(event) => {
-            onAsset(event.target.files?.[0]);
-            event.target.value = "";
-          }}
-        />
-        {assetError ? <p className="field-error">{assetError}</p> : null}
-      </div>
 
       <div className="eu-section">
         <h2>Summary</h2>

@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest";
 import { EXAMPLE_DESIGN } from "../data/exampleDesign";
 import {
+  handoutHtml,
   studentPackageInventory,
   studentPackageMarkdown,
   studentVisibleActivityInstructions,
@@ -21,7 +22,7 @@ describe("student package", () => {
 
   it("omits discovery-reserved instructions from the companion markdown", () => {
     const markdown = studentPackageMarkdown(EXAMPLE_DESIGN);
-    expect(markdown).toContain("Student project companion");
+    expect(markdown).toContain("Student handout (draft)");
     expect(markdown).toContain("Stakeholder briefing");
     expect(markdown).toContain("Present evidence, uncertainty remaining");
     expect(markdown).toContain("Interpret results against the decision");
@@ -69,5 +70,15 @@ describe("student package", () => {
     const briefing = inventory.find((item) => item.id === "act-brief");
     expect(analysis?.included).toBe(false);
     expect(briefing?.included).toBe(true);
+  });
+});
+
+describe("handoutHtml", () => {
+  it("builds printable HTML for a written handout", () => {
+    const html = handoutHtml("Lab protocol", "Bring a notebook.\n\nWork in pairs.");
+    expect(html).toContain("<title>Lab protocol</title>");
+    expect(html).toContain("<h1>Lab protocol</h1>");
+    expect(html).toContain("Bring a notebook.");
+    expect(html).toContain("@media print");
   });
 });

@@ -251,7 +251,7 @@ export function studentPackageMarkdown(design: EmcureDesign): string {
   return [
     `# ${displayTitle(design)}`,
     "",
-    "Student project companion, EM-CURE Design Studio",
+    "Student handout (draft). Edit after you download.",
     "",
     design.courseProfile.code
       ? `${design.courseProfile.code}${design.courseProfile.level ? ` · ${design.courseProfile.level}` : ""}`
@@ -315,7 +315,7 @@ export function studentPackageHtml(design: EmcureDesign): string {
 <html lang="en">
 <head>
   <meta charset="utf-8" />
-  <title>${escapeHtml(displayTitle(design))}, student companion</title>
+  <title>${escapeHtml(displayTitle(design))}, student handout</title>
   <style>
     body { font-family: Mulish, Arial, Helvetica, sans-serif; color: #18323C; max-width: 46rem; margin: 2rem auto; line-height: 1.55; }
     h1, h2, h3, h4 { color: #125670; }
@@ -345,4 +345,29 @@ export function emptyHandout(): Omit<DistributionDocument, "id"> {
     filename: "student-handout.md",
     mimeType: "text/markdown",
   };
+}
+
+/** Printable HTML for a single student handout. */
+export function handoutHtml(title: string, body: string): string {
+  const heading = escapeHtml(title.trim() || "Student handout");
+  const paragraphs = (body.trim() || "-")
+    .split(/\n\n+/)
+    .map((block) => `<p>${escapeHtml(block).replace(/\n/g, "<br />")}</p>`)
+    .join("\n");
+  return `<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>${heading}</title>
+  <style>
+    body { font-family: Mulish, Arial, Helvetica, sans-serif; color: #18323C; max-width: 46rem; margin: 2rem auto; line-height: 1.55; }
+    h1 { color: #125670; }
+    @media print { body { margin: 0.75in; } }
+  </style>
+</head>
+<body>
+<h1>${heading}</h1>
+${paragraphs}
+</body>
+</html>`;
 }

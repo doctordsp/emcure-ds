@@ -176,7 +176,10 @@ export function downloadDesignJson(design: EmcureDesign): void {
 }
 
 export function downloadTextFile(filename: string, contents: string, mime: string): void {
-  const blob = new Blob([contents], { type: mime });
+  downloadBlob(filename, new Blob([contents], { type: mime }));
+}
+
+export function downloadBlob(filename: string, blob: Blob): void {
   const url = URL.createObjectURL(blob);
   const anchor = document.createElement("a");
   anchor.href = url;

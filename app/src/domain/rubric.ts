@@ -300,16 +300,16 @@ export function markdownToPrintableHtml(markdown: string): string {
   return out.join("\n").replace(/(<li>[\s\S]*?<\/li>\n)+/g, (block) => `<ul>${block}</ul>`);
 }
 
-function isTableRow(line: string): boolean {
+export function isTableRow(line: string): boolean {
   const trimmed = line.trim();
   return trimmed.startsWith("|") && trimmed.endsWith("|") && trimmed.length > 1;
 }
 
-function isTableDivider(line: string): boolean {
+export function isTableDivider(line: string): boolean {
   return isTableRow(line) && /^\|?\s*:?-{3,}:?\s*(\|\s*:?-{3,}:?\s*)+\|?$/.test(line.trim());
 }
 
-function splitCells(line: string): string[] {
+export function splitCells(line: string): string[] {
   return line
     .trim()
     .replace(/^\|/, "")

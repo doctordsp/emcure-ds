@@ -18,4 +18,4 @@ export {
   setActiveDesignId,
   usingCloud,
 } from "./store";
-export { downloadDesignJson, downloadTextFile } from "./local";
+export { downloadDesignJson, downloadTextFile, downloadBlob } from "./local";

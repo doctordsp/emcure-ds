@@ -23,9 +23,8 @@ export function ExportPage() {
     <div className="stack">
       <h1>Export</h1>
       <p className="lede">
-        Choose an EM-CURE specification, a public page, a student document, or a rubric
-        aligned to this EM-CURE. Hidden discovery content is labeled in the specification and
-        withheld from the student document.
+        Choose an EM-CURE specification, a public page, student handouts, or a rubric aligned to
+        this EM-CURE. Hidden discovery content is labeled in the specification.
       </p>
       <div className="pill-row export-tabs" role="tablist" aria-label="Export package">
         {(
@@ -97,7 +96,7 @@ export function ExportPage() {
         </>
       ) : null}
 
-      {tab === "card" ? <CardEditor onOpenStudentDocuments={() => setTab("students")} /> : null}
+      {tab === "card" ? <CardEditor /> : null}
       {tab === "students" ? <StudentDocumentsPanel /> : null}
       {tab === "rubric" ? <RubricDeveloper /> : null}
     </div>
