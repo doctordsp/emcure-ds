@@ -195,16 +195,28 @@ interface ChecklistProps {
   selected: string[];
   onChange: (ids: string[]) => void;
   action?: ReactNode;
+  readyOk?: boolean;
 }
 
-export function Checklist({ legend, hint, items, selected, onChange, action }: ChecklistProps) {
+export function Checklist({
+  legend,
+  hint,
+  items,
+  selected,
+  onChange,
+  action,
+  readyOk,
+}: ChecklistProps) {
   if (items.length === 0) {
     return <p className="muted">{legend}: none available yet.</p>;
   }
   return (
     <fieldset className="field field-wide">
       <legend className="legend">
-        <span>{legend}</span>
+        <span className="legend-label">
+          {readyOk !== undefined ? <ReadyDot ok={readyOk} /> : null}
+          {legend}
+        </span>
         {action}
       </legend>
       {hint ? <p className="field-hint">{hint}</p> : null}

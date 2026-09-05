@@ -2,7 +2,12 @@ import type { EvidenceStatus, ImpactClaimLevel, IntendedImpact, Opportunity } fr
 import { createId } from "../domain/ids";
 import { draftLineOfSight } from "../domain/thread";
 import { replaceById } from "../domain/replaceById";
-import { filledText, readySlot } from "../domain/progress";
+import {
+  filledText,
+  impactComplete,
+  opportunityComplete,
+  readySlot,
+} from "../domain/progress";
 import { Checklist, ReadyControl, SelectField, TextArea } from "../ui/fields";
 import { ThreadView } from "../ui/ThreadView";
 import { useDesign } from "../ui/DesignContext";
@@ -39,8 +44,8 @@ function emptyImpact(): IntendedImpact {
 
 export function OpportunityImpactPage() {
   const { design, update } = useDesign();
-  const hasOpportunity = design.opportunities.some((item) => filledText(item.statement));
-  const hasImpact = design.intendedImpacts.some((item) => filledText(item.statement));
+  const hasOpportunity = design.opportunities.some(opportunityComplete);
+  const hasImpact = design.intendedImpacts.some(impactComplete);
 
   return (
     <div className="layout-split">
@@ -107,6 +112,7 @@ export function OpportunityImpactPage() {
                   opportunities: replaceById(current.opportunities, opp.id, { valueCreated }),
                 }))
               }
+              readyOk={readySlot(filledText(opp.valueCreated), hasOpportunity)}
             />
             <Checklist
               legend="Linked needs"
@@ -121,6 +127,7 @@ export function OpportunityImpactPage() {
                   opportunities: replaceById(current.opportunities, opp.id, { needIds }),
                 }))
               }
+              readyOk={readySlot(opp.needIds.length > 0, hasOpportunity)}
             />
             <Checklist
               legend="Linked stakeholders"
@@ -135,6 +142,7 @@ export function OpportunityImpactPage() {
                   opportunities: replaceById(current.opportunities, opp.id, { stakeholderIds }),
                 }))
               }
+              readyOk={readySlot(opp.stakeholderIds.length > 0, hasOpportunity)}
             />
             <SelectField
               id={`opp-ev-${opp.id}`}
@@ -233,6 +241,7 @@ export function OpportunityImpactPage() {
                   intendedImpacts: replaceById(current.intendedImpacts, impact.id, { mechanism }),
                 }))
               }
+              readyOk={readySlot(filledText(impact.mechanism), hasImpact)}
             />
             <TextArea
               id={`imp-ind-${impact.id}`}
@@ -244,6 +253,7 @@ export function OpportunityImpactPage() {
                   intendedImpacts: replaceById(current.intendedImpacts, impact.id, { indicator }),
                 }))
               }
+              readyOk={readySlot(filledText(impact.indicator), hasImpact)}
             />
             <TextArea
               id={`imp-bound-${impact.id}`}
@@ -255,6 +265,7 @@ export function OpportunityImpactPage() {
                   intendedImpacts: replaceById(current.intendedImpacts, impact.id, { claimBoundary }),
                 }))
               }
+              readyOk={readySlot(filledText(impact.claimBoundary), hasImpact)}
             />
             <Checklist
               legend="Linked opportunities"

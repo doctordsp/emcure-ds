@@ -1,7 +1,7 @@
 import type { SuccessCriterion } from "../domain/types";
 import { createId } from "../domain/ids";
 import { replaceById } from "../domain/replaceById";
-import { filledText, readySlot } from "../domain/progress";
+import { filledText, readySlot, successComplete } from "../domain/progress";
 import { Checklist, ReadyControl, TextArea, TextInput } from "../ui/fields";
 import { useDesign } from "../ui/DesignContext";
 
@@ -15,7 +15,7 @@ function emptyCriterion(): SuccessCriterion {
 
 export function SuccessPage() {
   const { design, update } = useDesign();
-  const hasSuccess = design.successCriteria.some((item) => filledText(item.statement));
+  const hasSuccess = design.successCriteria.some(successComplete);
   const linkItems = [
     ...design.opportunities.map((item) => ({
       id: item.id,
@@ -80,6 +80,7 @@ export function SuccessPage() {
                 successCriteria: replaceById(current.successCriteria, criterion.id, { metric }),
               }))
             }
+            readyOk={readySlot(filledText(criterion.metric), hasSuccess)}
           />
           <TextInput
             id={`sc-base-${criterion.id}`}
@@ -104,6 +105,7 @@ export function SuccessPage() {
                 }),
               }))
             }
+            readyOk={readySlot(filledText(criterion.targetOrThreshold), hasSuccess)}
           />
           <TextInput
             id={`sc-unit-${criterion.id}`}

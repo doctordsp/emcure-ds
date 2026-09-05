@@ -14,7 +14,7 @@ import {
   patchLens,
   stakeholderTypeLabel,
 } from "../domain/stakeholders";
-import { filledText, readySlot } from "../domain/progress";
+import { filledText, needComplete, readySlot, stakeholderNamed } from "../domain/progress";
 import { ChoicePills, Checklist, ReadyControl, SelectField, TextArea, TextInput } from "../ui/fields";
 import { useDesign } from "../ui/DesignContext";
 
@@ -59,8 +59,9 @@ function emptyNeed(): Need {
 
 export function StakeholdersPage() {
   const { design, update } = useDesign();
-  const hasStakeholder = design.stakeholders.length > 0;
-  const hasNeedStatement = design.needs.some((need) => filledText(need.statement));
+  const hasStakeholder = design.stakeholders.some(stakeholderNamed);
+  const hasNeed = design.needs.some(needComplete);
+  const situationOk = filledText(design.projectSituation);
 
   return (
     <div className="stack">
@@ -83,6 +84,7 @@ export function StakeholdersPage() {
         onChange={(projectSituation) => update((current) => ({ ...current, projectSituation }))}
         rows={5}
         wide
+        readyOk={situationOk}
       />
 
       <div className="card-actions">
@@ -100,7 +102,7 @@ export function StakeholdersPage() {
             Add stakeholder
           </button>
         </ReadyControl>
-        <ReadyControl ok={hasNeedStatement}>
+        <ReadyControl ok={hasNeed}>
           <button
             type="button"
             className="btn btn-secondary"
@@ -134,6 +136,7 @@ export function StakeholdersPage() {
                 stakeholders: replaceById(current.stakeholders, stk.id, { name }),
               }))
             }
+            readyOk={readySlot(stakeholderNamed(stk), hasStakeholder)}
           />
           <TextInput
             id={`stk-group-${stk.id}`}
@@ -318,7 +321,7 @@ export function StakeholdersPage() {
               }))
             }
             wide
-            readyOk={readySlot(filledText(need.statement), hasNeedStatement)}
+            readyOk={readySlot(filledText(need.statement), hasNeed)}
           />
           <TextArea
             id={`need-ctx-${need.id}`}
@@ -331,6 +334,7 @@ export function StakeholdersPage() {
               }))
             }
             wide
+            readyOk={readySlot(filledText(need.context), hasNeed)}
           />
           <TextArea
             id={`need-cur-${need.id}`}
@@ -342,6 +346,7 @@ export function StakeholdersPage() {
                 needs: replaceById(current.needs, need.id, { currentCondition }),
               }))
             }
+            readyOk={readySlot(filledText(need.currentCondition), hasNeed)}
           />
           <Checklist
             legend="Need-holders / linked stakeholders"

@@ -191,6 +191,14 @@ img {
   margin: 24px 0 32px;
 }
 
+.starter-examples {
+  margin: 0 0 32px;
+}
+
+.starter-examples .muted {
+  margin-bottom: 16px;
+}
+
 .active-banner {
   display: flex;
   justify-content: space-between;
@@ -722,6 +730,12 @@ img {
 }
 
 .field-label-row label {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.legend-label {
   display: inline-flex;
   align-items: center;
   gap: 6px;

@@ -1,4 +1,4 @@
-import { filledText } from "../domain/progress";
+import { filledNumber, filledText } from "../domain/progress";
 import { NumberInput, SelectField, TextArea, TextInput } from "../ui/fields";
 import { useDesign } from "../ui/DesignContext";
 
@@ -19,7 +19,8 @@ export function CourseProfilePage() {
       <h1>Course profile</h1>
       <p className="lede">
         Establish feasibility constraints and technical intentions. These fields feed
-        later alignment checks; they do not lock the rest of the design.
+        later alignment checks; they do not lock the rest of the design. Ready needs
+        the profile filled in, not only a title and duration.
       </p>
       <TextInput
         id="course-title"
@@ -33,12 +34,14 @@ export function CourseProfilePage() {
         label="Course code"
         value={profile.code}
         onChange={(code) => patch({ code })}
+        readyOk={filledText(profile.code)}
       />
       <TextInput
         id="discipline"
         label="Discipline"
         value={profile.discipline}
         onChange={(discipline) => patch({ discipline })}
+        readyOk={filledText(profile.discipline)}
       />
       <TextInput
         id="level"
@@ -46,18 +49,21 @@ export function CourseProfilePage() {
         hint="For example: first-year, junior, mixed undergraduates"
         value={profile.level}
         onChange={(level) => patch({ level })}
+        readyOk={filledText(profile.level)}
       />
       <NumberInput
         id="enrollment"
         label="Enrollment"
         value={profile.enrollment}
         onChange={(enrollment) => patch({ enrollment })}
+        readyOk={filledNumber(profile.enrollment)}
       />
       <NumberInput
         id="team-size"
         label="Typical team size"
         value={profile.teamSize}
         onChange={(teamSize) => patch({ teamSize })}
+        readyOk={filledNumber(profile.teamSize)}
       />
       <NumberInput
         id="duration"
@@ -65,17 +71,19 @@ export function CourseProfilePage() {
         hint="Used to warn if too many EM priorities are selected."
         value={profile.durationWeeks}
         onChange={(durationWeeks) => patch({ durationWeeks })}
-        readyOk={Boolean(profile.durationWeeks)}
+        readyOk={filledNumber(profile.durationWeeks)}
       />
       <TextInput
         id="meeting"
         label="Meeting pattern"
         value={profile.meetingPattern}
         onChange={(meetingPattern) => patch({ meetingPattern })}
+        readyOk={filledText(profile.meetingPattern)}
       />
       <SelectField
         id="autonomy"
         label="Desired student autonomy"
+        hint="Has a default. Change it if the course is not guided."
         value={profile.autonomyLevel}
         onChange={(autonomyLevel) =>
           patch({ autonomyLevel: autonomyLevel as typeof profile.autonomyLevel })
@@ -92,12 +100,14 @@ export function CourseProfilePage() {
         label="Prerequisites"
         value={profile.prerequisites}
         onChange={(prerequisites) => patch({ prerequisites })}
+        readyOk={filledText(profile.prerequisites)}
       />
       <TextArea
         id="objectives"
         label="Technical learning objectives"
         value={profile.technicalObjectives}
         onChange={(technicalObjectives) => patch({ technicalObjectives })}
+        readyOk={filledText(profile.technicalObjectives)}
       />
     </div>
   );

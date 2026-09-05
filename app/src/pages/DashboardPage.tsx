@@ -3,7 +3,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { AuthBar } from "../auth/AuthBar";
 import { LocalImportBanner } from "../auth/LocalImportBanner";
 import { useAuth } from "../auth/AuthContext";
-import { EXAMPLE_DESIGN } from "../data/exampleDesign";
+import { STARTER_EXAMPLES } from "../data/examples";
 import { cloneDesign } from "../domain/createDesign";
 import type { WorkspaceRoute } from "../domain/types";
 import {
@@ -203,25 +203,6 @@ export function DashboardPage() {
               </button>
               <button
                 type="button"
-                className="btn btn-gold"
-                disabled={busy}
-                onClick={() =>
-                  void run(async () => {
-                    const exists = (await listDesigns()).some(
-                      (item) => item.title === EXAMPLE_DESIGN.title,
-                    );
-                    const title = exists
-                      ? `${EXAMPLE_DESIGN.title} (copy)`
-                      : EXAMPLE_DESIGN.title;
-                    const saved = await saveNewDesign(cloneDesign(EXAMPLE_DESIGN, title));
-                    open(saved.id);
-                  })
-                }
-              >
-                Start from example
-              </button>
-              <button
-                type="button"
                 className="btn btn-secondary"
                 disabled={busy}
                 onClick={() => fileRef.current?.click()}
@@ -246,6 +227,43 @@ export function DashboardPage() {
                 }}
               />
             </div>
+            <section className="starter-examples" aria-labelledby="starter-heading">
+              <h2 id="starter-heading">Starter examples</h2>
+              <p className="muted">
+                Complete specimens you can edit. They differ in course envelope, partners, and
+                how students generate evidence.
+              </p>
+              <div className="card-grid starter-grid">
+                {STARTER_EXAMPLES.map((starter) => (
+                  <article className="card" key={starter.id}>
+                    <h3>{starter.title}</h3>
+                    <p className="muted">
+                      {starter.discipline} · {starter.level}
+                    </p>
+                    <p>{starter.blurb}</p>
+                    <div className="card-actions">
+                      <button
+                        type="button"
+                        className="btn btn-gold"
+                        disabled={busy}
+                        onClick={() =>
+                          void run(async () => {
+                            const exists = (await listDesigns()).some(
+                              (item) => item.title === starter.title,
+                            );
+                            const title = exists ? `${starter.title} (copy)` : starter.title;
+                            const saved = await saveNewDesign(cloneDesign(starter.design, title));
+                            open(saved.id);
+                          })
+                        }
+                      >
+                        Start this example
+                      </button>
+                    </div>
+                  </article>
+                ))}
+              </div>
+            </section>
             {error ? (
               <p className="callout callout-warn" role="alert">
                 {error}
@@ -256,8 +274,9 @@ export function DashboardPage() {
               <div className="card">
                 <h3>No designs yet</h3>
                 <p>
-                  Start from scratch to draft your own EM-CURE, or start from the stormwater
-                  example to see a complete Opportunity-to-Impact Thread and Big Red X.
+                  Start from scratch to draft your own EM-CURE, or start from a starter example
+                  to see a complete specimen: needs, success criteria, activities, Big Red X,
+                  card, and rubric.
                 </p>
               </div>
             ) : (

@@ -221,6 +221,11 @@ export function BigRedXPage() {
                 uncertainties: replaceById(current.uncertainties, item.id, { rationale }),
               }))
             }
+            readyOk={
+              item.designation === "primary_big_red_x" || item.id === design.currentBigRedXId
+                ? filledText(item.rationale)
+                : undefined
+            }
           />
           <TextArea
             id={`u-dec-${item.id}`}

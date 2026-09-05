@@ -6,6 +6,7 @@ import {
 } from "../domain/frameworks";
 import type { FrameworkMode, Priority } from "../domain/types";
 import { createId } from "../domain/ids";
+import { frameworkReady } from "../domain/progress";
 import { ReadyDot, SelectField, TextArea } from "../ui/fields";
 import { useDesign } from "../ui/DesignContext";
 
@@ -131,7 +132,7 @@ export function FrameworkPage() {
       ) : null}
 
       <h2 className="with-ready-dot">
-        <ReadyDot ok={design.frameworkSelections.length > 0} />
+        <ReadyDot ok={frameworkReady(design)} />
         Select at least one habit or behavior
       </h2>
       {grouped.map(([group, groupItemsList]) => (

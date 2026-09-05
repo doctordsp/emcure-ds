@@ -4,13 +4,14 @@ import { getFrameworkItem } from "../domain/frameworks";
 import { MVRC_OBJECT_ID, type Activity, type DiscoveryMode, type Grouping } from "../domain/types";
 import { MVRC_DEFINITION, MVRC_LABEL, mvrcStatement } from "../domain/mvrc";
 import { replaceById } from "../domain/replaceById";
+import { activityComplete, filledText, readySlot } from "../domain/progress";
 import { Checklist, NumberInput, ReadyControl, SelectField, TextArea, TextInput } from "../ui/fields";
 import { useDesign } from "../ui/DesignContext";
 
 export function JourneyPage() {
   const { design, update } = useDesign();
   const brx = primaryBigRedX(design);
-  const hasJourney = allActivities(design).length > 0;
+  const hasJourney = allActivities(design).some(activityComplete);
 
   const linkItems = [
     ...design.frameworkSelections.map((sel) => ({
@@ -125,6 +126,7 @@ export function JourneyPage() {
                 label="Title"
                 value={activity.title}
                 onChange={(title) => patchActivity(phase.id, activity.id, { title })}
+                readyOk={readySlot(filledText(activity.title), hasJourney)}
               />
               <TextArea
                 id={`act-ins-${activity.id}`}
@@ -134,6 +136,7 @@ export function JourneyPage() {
                   patchActivity(phase.id, activity.id, { instructions })
                 }
                 wide
+                readyOk={readySlot(filledText(activity.instructions), hasJourney)}
               />
               <SelectField
                 id={`act-group-${activity.id}`}
