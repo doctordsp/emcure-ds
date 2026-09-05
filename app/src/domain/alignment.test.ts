@@ -237,7 +237,7 @@ describe("evaluateDesign", () => {
     ];
     const al019 = evaluateDesign(design).find((item) => item.ruleId === "AL-019");
     expect(al019?.severity).toBe("warning");
-    expect(al019?.route).toBe("big-red-x");
+    expect(al019?.route).toBe("mvrc");
   });
 
   it("does not warn AL-019 when the MVRC statement is present", () => {
@@ -303,7 +303,7 @@ describe("evaluateDesign", () => {
     };
     const al021 = evaluateDesign(design).find((item) => item.ruleId === "AL-021");
     expect(al021?.severity).toBe("warning");
-    expect(al021?.route).toBe("big-red-x");
+    expect(al021?.route).toBe("mvrc");
   });
 
   it("does not flag the stormwater example for MVRC gaps", () => {

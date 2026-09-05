@@ -1,6 +1,7 @@
 import { Navigate, Route, Routes } from "react-router-dom";
 import { DashboardPage } from "./pages/DashboardPage";
 import { BigRedXPage } from "./pages/BigRedXPage";
+import { MvrcPage } from "./pages/MvrcPage";
 import { CourseProfilePage } from "./pages/CourseProfilePage";
 import { ExportPage } from "./pages/ExportPage";
 import { FrameworkPage } from "./pages/FrameworkPage";
@@ -29,6 +30,7 @@ export default function App() {
         <Route path="opportunity-impact" element={<OpportunityImpactPage />} />
         <Route path="success" element={<SuccessPage />} />
         <Route path="big-red-x" element={<BigRedXPage />} />
+        <Route path="mvrc" element={<MvrcPage />} />
         <Route path="journey" element={<JourneyPage />} />
         <Route path="review" element={<ReviewPage />} />
         <Route path="export" element={<ExportPage />} />

@@ -42,4 +42,15 @@ describe("starter catalog", () => {
     expect(STARTER_EXAMPLES[0].blurb).toMatch(/field sensors/i);
     expect(STARTER_EXAMPLES[1].blurb).toMatch(/instron/i);
   });
+
+  it("states opportunities as prospective offerings, not the student investigation", () => {
+    for (const example of STARTER_EXAMPLES) {
+      const statement = example.design.opportunities[0]?.statement ?? "";
+      expect(statement, example.id).not.toMatch(/^(Undergraduate teams|Student pairs)/i);
+      expect(statement, example.id).toMatch(/could|offering|service line|package/i);
+      expect(example.design.opportunities[0]?.valueCreated, example.id).toMatch(
+        /offering|product|shell|retrofit/i,
+      );
+    }
+  });
 });

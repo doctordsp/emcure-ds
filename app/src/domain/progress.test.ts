@@ -10,6 +10,7 @@ import {
   frameworkReady,
   impactComplete,
   journeyReady,
+  mvrcReady,
   needComplete,
   opportunityComplete,
   readySlot,
@@ -194,9 +195,43 @@ describe("section Ready predicates", () => {
     expect(threadReady(design)).toBe(false);
     expect(successReady(design)).toBe(false);
     expect(brxReady(design)).toBe(false);
+    expect(mvrcReady(design)).toBe(false);
     expect(journeyReady(design)).toBe(false);
     expect(sectionStatuses(design).find((item) => item.route === "course")?.state).toBe("in_progress");
+    expect(sectionStatuses(design).find((item) => item.route === "mvrc")?.state).toBe("not_started");
     expect(sectionStatuses(design).find((item) => item.route === "export")?.state).toBe("not_started");
+    expect(sectionStatuses(design).map((item) => item.label)).toEqual([
+      "1. Course profile",
+      "2. EM framework",
+      "3. Stakeholders and need",
+      "4. Opportunity and impact",
+      "5. Success criteria",
+      "6. Big Red X",
+      "7. MVRC",
+      "8. Student journey",
+      "9. Alignment review",
+      "10. Export",
+    ]);
+  });
+
+  it("can mark Big Red X Ready without an MVRC statement", () => {
+    const design = createEmptyDesign();
+    design.currentBigRedXId = "brx-1";
+    design.uncertainties = [
+      {
+        id: "brx-1",
+        type: "unknown",
+        statement: "Does the bioswale reduce peak runoff?",
+        scores: {},
+        linkedImpactIds: [],
+        linkedSuccessCriterionIds: [],
+        decisionIfResolved: "Whether the city advances, revises, or pauses.",
+        rationale: "This is the decision the liaison asked the course to inform.",
+        designation: "primary_big_red_x",
+      },
+    ];
+    expect(brxReady(design)).toBe(true);
+    expect(mvrcReady(design)).toBe(false);
   });
 });
 
@@ -210,6 +245,7 @@ describe("starter examples stay Ready", () => {
       expect(threadReady(design)).toBe(true);
       expect(successReady(design)).toBe(true);
       expect(brxReady(design)).toBe(true);
+      expect(mvrcReady(design)).toBe(true);
       expect(journeyReady(design)).toBe(true);
       const states = Object.fromEntries(sectionStatuses(design).map((item) => [item.route, item.state]));
       expect(states).toMatchObject({
@@ -219,6 +255,7 @@ describe("starter examples stay Ready", () => {
         "opportunity-impact": "ready",
         success: "ready",
         "big-red-x": "ready",
+        mvrc: "ready",
         journey: "ready",
         review: "ready",
         export: "ready",

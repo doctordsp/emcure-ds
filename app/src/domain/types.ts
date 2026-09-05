@@ -40,6 +40,7 @@ export type WorkspaceRoute =
   | "opportunity-impact"
   | "success"
   | "big-red-x"
+  | "mvrc"
   | "journey"
   | "review"
   | "export";
@@ -48,7 +49,7 @@ export const BRX_CRITERIA = [
   {
     key: "influenceOnOpportunity",
     label: "Influence on opportunity",
-    description: "How much resolving this would change the opportunity.",
+    description: "How much resolving this would change whether a possible new offering is viable.",
   },
   {
     key: "influenceOnImpact",

@@ -166,9 +166,9 @@ export function evaluateDesign(design: EmcureDesign): AlignmentFinding[] {
         title: `Big Red X has no ${MVRC_LABEL}`,
         explanation:
           `Name ${MVRC_DEFINITION} so the investigation has a bounded contribution, not only a question.`,
-        suggestedAction: `Add a ${MVRC_LABEL} on the Big Red X page.`,
+        suggestedAction: `Add a ${MVRC_LABEL} on the MVRC step.`,
         affectedObjectIds: [brx.id],
-        route: "big-red-x",
+        route: "mvrc",
       }),
     );
   }
@@ -204,7 +204,7 @@ export function evaluateDesign(design: EmcureDesign): AlignmentFinding[] {
         suggestedAction:
           `Rewrite the ${MVRC_LABEL} so it names evidence, a packet, or a bounded recommendation rather than demonstrated impact.`,
         affectedObjectIds: [MVRC_OBJECT_ID],
-        route: "big-red-x",
+        route: "mvrc",
       }),
     );
   }

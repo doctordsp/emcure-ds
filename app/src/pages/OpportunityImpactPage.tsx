@@ -52,8 +52,9 @@ export function OpportunityImpactPage() {
       <div className="stack">
         <h1>Opportunity and impact</h1>
         <p className="lede">
-          Build the reasoning chain. Claims about impact must stay bounded: distinguish
-          output, outcome, potential impact, and demonstrated impact.
+          An opportunity is a possible new development, product, service, or venture, not the
+          student research plan. Then bound intended impact: distinguish output, outcome,
+          potential impact, and demonstrated impact.
         </p>
         <div className="card-actions">
           <ReadyControl ok={hasOpportunity}>
@@ -92,6 +93,7 @@ export function OpportunityImpactPage() {
             <TextArea
               id={`opp-${opp.id}`}
               label="Opportunity statement"
+              hint="A prospective possibility: a new product, service, business, or other offering that could exist. Not the investigation students will run this term."
               value={opp.statement}
               onChange={(statement) =>
                 update((current) => ({
@@ -105,6 +107,7 @@ export function OpportunityImpactPage() {
             <TextArea
               id={`opp-val-${opp.id}`}
               label="Value created"
+              hint="If this offering existed, what new value would it create, and for whom?"
               value={opp.valueCreated}
               onChange={(valueCreated) =>
                 update((current) => ({

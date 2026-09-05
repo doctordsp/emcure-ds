@@ -39,7 +39,7 @@ export function threadNodes(design: EmcureDesign): ThreadNode[] {
       label: "Opportunity",
       filled: Boolean(opportunity),
       summary: opportunity?.statement ?? "",
-      gap: "No opportunity linked to a need",
+      gap: "No opportunity yet. Name a possible new product, service, or venture.",
       route: "opportunity-impact",
     },
     {
@@ -72,7 +72,7 @@ export function threadNodes(design: EmcureDesign): ThreadNode[] {
       filled: Boolean(mvrc),
       summary: mvrc,
       gap: `No ${MVRC_LABEL} yet`,
-      route: "big-red-x",
+      route: "mvrc",
     },
     {
       key: "investigation",
@@ -118,5 +118,5 @@ export function draftLineOfSight(design: EmcureDesign): string {
     investigation?.title.trim() ||
     design.courseProfile.technicalObjectives.trim() ||
     "[research question or technical work]";
-  return `We are investigating ${work} to resolve ${brx?.statement.trim() || "[critical uncertainty]"}. This uncertainty affects ${opportunity?.statement.trim() || "[opportunity to create value]"}, which could contribute to ${impact?.statement.trim() || "[intended impact]"} for ${stakeholders || "[stakeholders]"}. The evidence will inform ${brx?.decisionIfResolved?.trim() || "[decision or next action]"}.`;
+  return `We are investigating ${work} to resolve ${brx?.statement.trim() || "[critical uncertainty]"}. This uncertainty affects ${opportunity?.statement.trim() || "[a possible new product, service, or venture]"}, which could contribute to ${impact?.statement.trim() || "[intended impact]"} for ${stakeholders || "[stakeholders]"}. The evidence will inform ${brx?.decisionIfResolved?.trim() || "[decision or next action]"}.`;
 }

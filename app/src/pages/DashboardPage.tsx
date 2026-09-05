@@ -145,7 +145,7 @@ export function DashboardPage() {
         {user ? <LocalImportBanner onImported={() => void refresh()} /> : null}
         <p className="lede">
           Design an undergraduate research experience in which students can see and
-          demonstrate how technical work connects to opportunity and impact.
+          demonstrate how technical work connects to a possible new opportunity and its impact.
         </p>
 
         <div className="active-banner" role="status">
@@ -466,7 +466,7 @@ export function DashboardPage() {
             <section className="thread-legend" aria-labelledby="legend-heading">
               <h2 id="legend-heading">Opportunity-to-Impact Thread</h2>
               <p>
-                These four items complete the Opportunity-to-Impact Thread. They are not
+                These items complete the Opportunity-to-Impact Thread. They are not
                 drawn on the graphic; use them with the same active EM-CURE.
               </p>
               <div className="legend-actions">

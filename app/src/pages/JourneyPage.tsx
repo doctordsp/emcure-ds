@@ -90,7 +90,7 @@ export function JourneyPage() {
       ) : (
         <p className="callout callout-warn">
           No {MVRC_LABEL} yet. It is {MVRC_DEFINITION}.{" "}
-          <Link to={`/designs/${design.id}/big-red-x`}>Define it on the Big Red X page</Link>,
+          <Link to={`/designs/${design.id}/mvrc`}>Define it on the MVRC step</Link>,
           then link an activity to it here.
         </p>
       )}

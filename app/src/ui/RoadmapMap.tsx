@@ -337,6 +337,7 @@ export const THREAD_LEGEND: {
   },
   { id: "success", label: "Success Criteria", route: "success", tone: "success" },
   { id: "big-red-x", label: "Big Red X", route: "big-red-x", tone: "brx" },
+  { id: "mvrc", label: "MVRC", route: "mvrc", tone: "brx" },
 ];
 
 export function RoadmapMap({

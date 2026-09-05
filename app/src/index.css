@@ -528,6 +528,10 @@ img {
   border-left-color: var(--emcure-danger);
 }
 
+.nav-list a.stage-mvrc {
+  border-left-color: var(--emcure-gold-600);
+}
+
 .nav-list a.stage-journey {
   border-left-color: var(--roadmap-journey);
 }
@@ -562,6 +566,12 @@ img {
   display: flex;
   flex-wrap: wrap;
   gap: 8px;
+}
+
+.export-tabs {
+  padding-bottom: 16px;
+  margin-bottom: 8px;
+  border-bottom: 2px solid var(--emcure-border);
 }
 
 .pill {

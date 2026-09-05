@@ -19,7 +19,7 @@ const EXAMPLE_CORE: EmcureDesign = {
       scopeId: "example-stormwater-emcure",
       priority: "primary",
       localInterpretation:
-        "In this studio, opportunity means finding a measurement the city does not already have, not inventing a new green-infrastructure product.",
+        "Opportunity here is a possible new municipal offering: a sited bioswale package the city could deploy, not the student measurement campaign. Students test whether that offering is viable at this site.",
     },
     {
       id: "sel-imp",
@@ -75,7 +75,7 @@ const EXAMPLE_CORE: EmcureDesign = {
   projectSituation:
     "A low-lying neighborhood experiences repeated basement flooding after moderate storms. The city is considering a bioswale retrofit but lacks local performance evidence. A public-works liaison can meet twice during the semester. The instructor has walked the drainage path and has complaint summaries, not a complete hydrologic record.",
   lineOfSightStatement:
-    "We are investigating whether a proposed bioswale reduces peak runoff during typical storms to resolve uncertainty about on-site performance. This uncertainty affects the opportunity to site low-cost green infrastructure where it can reduce flooding, which could contribute to fewer inundated homes for neighborhood residents and the city. The evidence will inform whether the city advances, revises, or pauses the retrofit.",
+    "We are investigating whether a proposed bioswale reduces peak runoff during typical storms to resolve uncertainty about on-site performance. This uncertainty affects whether a neighborhood bioswale package can become a repeatable municipal offering, which could contribute to fewer inundated homes for neighborhood residents and the city. The evidence will inform whether the city advances, revises, or pauses the retrofit.",
   currentBigRedXId: "brx-runoff",
   minimumViableResearchContribution: {
     statement:
@@ -193,11 +193,11 @@ const EXAMPLE_CORE: EmcureDesign = {
     {
       id: "opp-siting",
       statement:
-        "Undergraduate teams can generate a bounded performance comparison that helps the city decide whether this bioswale concept is worth advancing.",
+        "A neighborhood-scale bioswale package could become a new municipal green-infrastructure offering: a sited, fundable retrofit the city deploys on residential streets that flood today, instead of waiting on a capital-scale sewer rebuild.",
       needIds: ["need-flooding", "need-decision"],
       stakeholderIds: ["stk-city", "stk-residents"],
       valueCreated:
-        "A decision-ready evidence packet: what was measured, what remains uncertain, and a bounded recommendation the liaison can carry into a capital conversation.",
+        "A productized, site-specific retrofit public works can repeat. Residents get a visible intervention rather than complaint-driven pumping. If the concept works on this street, the city has an offering it can take to capital planning.",
       evidenceStatus: "assumption",
     },
   ],
@@ -284,7 +284,7 @@ const EXAMPLE_CORE: EmcureDesign = {
       decisionIfResolved:
         "Whether the city should advance, revise, or pause the bioswale retrofit.",
       rationale:
-        "If on-site performance is negligible, the opportunity to create value with this design collapses. Students can investigate it with sensors in one semester.",
+        "If on-site performance is negligible, a bioswale offering for this neighborhood is not viable. Students can investigate that with sensors in one semester.",
       designation: "primary_big_red_x",
     },
     {
@@ -387,7 +387,7 @@ const EXAMPLE_CORE: EmcureDesign = {
           id: "act-thread",
           title: "Draft and revise the opportunity-impact thread",
           instructions:
-            "Write a need for residents, a need for the city, one opportunity, intended impact, and a claim boundary. Revisit after evidence is in.",
+            "Write a need for residents, a need for the city, one opportunity (a possible new product, service, or venture, not the research plan), intended impact, and a claim boundary. Revisit after evidence is in.",
           discoveryMode: "mixed",
           grouping: "team",
           estimatedMinutes: 90,

@@ -84,7 +84,7 @@ const ORTHOTIC_CORE: EmcureDesign = {
   projectSituation:
     "A campus clinic wants to 3D-print custom ankle-foot orthotic shells in-house. The prosthetist has two candidate filaments and a draft geometry. Users will sweat in the device and sometimes get it wet. The clinic will not put student prints on patients this term. The lab has an Instron, a humidity chamber, and a soak bath. The lab manager schedules machine time in pairs.",
   lineOfSightStatement:
-    "We are investigating whether water uptake from humidity and liquid water degrades the mechanical reliability of candidate 3D-printed orthotic materials enough to change the clinic's material and process spec. That uncertainty affects the opportunity to print shells in-house instead of outsourcing. The evidence is a conditioned Instron dataset and a spec memo. Patient function and a clinical trial are beyond this module.",
+    "We are investigating whether water uptake from humidity and liquid water degrades the mechanical reliability of candidate 3D-printed orthotic materials enough to change the clinic's material and process spec. That uncertainty affects whether in-house printed shells can become a clinic offering instead of an outsourced product. The evidence is a conditioned Instron dataset and a spec memo. Patient function and a clinical trial are beyond this module.",
   currentBigRedXId: "brx-water",
   minimumViableResearchContribution: {
     statement:
@@ -202,11 +202,11 @@ const ORTHOTIC_CORE: EmcureDesign = {
     {
       id: "opp-material",
       statement:
-        "Student pairs can run a bounded dry/humidity/soak Instron campaign that lets the clinic decide whether these print materials belong in an in-house spec.",
+        "The clinic could launch an in-house 3D-printed ankle-foot orthotic shell as a new service line, replacing outsourced fabrication, if a print process holds up to sweat and incidental wetting.",
       needIds: ["need-wet", "need-spec"],
       stakeholderIds: ["stk-prosthetist", "stk-patient"],
       valueCreated:
-        "A conditioned mechanical dataset plus a spec memo the prosthetist can accept, revise, or reject without treating it as a cleared medical device.",
+        "Faster turnaround and clinic-controlled geometry at lower cost per shell. A future product patients could receive after a spec exists. This term does not put a student print on a person.",
       evidenceStatus: "assumption",
     },
   ],
@@ -295,7 +295,7 @@ const ORTHOTIC_CORE: EmcureDesign = {
       decisionIfResolved:
         "Whether the clinic should keep, change, or drop these filaments for in-house shells.",
       rationale:
-        "If wet-conditioned strength and swell are acceptable, in-house printing can proceed on that spec. If not, the opportunity collapses for these materials. Pairs can test it on the Instron in ten weeks without enrolling patients.",
+        "If wet-conditioned strength and swell are acceptable, an in-house printed-shell service can proceed on that spec. If not, that offering is not viable with these materials. Pairs can test it on the Instron in ten weeks without enrolling patients.",
       designation: "primary_big_red_x",
     },
     {
@@ -399,7 +399,7 @@ const ORTHOTIC_CORE: EmcureDesign = {
           id: "act-thread",
           title: "Bound the reliability question",
           instructions:
-            "Write the wet-reliability need, the spec need, one opportunity, an output claim for the dataset, and an outcome claim for the clinic decision. State that patient function is out of scope.",
+            "Write the wet-reliability need, the spec need, one opportunity (a possible new clinic offering, not the Instron campaign), an output claim for the dataset, and an outcome claim for the clinic decision. State that patient function is out of scope.",
           discoveryMode: "mixed",
           grouping: "team",
           estimatedMinutes: 75,

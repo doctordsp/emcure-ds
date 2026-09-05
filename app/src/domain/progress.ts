@@ -21,6 +21,7 @@ export interface SectionStatus {
     | "opportunity"
     | "success"
     | "brx"
+    | "mvrc"
     | "journey"
     | "assessment"
     | "destination";
@@ -123,9 +124,12 @@ export function brxReady(design: EmcureDesign): boolean {
     brx &&
       filledText(brx.statement) &&
       filledText(brx.decisionIfResolved) &&
-      filledText(brx.rationale) &&
-      filledText(design.minimumViableResearchContribution?.statement),
+      filledText(brx.rationale),
   );
+}
+
+export function mvrcReady(design: EmcureDesign): boolean {
+  return filledText(design.minimumViableResearchContribution?.statement);
 }
 
 export function activityComplete(item: Activity): boolean {
@@ -143,6 +147,7 @@ export function sectionStatuses(design: EmcureDesign): SectionStatus[] {
   const hasThread = threadReady(design);
   const hasSuccess = successReady(design);
   const hasBrx = brxReady(design);
+  const hasMvrc = mvrcReady(design);
   const hasJourney = journeyReady(design);
   const openErrors = design.findings.filter(
     (finding) => finding.status === "open" && finding.severity === "error",
@@ -186,20 +191,31 @@ export function sectionStatuses(design: EmcureDesign): SectionStatus[] {
       stage: "brx",
     },
     {
+      route: "mvrc",
+      label: "7. MVRC",
+      state: flag(hasMvrc, design.minimumViableResearchContribution?.statement),
+      stage: "mvrc",
+    },
+    {
       route: "journey",
-      label: "7. Student journey",
+      label: "8. Student journey",
       state: flag(hasJourney, allActivities(design).length),
       stage: "journey",
     },
     {
       route: "review",
-      label: "8. Alignment review",
-      state: hasJourney && hasBrx ? (openErrors === 0 ? "ready" : "in_progress") : "not_started",
+      label: "9. Alignment review",
+      state:
+        hasJourney && hasBrx && hasMvrc
+          ? openErrors === 0
+            ? "ready"
+            : "in_progress"
+          : "not_started",
       stage: "assessment",
     },
     {
       route: "export",
-      label: "9. Export",
+      label: "10. Export",
       state: hasProfile ? "ready" : "not_started",
       stage: "destination",
     },
