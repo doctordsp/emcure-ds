@@ -35,7 +35,6 @@ function resetCardFromDesign(current: EmcureDesign): EmcureDesign {
     ...current,
     card: {
       ...draftCardFromDesign(current),
-      author: existing.author,
       featuredImageName: existing.featuredImageName,
       featuredImageDataUrl: existing.featuredImageDataUrl,
       featuredImagePath: existing.featuredImagePath,
@@ -185,14 +184,6 @@ export function CardEditor() {
         wide
       />
       <TextInput
-        id="card-author"
-        label="Author"
-        hint="Appears as “by …” on this page. Prefills from Instructor."
-        value={card.author}
-        onChange={(author) => patch({ author })}
-        action={fillAction("author")}
-      />
-      <TextInput
         id="card-institution"
         label="Institution"
         value={card.institution ?? ""}
@@ -209,7 +200,7 @@ export function CardEditor() {
       <TextInput
         id="card-instructor"
         label="Instructor"
-        hint="Used to filter the Public Gallery. Separate from the Author byline."
+        hint="Appears as “by …” on this page and filters the Public Gallery."
         value={card.instructor ?? ""}
         onChange={(instructor) => patch({ instructor })}
         action={fillAction("instructor")}

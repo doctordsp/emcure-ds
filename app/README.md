@@ -29,7 +29,7 @@ Alignment rules live in `src/domain/alignment.ts` and run independently of the U
 7. Review alignment findings and export Markdown, HTML, JSON, a public card, or a student companion.
 8. On **Create a Card**, **Publish** an unlisted snapshot for a shareable `index.html?c=<slug>` link, or **Download HTML** for a standalone page you can host anywhere. Faculty notes are not included in either.
 
-**Create a Card** prefills from the design. Use **Fill from design** on a field to refresh that field only. **Reset fields from design** rewrites the whole card except author and image.
+**Create a Card** prefills from the design. Use **Fill from design** on a field to refresh that field only. **Reset fields from design** rewrites the whole card except the image and the rubric toggle. The public byline is the Instructor.
 
 AI rewrite of Description, Problem / Need, and Summary is available when an AI API is connected on **Setup AI API**. Suggestions must be accepted, edited, or dismissed; the card is never overwritten on arrival. Deterministic fill works without a model.
 

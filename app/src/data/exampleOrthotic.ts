@@ -530,7 +530,6 @@ const ORTHOTIC_CORE: EmcureDesign = {
 
 export const ORTHOTIC_EXAMPLE: EmcureDesign = applyAlignment(
   withExportSurfaces(ORTHOTIC_CORE, {
-    cardAuthor: "Amina Ortiz",
     cardAcknowledgments:
       "Campus clinic prosthetist who provided geometry and filaments. Orthotic users are not named and were not enrolled. Lab manager who scheduled the Instron.",
     cardSubCategory: "Biomaterials / additive manufacturing",

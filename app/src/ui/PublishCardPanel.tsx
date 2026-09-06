@@ -27,6 +27,7 @@ export function PublishCardPanel({
   const [error, setError] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
   const [copied, setCopied] = useState(false);
+  const [reset, setReset] = useState(false);
 
   const card = resolvedCard(design);
   const slug = published?.slug ?? cardSlug(card.title || displayTitle(design), design.id);
@@ -43,8 +44,16 @@ export function PublishCardPanel({
   }
 
   const resetButton = (
-    <button type="button" className="btn btn-secondary" onClick={onResetFields}>
-      Reset fields from design
+    <button
+      type="button"
+      className={`btn btn-secondary${reset ? " is-flashing" : ""}`}
+      onClick={() => {
+        onResetFields();
+        setReset(true);
+        window.setTimeout(() => setReset(false), 600);
+      }}
+    >
+      {reset ? "Fields reset" : "Reset fields from design"}
     </button>
   );
 

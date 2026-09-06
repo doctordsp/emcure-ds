@@ -241,6 +241,9 @@ export function designToHtml(design: EmcureDesign): string {
   <style>
     body { font-family: Mulish, Arial, Helvetica, sans-serif; color: #18323C; max-width: 46rem; margin: 2rem auto; line-height: 1.55; }
     h1, h2, h3 { color: #125670; }
+    h2 { margin-top: 2.25rem; margin-bottom: 0.6rem; }
+    h3 { margin-top: 1.5rem; margin-bottom: 0.4rem; }
+    body > :first-child { margin-top: 0; }
     li { margin: 0.25rem 0; }
     @media print { body { margin: 0.75in; } }
   </style>

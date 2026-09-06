@@ -518,7 +518,6 @@ const EXAMPLE_CORE: EmcureDesign = {
 
 export const EXAMPLE_DESIGN: EmcureDesign = applyAlignment(
   withExportSurfaces(EXAMPLE_CORE, {
-    cardAuthor: "Jordan Hale",
     cardAcknowledgments:
       "Public-works liaison and community contact who scheduled site access. Neighborhood residents are not named in student products.",
     cardSubCategory: "Hydrology / green infrastructure",

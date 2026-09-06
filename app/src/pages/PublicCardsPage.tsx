@@ -147,7 +147,7 @@ export function PublicCardsPage() {
                       {row.card.title || "EM-CURE"}
                     </Link>
                   </h3>
-                  {row.card.author ? <p className="muted">by {row.card.author}</p> : null}
+                  {row.card.instructor ? <p className="muted">by {row.card.instructor}</p> : null}
                   {affiliation ? <p className="muted">{affiliation}</p> : null}
                   <p className="muted">
                     {[year, row.card.course].filter(Boolean).join(" · ") || "-"}

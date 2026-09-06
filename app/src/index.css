@@ -474,6 +474,19 @@ img {
   color: var(--emcure-danger);
 }
 
+/* Momentary confirmation that a button that changes fields in place did something. */
+.btn.is-flashing {
+  background: var(--emcure-teal-700);
+  border-color: var(--emcure-teal-700);
+  color: #fff;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .btn {
+    transition: background-color 180ms ease-out, color 180ms ease-out;
+  }
+}
+
 .workspace {
   display: grid;
   grid-template-columns: 17.5rem minmax(0, 1fr);
@@ -1283,6 +1296,16 @@ td {
   max-width: 46rem;
   margin: 0 auto;
   padding: 32px 24px 64px;
+}
+
+.public-card h2 {
+  margin-top: 2.25rem;
+  margin-bottom: 0.6rem;
+}
+
+.public-card h3 {
+  margin-top: 1.5rem;
+  margin-bottom: 0.4rem;
 }
 
 .public-card table {

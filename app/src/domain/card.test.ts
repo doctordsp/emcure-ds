@@ -2,6 +2,7 @@ import { describe, expect, it } from "vitest";
 import { EXAMPLE_DESIGN } from "../data/exampleDesign";
 import {
   canFillCardField,
+  cardFieldsToMarkdown,
   cardMaterialsFromDesign,
   draftCardFromDesign,
   emptyCard,
@@ -23,7 +24,6 @@ describe("draftCardFromDesign", () => {
     expect(card.institution).toBe("Riverside State University");
     expect(card.department).toBe("Civil engineering");
     expect(card.instructor).toBe("Jordan Hale");
-    expect(card.author).toBe("Jordan Hale");
   });
 
   it("leaves year level empty when the course has no level", () => {
@@ -77,9 +77,8 @@ describe("fillCardField", () => {
     expect(fillCardField(card, empty, "problemNeed")).toEqual(card);
   });
 
-  it("copies affiliation from the course profile and prefills author from instructor", () => {
+  it("copies affiliation from the course profile", () => {
     const empty = emptyCard();
-    empty.author = "Keep this byline";
     const filled = fillCardField(
       fillCardField(fillCardField(empty, EXAMPLE_DESIGN, "institution"), EXAMPLE_DESIGN, "department"),
       EXAMPLE_DESIGN,
@@ -88,7 +87,18 @@ describe("fillCardField", () => {
     expect(filled.institution).toBe("Riverside State University");
     expect(filled.department).toBe("Civil engineering");
     expect(filled.instructor).toBe("Jordan Hale");
-    expect(fillCardField(empty, EXAMPLE_DESIGN, "author").author).toBe("Jordan Hale");
-    expect(fillCardField(empty, EXAMPLE_DESIGN, "author").author).not.toBe("Keep this byline");
+  });
+});
+
+describe("public card byline", () => {
+  it("bylines the card with the instructor and does not repeat it in Details", () => {
+    const markdown = cardFieldsToMarkdown(draftCardFromDesign(EXAMPLE_DESIGN));
+    expect(markdown).toContain("by Jordan Hale");
+    expect(markdown).not.toMatch(/^- Instructor:/m);
+  });
+
+  it("omits the byline when no instructor is set", () => {
+    const markdown = cardFieldsToMarkdown({ ...emptyCard(), title: "Untitled" });
+    expect(markdown).not.toContain("by ");
   });
 });

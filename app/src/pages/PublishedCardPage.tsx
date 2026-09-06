@@ -92,7 +92,7 @@ export function PublishedCardPage({ slug }: { slug: string }) {
         <div>
           <p className="muted">EM-CURE</p>
           <h1>{card.title || "EM-CURE"}</h1>
-          {card.author ? <p className="lede">by {card.author}</p> : null}
+          {card.instructor ? <p className="lede">by {card.instructor}</p> : null}
         </div>
         <ShareQr url={shareUrl} />
       </div>
@@ -108,12 +108,6 @@ export function PublishedCardPage({ slug }: { slug: string }) {
           <>
             <dt>Department</dt>
             <dd>{card.department}</dd>
-          </>
-        ) : null}
-        {card.instructor ? (
-          <>
-            <dt>Instructor</dt>
-            <dd>{card.instructor}</dd>
           </>
         ) : null}
         {year ? (

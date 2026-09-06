@@ -230,9 +230,9 @@ export type DistributionDocumentKind =
 /** KEEN-style public card fields. Prefill from the design; faculty may edit for export. */
 export interface EmcureCard {
   title: string;
-  author: string;
   institution: string;
   department: string;
+  /** Doubles as the public byline. */
   instructor: string;
   yearLevel: string;
   course: string;

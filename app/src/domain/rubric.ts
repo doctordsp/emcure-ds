@@ -254,6 +254,9 @@ export function rubricToHtml(title: string, markdown: string): string {
   <style>
     body { font-family: Mulish, Arial, Helvetica, sans-serif; color: #18323C; max-width: 56rem; margin: 2rem auto; line-height: 1.55; }
     h1, h2, h3 { color: #125670; }
+    h2 { margin-top: 2.25rem; margin-bottom: 0.6rem; }
+    h3 { margin-top: 1.5rem; margin-bottom: 0.4rem; }
+    body > :first-child { margin-top: 0; }
     table { border-collapse: collapse; width: 100%; font-size: 0.9rem; margin: 1rem 0; }
     th, td { border: 1px solid #cbd8dd; padding: 8px; vertical-align: top; }
     th { background: #dcebf0; text-align: left; }

@@ -89,7 +89,6 @@ export const CARD_EM_OUTCOMES = [
 export function emptyCard(): EmcureCard {
   return {
     title: "",
-    author: "",
     institution: "",
     department: "",
     instructor: "",
@@ -142,7 +141,6 @@ export function yearLevelFromCourse(level: string): string {
 /** Fields that can be copied from the studio design without AI. */
 export type CardFillField =
   | "title"
-  | "author"
   | "institution"
   | "department"
   | "instructor"
@@ -163,7 +161,6 @@ export type CardFillField =
 
 const FILL_SOURCES: Record<CardFillField, string> = {
   title: "from Course profile",
-  author: "from Instructor",
   institution: "from Course profile",
   department: "from Course profile",
   instructor: "from Course profile",
@@ -201,10 +198,6 @@ export function cardDepartmentFromDesign(design: EmcureDesign): string {
 
 export function cardInstructorFromDesign(design: EmcureDesign): string {
   return design.courseProfile.instructor?.trim() ?? "";
-}
-
-export function cardAuthorFromDesign(design: EmcureDesign): string {
-  return cardInstructorFromDesign(design);
 }
 
 export function cardYearLevelFromDesign(design: EmcureDesign): string {
@@ -321,8 +314,6 @@ export function cardFillValue(
   switch (field) {
     case "title":
       return cardTitleFromDesign(design);
-    case "author":
-      return cardAuthorFromDesign(design);
     case "institution":
       return cardInstitutionFromDesign(design);
     case "department":
@@ -366,9 +357,8 @@ export function canFillCardField(design: EmcureDesign, field: CardFillField): bo
   if (field === "title" || field === "course") {
     return Boolean(design.courseProfile.title.trim() || design.title.trim());
   }
-  if (field === "institution" || field === "department" || field === "instructor" || field === "author") {
-    const key = field === "author" ? "instructor" : field;
-    return Boolean(design.courseProfile[key]?.trim());
+  if (field === "institution" || field === "department" || field === "instructor") {
+    return Boolean(design.courseProfile[field]?.trim());
   }
   const value = cardFillValue(design, field);
   if (Array.isArray(value)) return value.length > 0;
@@ -389,7 +379,6 @@ export function draftCardFromDesign(design: EmcureDesign): EmcureCard {
   return {
     ...emptyCard(),
     title: cardTitleFromDesign(design),
-    author: cardAuthorFromDesign(design),
     institution: cardInstitutionFromDesign(design),
     department: cardDepartmentFromDesign(design),
     instructor: cardInstructorFromDesign(design),
@@ -477,14 +466,13 @@ export function cardFieldsToMarkdown(card: EmcureCard): string {
   return [
     `# ${card.title || "EM-CURE"}`,
     "",
-    card.author ? `by ${card.author}` : "",
-    card.author ? "" : "",
+    card.instructor ? `by ${card.instructor}` : "",
+    "",
     "## Details",
     "",
     `- Year level: ${YEAR_LEVELS.find((item) => item.id === card.yearLevel)?.label || card.yearLevel || "-"}`,
     `- Institution: ${card.institution || "-"}`,
     `- Department: ${card.department || "-"}`,
-    `- Instructor: ${card.instructor || "-"}`,
     `- Course: ${card.course || "-"}`,
     `- Category: ${card.category || "-"}`,
     `- Sub-category: ${card.subCategory || "-"}`,
@@ -612,6 +600,9 @@ function markdownishToHtml(markdown: string): string {
 const CARD_HTML_STYLE = `
     body { font-family: Mulish, Arial, Helvetica, sans-serif; color: #18323C; max-width: 46rem; margin: 2rem auto; line-height: 1.55; }
     h1, h2, h3 { color: #125670; }
+    h2 { margin-top: 2.25rem; margin-bottom: 0.6rem; }
+    h3 { margin-top: 1.5rem; margin-bottom: 0.4rem; }
+    body > :first-child { margin-top: 0; }
     .card-top { display: flex; justify-content: space-between; align-items: flex-start; gap: 16px; }
     .share-qr { margin: 0; text-align: center; max-width: 9rem; }
     .share-qr svg { display: block; background: #fff; }

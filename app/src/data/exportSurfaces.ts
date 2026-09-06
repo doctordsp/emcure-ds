@@ -3,7 +3,6 @@ import { draftRubricFromDesign } from "../domain/rubric";
 import type { DistributionDocument, EmcureDesign } from "../domain/types";
 
 export interface ExportSurfaceOptions {
-  cardAuthor: string;
   cardAcknowledgments: string;
   cardSubCategory: string;
   cardReferences: string;
@@ -23,7 +22,6 @@ export function withExportSurfaces(
   const drafted = draftCardFromDesign(design);
   const card = {
     ...drafted,
-    author: options.cardAuthor,
     summary: generateCardSummary(drafted),
     acknowledgments: options.cardAcknowledgments,
     subCategory: options.cardSubCategory,
