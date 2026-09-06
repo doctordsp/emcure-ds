@@ -7,9 +7,11 @@ export function AuthBar() {
     ready,
     user,
     recovering,
+    linkError,
     signInWithPassword,
     resetPasswordForEmail,
     updatePassword,
+    cancelPasswordSetup,
     signOut,
   } = useAuth();
   const [email, setEmail] = useState("");
@@ -119,10 +121,47 @@ export function AuthBar() {
     return (
       <section className="auth-panel" aria-label="Set password">
         <p className="auth-kicker">Set password</p>
+        <div className="auth-row">
+          <label className="sr-only" htmlFor="auth-recovery-email">
+            Email
+          </label>
+          <input
+            id="auth-recovery-email"
+            className="auth-input"
+            type="email"
+            autoComplete="email"
+            placeholder="you@gmail.com"
+            value={email}
+            onChange={(event) => setEmail(event.target.value)}
+          />
+          <button
+            type="button"
+            className="btn btn-secondary"
+            disabled={busy}
+            onClick={() => {
+              void onForgotPassword();
+            }}
+          >
+            {busy ? "Sending…" : "Send link"}
+          </button>
+        </div>
         <p className="muted auth-note">
-          This reset link did not finish signing you in. Open Forgot password from this same
-          browser, then use the new email.
+          {linkError ??
+            "This link did not finish signing you in. Send a new one and open it in this browser."}
         </p>
+        {status ? (
+          <p className="auth-status" role="status">
+            {status}
+          </p>
+        ) : null}
+        {error ? (
+          <p className="field-error" role="alert">
+            {error}
+          </p>
+        ) : null}
+        <button type="button" className="auth-forgot" onClick={cancelPasswordSetup}>
+          Back to sign in
+        </button>
       </section>
     );
   }
@@ -196,6 +235,11 @@ export function AuthBar() {
         >
           Forgot password
         </button>
+        {linkError && !status ? (
+          <p className="field-error" role="alert">
+            {linkError}
+          </p>
+        ) : null}
         {status ? (
           <p className="auth-status" role="status">
             {status}

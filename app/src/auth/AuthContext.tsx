@@ -10,10 +10,10 @@ import {
 import type { AuthChangeEvent, Session, User } from "@supabase/supabase-js";
 import { getSupabase, isSupabaseConfigured } from "../persistence/supabase";
 import {
-  capturePasswordSetupFromUrl,
   clearPasswordSetup,
   isPasswordSetupPending,
   markPasswordSetupPending,
+  passwordSetupLinkError,
 } from "./passwordSetup";
 
 type AuthContextValue = {
@@ -22,9 +22,11 @@ type AuthContextValue = {
   session: Session | null;
   user: User | null;
   recovering: boolean;
+  linkError: string | null;
   signInWithPassword: (email: string, password: string) => Promise<void>;
   resetPasswordForEmail: (email: string) => Promise<void>;
   updatePassword: (password: string) => Promise<void>;
+  cancelPasswordSetup: () => void;
   signOut: () => Promise<void>;
 };
 
@@ -44,15 +46,12 @@ function redirectTo(): string {
   return url;
 }
 
-if (typeof window !== "undefined") {
-  capturePasswordSetupFromUrl();
-}
-
 export function AuthProvider({ children }: { children: ReactNode }) {
   const configured = isSupabaseConfigured();
   const [ready, setReady] = useState(!configured);
   const [session, setSession] = useState<Session | null>(null);
   const [recovering, setRecovering] = useState(() => isPasswordSetupPending());
+  const [linkError, setLinkError] = useState(() => passwordSetupLinkError()?.message ?? null);
 
   useEffect(() => {
     const supabase = getSupabase();
@@ -99,6 +98,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const resetPasswordForEmail = useCallback(async (email: string) => {
     const supabase = getSupabase();
     if (!supabase) throw new Error("Cloud save is not configured.");
+    setLinkError(null);
     markPasswordSetupPending();
     const { error } = await supabase.auth.resetPasswordForEmail(email.trim(), {
       redirectTo: redirectTo(),
@@ -114,6 +114,12 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     clearPasswordSetup();
     setRecovering(false);
     window.history.replaceState(null, "", window.location.pathname + window.location.search);
+  }, []);
+
+  const cancelPasswordSetup = useCallback(() => {
+    clearPasswordSetup();
+    setRecovering(false);
+    setLinkError(null);
   }, []);
 
   const signOut = useCallback(async () => {
@@ -132,9 +138,11 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       session,
       user: session?.user ?? null,
       recovering,
+      linkError,
       signInWithPassword,
       resetPasswordForEmail,
       updatePassword,
+      cancelPasswordSetup,
       signOut,
     }),
     [
@@ -142,9 +150,11 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       ready,
       session,
       recovering,
+      linkError,
       signInWithPassword,
       resetPasswordForEmail,
       updatePassword,
+      cancelPasswordSetup,
       signOut,
     ],
   );

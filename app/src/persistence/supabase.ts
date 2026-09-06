@@ -1,5 +1,7 @@
 import { createClient, type SupabaseClient } from "@supabase/supabase-js";
-import { capturePasswordSetupFromUrl } from "../auth/passwordSetup";
+// Side effect only: records the recovery token and any link error from the URL,
+// which must happen before the client below starts consuming the URL.
+import "../auth/passwordSetup";
 
 let client: SupabaseClient | null | undefined;
 
@@ -15,7 +17,6 @@ export function getSupabase(): SupabaseClient | null {
     client = null;
     return client;
   }
-  capturePasswordSetupFromUrl();
   client = createClient(url, anon, {
     auth: {
       persistSession: true,
@@ -24,6 +25,12 @@ export function getSupabase(): SupabaseClient | null {
     },
   });
   return client;
+}
+
+// detectSessionInUrl reads window.location when the client is built. Build it at
+// import time so the recovery token is claimed before the router rewrites the URL.
+if (typeof window !== "undefined") {
+  getSupabase();
 }
 
 export async function currentUserId(): Promise<string | null> {

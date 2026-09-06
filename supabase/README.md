@@ -30,8 +30,8 @@ If you already signed in with a magic link, the user row exists but may have no 
 1. Confirm Site URL is the `index.html` URL above, not the folder URL.
 2. Authentication → Users: open the faculty user → **Send password recovery** (or Invite if they have no user row yet).
 3. Open the new email. The link must contain `/emcure-design-studio/index.html` before any `?` or `#`. If it does not, the window will be blank.
-4. After the redirect the studio header shows **Set password** (a PKCE `?code=` landing is expected). Choose a password (at least 6 characters) and Save. Open the email in the same browser that requested the reset.
-5. Sign out, then sign in with that email and password. Do not click the old email again.
+4. After the redirect the studio header shows **Set password** with a password box. The landing URL carries the token in the fragment (`index.html#access_token=...&type=recovery`); the studio uses the implicit flow, so any browser works. Choose a password (at least 6 characters) and Save.
+5. Sign out, then sign in with that email and password. Recovery links are single use, so do not click the old email again. An expired or reused link now says so in the header instead of showing a plain sign-in form.
 
 ## App env
 
