@@ -1276,6 +1276,24 @@ td {
   font-size: 0.8125rem;
 }
 
+.auth-forgot {
+  align-self: flex-start;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  background: none;
+  font: inherit;
+  font-size: 0.75rem;
+  color: var(--emcure-teal-700);
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+.auth-forgot:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
 .public-card {
   max-width: 46rem;
   margin: 0 auto;

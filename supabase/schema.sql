@@ -1,6 +1,6 @@
 -- EM-CURE Design Studio, dedicated Free-tier project
 -- Paste into the Supabase SQL Editor after creating the project.
--- Auth: enable Email (magic link) in Authentication → Providers.
+-- Auth: email + password, public sign-up disabled. Invite users in the dashboard.
 -- Add redirect URLs: http://localhost:5173/** and the GCS SPA origin.
 
 create table if not exists public.designs (

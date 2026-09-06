@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "start": "node server.mjs",
-    "test": "node --test passcode.test.mjs"
+    "test": "node --test passcode.test.mjs complete.test.mjs"
   },
   "engines": {
     "node": ">=22"

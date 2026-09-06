@@ -1,4 +1,5 @@
 import { createClient, type SupabaseClient } from "@supabase/supabase-js";
+import { capturePasswordSetupFromUrl } from "../auth/passwordSetup";
 
 let client: SupabaseClient | null | undefined;
 
@@ -14,6 +15,7 @@ export function getSupabase(): SupabaseClient | null {
     client = null;
     return client;
   }
+  capturePasswordSetupFromUrl();
   client = createClient(url, anon, {
     auth: {
       persistSession: true,

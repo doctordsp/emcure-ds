@@ -2,8 +2,18 @@ import { useState, type FormEvent } from "react";
 import { useAuth } from "./AuthContext";
 
 export function AuthBar() {
-  const { configured, ready, user, signInWithEmail, signOut } = useAuth();
+  const {
+    configured,
+    ready,
+    user,
+    recovering,
+    signInWithPassword,
+    resetPasswordForEmail,
+    updatePassword,
+    signOut,
+  } = useAuth();
   const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
   const [status, setStatus] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
@@ -26,13 +36,95 @@ export function AuthBar() {
     setStatus(null);
     setBusy(true);
     try {
-      await signInWithEmail(email);
-      setStatus("Check your email for a sign-in link. It opens this studio.");
+      await signInWithPassword(email, password);
+      setPassword("");
     } catch (caught) {
-      setError(caught instanceof Error ? caught.message : "Could not send the sign-in link.");
+      setError(caught instanceof Error ? caught.message : "Could not sign in.");
     } finally {
       setBusy(false);
     }
+  }
+
+  async function onForgotPassword() {
+    setError(null);
+    setStatus(null);
+    if (!email.trim()) {
+      setError("Enter your email first, then choose Forgot password.");
+      return;
+    }
+    setBusy(true);
+    try {
+      await resetPasswordForEmail(email);
+      setStatus("Check your email for a password reset link. It opens this studio.");
+    } catch (caught) {
+      setError(caught instanceof Error ? caught.message : "Could not send the reset email.");
+    } finally {
+      setBusy(false);
+    }
+  }
+
+  async function onSetPassword(event: FormEvent) {
+    event.preventDefault();
+    setError(null);
+    setStatus(null);
+    setBusy(true);
+    try {
+      await updatePassword(password);
+      setPassword("");
+    } catch (caught) {
+      setError(caught instanceof Error ? caught.message : "Could not save the password.");
+    } finally {
+      setBusy(false);
+    }
+  }
+
+  if (user && recovering) {
+    return (
+      <section className="auth-panel" aria-label="Set password">
+        <p className="auth-kicker">Set password</p>
+        <form className="auth-form" onSubmit={(event) => void onSetPassword(event)}>
+          <div className="auth-row">
+            <label className="sr-only" htmlFor="auth-new-password">
+              New password
+            </label>
+            <input
+              id="auth-new-password"
+              className="auth-input"
+              type="password"
+              autoComplete="new-password"
+              required
+              minLength={6}
+              placeholder="New password"
+              value={password}
+              onChange={(event) => setPassword(event.target.value)}
+            />
+            <button type="submit" className="btn btn-secondary" disabled={busy}>
+              {busy ? "Saving…" : "Save"}
+            </button>
+          </div>
+          <p className="muted auth-note">
+            Choose a password for {user.email ?? "this account"}. You will use it to sign in next time.
+          </p>
+          {error ? (
+            <p className="field-error" role="alert">
+              {error}
+            </p>
+          ) : null}
+        </form>
+      </section>
+    );
+  }
+
+  if (recovering && !user) {
+    return (
+      <section className="auth-panel" aria-label="Set password">
+        <p className="auth-kicker">Set password</p>
+        <p className="muted auth-note">
+          This reset link did not finish signing you in. Open Forgot password from this same
+          browser, then use the new email.
+        </p>
+      </section>
+    );
   }
 
   if (user) {
@@ -74,11 +166,36 @@ export function AuthBar() {
             value={email}
             onChange={(event) => setEmail(event.target.value)}
           />
+        </div>
+        <div className="auth-row">
+          <label className="sr-only" htmlFor="auth-password">
+            Password
+          </label>
+          <input
+            id="auth-password"
+            className="auth-input"
+            type="password"
+            autoComplete="current-password"
+            required
+            placeholder="Password"
+            value={password}
+            onChange={(event) => setPassword(event.target.value)}
+          />
           <button type="submit" className="btn btn-secondary" disabled={busy}>
-            {busy ? "Sending…" : "Sign in"}
+            {busy ? "Signing in…" : "Sign in"}
           </button>
         </div>
-        <p className="muted auth-note">Sign in for cloud save</p>
+        <p className="muted auth-note">Sign in for cloud save. Accounts are invite-only.</p>
+        <button
+          type="button"
+          className="auth-forgot"
+          disabled={busy}
+          onClick={() => {
+            void onForgotPassword();
+          }}
+        >
+          Forgot password
+        </button>
         {status ? (
           <p className="auth-status" role="status">
             {status}

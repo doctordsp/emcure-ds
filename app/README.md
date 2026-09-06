@@ -1,6 +1,6 @@
 # EM-CURE Design Studio
 
-Faculty prototype for designing an entrepreneurially minded course-based undergraduate research experience (EM-CURE). Designs save in this browser, or in a dedicated Supabase Free project after you sign in with a magic link.
+Faculty prototype for designing an entrepreneurially minded course-based undergraduate research experience (EM-CURE). Designs save in this browser, or in a dedicated Supabase Free project after you sign in with an invited email and password.
 
 ## Run
 
