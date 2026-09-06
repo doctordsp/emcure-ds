@@ -28,19 +28,45 @@ export function PublishCardPanel({
   const [busy, setBusy] = useState(false);
   const [copied, setCopied] = useState(false);
 
+  const card = resolvedCard(design);
+  const slug = published?.slug ?? cardSlug(card.title || displayTitle(design), design.id);
+  const shareUrl = publishedCardShareUrl(slug);
+
+  async function downloadCardHtml() {
+    const imageSrc = await resolveCardImageSrc({
+      dataUrl: card.featuredImageDataUrl,
+      path: card.featuredImagePath,
+      publishedPath: published?.image_path,
+    });
+    const html = cardFieldsToHtml(cardForPublicOutput(design), imageSrc, published ? shareUrl : undefined);
+    downloadTextFile(`${slug}.html`, html, "text/html");
+  }
+
   const resetButton = (
     <button type="button" className="btn btn-secondary" onClick={onResetFields}>
       Reset fields from design
     </button>
   );
 
-  if (!configured) {
-    return <div className="card-actions">{resetButton}</div>;
-  }
+  const downloadButton = (
+    <button type="button" className="btn btn-secondary" onClick={() => void downloadCardHtml()}>
+      Download HTML
+    </button>
+  );
 
-  const card = resolvedCard(design);
-  const slug = published?.slug ?? cardSlug(card.title || displayTitle(design), design.id);
-  const shareUrl = publishedCardShareUrl(slug);
+  if (!configured) {
+    return (
+      <>
+        <div className="card-actions">
+          {downloadButton}
+          {resetButton}
+        </div>
+        <p className="muted">
+          Download HTML gives you a standalone page you can host anywhere.
+        </p>
+      </>
+    );
+  }
 
   async function onPublish() {
     setBusy(true);
@@ -80,21 +106,17 @@ export function PublishCardPanel({
     }
   }
 
-  async function downloadFallbackHtml() {
-    const imageSrc = await resolveCardImageSrc({
-      dataUrl: card.featuredImageDataUrl,
-      path: card.featuredImagePath,
-      publishedPath: published?.image_path,
-    });
-    const html = cardFieldsToHtml(cardForPublicOutput(design), imageSrc, shareUrl);
-    downloadTextFile(`${slug}.html`, html, "text/html");
-  }
-
   if (!user) {
     return (
       <>
-        <p className="muted">Sign in to publish a snapshot with a shareable link.</p>
-        <div className="card-actions">{resetButton}</div>
+        <div className="card-actions">
+          {downloadButton}
+          {resetButton}
+        </div>
+        <p className="muted">
+          Download HTML gives you a standalone page you can host anywhere. Sign in to publish a
+          snapshot with a shareable link instead.
+        </p>
       </>
     );
   }
@@ -142,6 +164,7 @@ export function PublishCardPanel({
             {resetButton}
           </>
         )}
+        {downloadButton}
       </div>
       {published ? (
         <p>
@@ -152,18 +175,11 @@ export function PublishCardPanel({
           <span className="muted"> · snapshot {new Date(published.published_at).toLocaleString()}</span>
         </p>
       ) : null}
-      <details className="publish-fallback">
-        <summary>If the live link goes down</summary>
-        <p className="muted">
-          Free-tier projects pause after a week of inactivity, which takes the live link down.
-          Download this page as HTML and upload it to{" "}
-          <code>gs://ai-app-directory/emcure-design-studio/c/{slug}/index.html</code> (see{" "}
-          <code>scripts/upload-published-card.sh</code>) if the share link must stay up.
-        </p>
-        <button type="button" className="btn btn-ghost" onClick={() => void downloadFallbackHtml()}>
-          Download HTML
-        </button>
-      </details>
+      <p className="muted">
+        Publish hosts the page here and gives you a link to share. The link stays up while the
+        project is active, so treat it as provisional. Download HTML gives you a standalone copy
+        of the same page to host wherever you like, which nothing here can take down.
+      </p>
       {status ? <p role="status">{status}</p> : null}
       {error ? (
         <p className="field-error" role="alert">

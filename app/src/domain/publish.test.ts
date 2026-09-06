@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
 import { cardFieldsToMarkdown, cardToMarkdown } from "./card";
 import { EXAMPLE_DESIGN } from "../data/exampleDesign";
-import { cardSlug, studentSafeCard } from "./publish";
+import { cardSlug, publishedCardSharePath, studentSafeCard } from "./publish";
 import { emptyCard } from "./card";
 
 describe("studentSafeCard", () => {
@@ -28,6 +28,19 @@ describe("cardSlug", () => {
 
   it("falls back when the title is empty", () => {
     expect(cardSlug("   ", "zzzzzzzz-1111-2222-3333-444444444444")).toBe("emcure-zzzzzzzz");
+  });
+});
+
+describe("publishedCardSharePath", () => {
+  // A /c/<slug> path returns NoSuchKey on GCS, which serves index.html and nothing else.
+  it("keeps the slug in the query so the link resolves on a static bucket", () => {
+    expect(publishedCardSharePath("stormwater-a1b2c3d4")).toBe(
+      "/index.html?c=stormwater-a1b2c3d4",
+    );
+  });
+
+  it("escapes slugs so they cannot break out of the query string", () => {
+    expect(publishedCardSharePath("a&b=c")).toBe("/index.html?c=a%26b%3Dc");
   });
 });
 

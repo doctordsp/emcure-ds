@@ -1,4 +1,5 @@
-import { Navigate, Route, Routes, useLocation } from "react-router-dom";
+import { Navigate, Route, Routes, useLocation, useParams, useSearchParams } from "react-router-dom";
+import { publishedCardSharePath } from "./domain/publish";
 import { DashboardPage } from "./pages/DashboardPage";
 import { BigRedXPage } from "./pages/BigRedXPage";
 import { MvrcPage } from "./pages/MvrcPage";
@@ -20,14 +21,25 @@ function DashboardRedirect() {
   return <Navigate to={{ pathname: "/", search, hash }} replace />;
 }
 
+function StudioEntry() {
+  const [params] = useSearchParams();
+  const slug = params.get("c");
+  return slug ? <PublishedCardPage slug={slug} /> : <DashboardPage />;
+}
+
+function LegacyCardRedirect() {
+  const { slug } = useParams();
+  return <Navigate to={publishedCardSharePath(slug ?? "")} replace />;
+}
+
 export default function App() {
   return (
     <Routes>
-      <Route path="/" element={<DashboardPage />} />
-      {/* GCS serves the studio only at index.html, so invite and recovery links land here. */}
-      <Route path="/index.html" element={<DashboardPage />} />
+      <Route path="/" element={<StudioEntry />} />
+      {/* GCS serves the studio only at index.html, so shared and emailed links land here. */}
+      <Route path="/index.html" element={<StudioEntry />} />
       <Route path="/setup-ai" element={<AiSetupPage />} />
-      <Route path="/c/:slug" element={<PublishedCardPage />} />
+      <Route path="/c/:slug" element={<LegacyCardRedirect />} />
       <Route path="/cards" element={<PublicCardsPage />} />
       <Route path="/designs/:designId" element={<WorkspaceLayout />}>
         <Route index element={<Navigate to="course" replace />} />

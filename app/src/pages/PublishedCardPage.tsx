@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Link, useParams } from "react-router-dom";
+import { Link } from "react-router-dom";
 import {
   CARD_COMPONENTS,
   CARD_EM_OUTCOMES,
@@ -25,8 +25,7 @@ function labels(
     .join(", ");
 }
 
-export function PublishedCardPage() {
-  const { slug } = useParams();
+export function PublishedCardPage({ slug }: { slug: string }) {
   const [row, setRow] = useState<PublishedCardRow | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
@@ -85,8 +84,7 @@ export function PublishedCardPage() {
   const image = publishedImageSrc(row);
   const year = YEAR_LEVELS.find((item) => item.id === card.yearLevel)?.label || card.yearLevel;
   const outcomeGroups = ["Curiosity", "Connections", "Creating Value"] as const;
-  const shareUrl =
-    typeof window !== "undefined" ? window.location.href.split("#")[0] : publishedCardShareUrl(row.slug);
+  const shareUrl = publishedCardShareUrl(row.slug);
 
   return (
     <article className="public-card">

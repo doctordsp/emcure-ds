@@ -48,4 +48,4 @@ Do **not** put Anthropic or OpenAI keys in Supabase or in `VITE_*`. The AI proxy
 
 ## After a pause
 
-Free projects pause after a week of inactivity. Restore from the dashboard. Faculty designs come back. Live `/c/:slug` links fail until restore. Upload pause-proof HTML with `scripts/upload-published-card.sh` if a share link must stay up.
+Free projects pause after a week of inactivity. Restore from the dashboard. Faculty designs come back. Published share links (`index.html?c=<slug>`) fail until restore, which is why they are described as provisional in the studio. For a link that survives a pause, use **Download HTML** on Create a Card and host that file yourself; `scripts/upload-published-card.sh` puts it in the GCS bucket next to the studio.

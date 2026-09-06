@@ -15,6 +15,6 @@ npm run dev
 
 Cloud save and published cards need `VITE_SUPABASE_URL` and `VITE_SUPABASE_ANON_KEY`. See [`supabase/README.md`](supabase/README.md) to create the second Free-tier project and run [`supabase/schema.sql`](supabase/schema.sql).
 
-See `app/README.md` for tests, export, and usage. The optional AI proxy (keys stay off the static site) is in `proxy/`. Pause-proof published cards can be uploaded with `scripts/upload-published-card.sh`.
+See `app/README.md` for tests, export, and usage. The optional AI proxy (keys stay off the static site) is in `proxy/`. A downloaded card page can be self-hosted anywhere; `scripts/upload-published-card.sh` puts one in the GCS bucket so it survives a free-tier pause.
 
 License: MIT (Copyright 2026 doctordsp)

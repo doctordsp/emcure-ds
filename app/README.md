@@ -27,7 +27,7 @@ Alignment rules live in `src/domain/alignment.ts` and run independently of the U
 5. Compare uncertainties and justify a Big Red X.
 6. Link an investigation activity to that Big Red X.
 7. Review alignment findings and export Markdown, HTML, JSON, a public card, or a student companion.
-8. On **Create a Card**, publish an unlisted snapshot for a shareable `/c/:slug` link. Faculty notes are not included.
+8. On **Create a Card**, **Publish** an unlisted snapshot for a shareable `index.html?c=<slug>` link, or **Download HTML** for a standalone page you can host anywhere. Faculty notes are not included in either.
 
 **Create a Card** prefills from the design. Use **Fill from design** on a field to refresh that field only. **Reset fields from design** rewrites the whole card except author and image.
 

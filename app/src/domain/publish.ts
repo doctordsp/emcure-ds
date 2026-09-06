@@ -40,8 +40,10 @@ export function publicAppUrl(path = ""): string {
   return `${origin}${trimmedBase}${trimmedPath}`;
 }
 
+// GCS serves index.html and nothing else, so the slug rides in the query string.
+// A /c/<slug> path has no object behind it and returns NoSuchKey.
 export function publishedCardSharePath(slug: string): string {
-  return `/c/${slug}`;
+  return `/index.html?c=${encodeURIComponent(slug)}`;
 }
 
 export function publishedCardShareUrl(slug: string): string {

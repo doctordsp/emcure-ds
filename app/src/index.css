@@ -603,21 +603,6 @@ img {
   white-space: nowrap;
 }
 
-.publish-fallback {
-  margin-top: 4px;
-}
-
-.publish-fallback > summary {
-  cursor: pointer;
-  color: var(--emcure-muted);
-  font-size: 0.875rem;
-}
-
-.publish-fallback > summary:hover,
-.publish-fallback > summary:focus-visible {
-  color: inherit;
-}
-
 .pill {
   display: inline-flex;
   align-items: center;
