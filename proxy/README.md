@@ -1,6 +1,6 @@
 # EM-CURE AI proxy
 
-Small Cloud Run service that holds Anthropic/OpenAI keys and checks a time-limited passcode (same CODE+MMDD / letter-date rules as cmapalyzer). The static SPA never receives a provider key.
+Small Cloud Run service that holds Anthropic/OpenAI keys and checks a time-limited passcode. The static SPA never receives a provider key.
 
 ## Endpoints
 
